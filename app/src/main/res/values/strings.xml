@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">NutriNom</string>
+    <string name="app_icon">App Logo</string>
+    <string name="app_catchphrase">Track, Balance, Thrive</string>
+    <string name="TrackBalance">Find Your House</string>
+    <string name="login">Login</string>
+    <string name="signup">Sign Up</string>
+</resources>
