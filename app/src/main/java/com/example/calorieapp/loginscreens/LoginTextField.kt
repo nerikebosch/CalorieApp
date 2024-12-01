@@ -3,8 +3,10 @@ package com.example.calorieapp.loginscreens
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -14,9 +16,12 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.calorieapp.R
 import com.example.calorieapp.ui.theme.primaryDark
 import com.example.calorieapp.ui.theme.focusedTextFieldText
 import com.example.calorieapp.ui.theme.textFieldContainer
@@ -29,9 +34,16 @@ fun LoginTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
-    trailing: String = "",
+    trailing: @Composable (() -> Unit)? = null,
 ) {
     val uiColor = if (isSystemInDarkTheme()) Color.White else MaterialTheme.colorScheme.primary
+
+    // Adjust the icon tint for visibility in both light and dark themes
+    val iconTint = if (isSystemInDarkTheme()) {
+        MaterialTheme.colorScheme.onPrimary // Dark mode: use a light icon color
+    } else {
+        MaterialTheme.colorScheme.onSurface // Light mode: use a dark icon color
+    }
 
     OutlinedTextField(
         value = value,
@@ -44,15 +56,8 @@ fun LoginTextField(
             )
         },
         trailingIcon = {
-            if (trailing.isNotEmpty()) {
-                TextButton(onClick = { /* TODO: Handle trailing action */ }) {
-                    Text(
-                        text = trailing,
-                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium),
-                        color = uiColor
-                    )
-                }
-            }
+            // Check if trailing composable is provided
+            trailing?.invoke()
         },
         modifier = modifier
             .fillMaxWidth()

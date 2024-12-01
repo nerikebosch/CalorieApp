@@ -1,6 +1,8 @@
 package com.example.calorieapp.loginscreens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,12 +18,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,13 +40,15 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.calorieapp.R
 import com.example.calorieapp.ui.theme.Roboto
 import com.example.calorieapp.ui.theme.CalorieAppTheme
 
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController) {
     Surface {
         Column(modifier = Modifier.fillMaxSize()) {
             TopSection()
@@ -61,8 +68,7 @@ fun LoginScreen() {
                     .fillMaxHeight(fraction = 0.8f)
                     .fillMaxWidth(),
                     contentAlignment = Alignment.BottomCenter
-                ){
-
+                ) {
                     Text(
                         text = buildAnnotatedString {
                             withStyle(
@@ -72,8 +78,8 @@ fun LoginScreen() {
                                     fontFamily = Roboto,
                                     fontWeight = FontWeight.Normal
                                 )
-                            ){
-                                append("Don't have account?")
+                            ) {
+                                append("Don't have an account?")
                             }
                             withStyle(
                                 style = SpanStyle(
@@ -82,18 +88,19 @@ fun LoginScreen() {
                                     fontFamily = Roboto,
                                     fontWeight = FontWeight.Medium
                                 )
-                            ){
+                            ) {
                                 append(" ")
                                 append("Create now")
                             }
+                        },
+                        modifier = Modifier.clickable {
+                            // Navigate to the SignUpScreen
+                            navController.navigate("signup")
                         }
                     )
-
                 }
-
             }
         }
-
     }
 }
 
@@ -130,24 +137,37 @@ private fun SocialMediaSection() {
 
 @Composable
 private fun LoginSection() {
-    val emailState = remember { mutableStateOf("") }
-    val passwordState = remember { mutableStateOf("") }
+    var emailState by remember { mutableStateOf("") }
+    var passwordState by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) } // Track password visibility
 
-    Column {
+    Column (
+        modifier = Modifier.padding(16.dp)
+    ){
         LoginTextField(
-            value = emailState.value,
-            onValueChange = { emailState.value = it },
+            value = emailState,
+            onValueChange = { emailState = it },
             label = "Email",
-            trailing = "",
+            trailing = null,
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(15.dp))
 
         LoginTextField(
-            value = passwordState.value,
-            onValueChange = { passwordState.value = it },
+            value = passwordState,
+            onValueChange = { passwordState = it },
             label = "Password",
-            trailing = "Forgot?",
+            trailing = {
+                // Show eye icon based on password visibility state
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(
+                        painter = painterResource(id = if (passwordVisible) R.drawable.eye_icon else R.drawable.eye_slash_icon),
+                        contentDescription = "Toggle password visibility",
+                        modifier = Modifier.size(24.dp),
+                        tint = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(20.dp))
@@ -194,8 +214,8 @@ private fun TopSection() {
         ) {
 
             Icon(
-                modifier = Modifier.size(42.dp),
-                painter = painterResource(id = R.drawable.icon),
+                modifier = Modifier.size(60.dp),
+                painter = painterResource(id = R.drawable.logo),
                 contentDescription = stringResource(id = R.string.app_icon),
                 tint = MaterialTheme.colorScheme.onPrimary
             )
@@ -226,10 +246,9 @@ private fun TopSection() {
 }
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
-    LoginScreen()
-
-
+fun PreviewLoginScreen() {
+    val navController = rememberNavController()
+    LoginScreen(navController = navController)
 }

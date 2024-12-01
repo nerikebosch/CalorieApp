@@ -55,7 +55,7 @@ fun SocialMediaLogIn(
 
         Text(
             text = text,
-            style = MaterialTheme.typography.labelMedium.copy(color = Color(0xFF64748B))
+            style = MaterialTheme.typography.labelMedium.copy(color = MaterialTheme.colorScheme.onPrimary)
         )
 
     }

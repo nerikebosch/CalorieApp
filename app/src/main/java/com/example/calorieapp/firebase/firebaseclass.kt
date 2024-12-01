@@ -1,3 +1,5 @@
+/*
+
 package com.example.calorieapp.firebase
 
 import com.example.calorieapp.RegisterActivity
@@ -32,4 +34,4 @@ class FirestoreClass {
                 // Handle the failure case (add appropriate handling if necessary).
             }
     }
-}
+} */
