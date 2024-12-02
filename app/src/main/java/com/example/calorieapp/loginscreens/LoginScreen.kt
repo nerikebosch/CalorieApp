@@ -161,7 +161,7 @@ private fun LoginSection() {
                 // Show eye icon based on password visibility state
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(
-                        painter = painterResource(id = if (passwordVisible) R.drawable.eye_icon else R.drawable.eye_slash_icon),
+                        painter = painterResource(id = if (passwordVisible) R.drawable.visibility_24px else R.drawable.visibility_off_24px),
                         contentDescription = "Toggle password visibility",
                         modifier = Modifier.size(24.dp),
                         tint = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
