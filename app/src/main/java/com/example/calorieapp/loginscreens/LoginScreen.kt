@@ -149,13 +149,12 @@ private fun LoginSection() {
             onValueChange = { emailState = it },
             label = "Email",
             trailing = null,
-            modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(15.dp))
 
         PasswordTextField(
-            password = passwordState,
-            onPasswordChange = { passwordState = it }
+            value = passwordState,
+            onValueChange = { passwordState = it }
         )
 //        LoginTextField(
 //            value = passwordState,
