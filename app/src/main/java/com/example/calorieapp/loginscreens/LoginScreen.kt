@@ -153,23 +153,27 @@ private fun LoginSection() {
         )
         Spacer(modifier = Modifier.height(15.dp))
 
-        LoginTextField(
-            value = passwordState,
-            onValueChange = { passwordState = it },
-            label = "Password",
-            trailing = {
-                // Show eye icon based on password visibility state
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(
-                        painter = painterResource(id = if (passwordVisible) R.drawable.visibility_24px else R.drawable.visibility_off_24px),
-                        contentDescription = "Toggle password visibility",
-                        modifier = Modifier.size(24.dp),
-                        tint = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
-                    )
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
+        PasswordTextField(
+            password = passwordState,
+            onPasswordChange = { passwordState = it }
         )
+//        LoginTextField(
+//            value = passwordState,
+//            onValueChange = { passwordState = it },
+//            label = "Password",
+//            trailing = {
+//                // Show eye icon based on password visibility state
+//                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+//                    Icon(
+//                        painter = painterResource(id = if (passwordVisible) R.drawable.visibility_24px else R.drawable.visibility_off_24px),
+//                        contentDescription = "Toggle password visibility",
+//                        modifier = Modifier.size(24.dp),
+//                        tint = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+//                    )
+//                }
+//            },
+//            modifier = Modifier.fillMaxWidth()
+//        )
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(

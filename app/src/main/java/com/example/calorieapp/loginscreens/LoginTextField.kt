@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.calorieapp.R
 import com.example.calorieapp.ui.theme.primaryDark
 import com.example.calorieapp.ui.theme.focusedTextFieldText
@@ -52,7 +53,8 @@ fun LoginTextField(
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelMedium,
-                color = uiColor
+                color = uiColor,
+                fontSize = 14.sp
             )
         },
         trailingIcon = {
@@ -61,7 +63,7 @@ fun LoginTextField(
         },
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp),
+            .height(64.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             containerColor = Color.White,
             focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -70,7 +72,7 @@ fun LoginTextField(
             focusedLabelColor = MaterialTheme.colorScheme.primary,
             unfocusedLabelColor = uiColor.copy(alpha = 0.8f)
         ),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(10.dp),
         textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface)
     )
 }
