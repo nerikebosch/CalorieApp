@@ -224,7 +224,7 @@ fun ConfirmPasswordSignUpTextField(
     value: String,
     confirmValue: String,
     onValueChange: (String) -> Unit,
-    textFieldLabel: String = "Enter your password",
+    textFieldLabel: String = "Repeat your password",
     errorText: String = "Password not valid",
     semanticContentDescription: String = "",
 ) {
