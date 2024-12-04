@@ -154,9 +154,10 @@ private fun SignUpSection(navController: NavController) {
 //        )
         Spacer(modifier = Modifier.height(15.dp))
 
-        PasswordSignUpTextField(
+        ConfirmPasswordSignUpTextField(
             value = repeatPasswordState.value,
-            onValueChange = { repeatPasswordState.value = it }
+            confirmValue = passwordState.value,
+            onValueChange = { repeatPasswordState.value = it },
         )
 //        LoginTextField(
 //            value = repeatPasswordState.value,

@@ -3,6 +3,7 @@ package com.example.calorieapp.loginscreens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -33,9 +35,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,10 +53,12 @@ import com.example.calorieapp.ui.theme.CalorieAppTheme
 
 @Composable
 fun LoginScreen(navController: NavController) {
+    val uiColor = MaterialTheme.colorScheme.primary
+
     Surface {
         Column(modifier = Modifier.fillMaxSize()) {
             TopSection()
-            Spacer(modifier = Modifier.height(36.dp))
+            Spacer(modifier = Modifier.height(26.dp))
 
             Column(
                 modifier = Modifier
@@ -60,10 +66,11 @@ fun LoginScreen(navController: NavController) {
                     .padding(horizontal = 30.dp)
             ) {
                 LoginSection()
+
                 Spacer(modifier = Modifier.height(30.dp))
                 SocialMediaSection()
 
-                val uiColor = MaterialTheme.colorScheme.primary
+
                 Box(modifier = Modifier
                     .fillMaxHeight(fraction = 0.8f)
                     .fillMaxWidth(),
@@ -109,7 +116,9 @@ private fun SocialMediaSection() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = "Or continue with",
-            style = MaterialTheme.typography.labelMedium.copy(color = Color(0xFFFFFFFF))
+            style = MaterialTheme.typography.labelMedium,
+            color = Color(0xFF94A3B8),
+            fontWeight = FontWeight.Normal
         )
         Spacer(modifier = Modifier.height(20.dp))
         Row(
@@ -139,7 +148,6 @@ private fun SocialMediaSection() {
 private fun LoginSection() {
     var emailState by remember { mutableStateOf("") }
     var passwordState by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) } // Track password visibility
 
     Column (
         modifier = Modifier.padding(16.dp)
@@ -156,25 +164,21 @@ private fun LoginSection() {
             value = passwordState,
             onValueChange = { passwordState = it }
         )
-//        LoginTextField(
-//            value = passwordState,
-//            onValueChange = { passwordState = it },
-//            label = "Password",
-//            trailing = {
-//                // Show eye icon based on password visibility state
-//                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-//                    Icon(
-//                        painter = painterResource(id = if (passwordVisible) R.drawable.visibility_24px else R.drawable.visibility_off_24px),
-//                        contentDescription = "Toggle password visibility",
-//                        modifier = Modifier.size(24.dp),
-//                        tint = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
-//                    )
-//                }
-//            },
-//            modifier = Modifier.fillMaxWidth()
-//        )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Text(
+                modifier = Modifier.clickable{ /*TODO*/},
+                text = "Forgot password?",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+                textDecoration = TextDecoration.Underline
+            )
+        }
+        Spacer(modifier = Modifier.height(20.dp))
         Button(
             modifier = Modifier
                 .fillMaxWidth()
@@ -191,6 +195,7 @@ private fun LoginSection() {
                 style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium)
             )
         }
+
     }
 }
 
