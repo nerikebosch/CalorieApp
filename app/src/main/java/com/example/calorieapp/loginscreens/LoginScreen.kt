@@ -2,7 +2,6 @@ package com.example.calorieapp.loginscreens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,11 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,7 +32,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -48,11 +44,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.calorieapp.R
 import com.example.calorieapp.ui.theme.Roboto
-import com.example.calorieapp.ui.theme.CalorieAppTheme
 
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+     navController: NavController,
+     onSignInClick: () -> Unit
+) {
     val uiColor = MaterialTheme.colorScheme.primary
 
     Surface {
@@ -68,8 +66,9 @@ fun LoginScreen(navController: NavController) {
                 LoginSection()
 
                 Spacer(modifier = Modifier.height(30.dp))
-                SocialMediaSection()
-
+                SocialMediaSection(
+                    onGoogleSignInClick = onSignInClick
+                )
 
                 Box(modifier = Modifier
                     .fillMaxHeight(fraction = 0.8f)
@@ -112,7 +111,9 @@ fun LoginScreen(navController: NavController) {
 }
 
 @Composable
-private fun SocialMediaSection() {
+private fun SocialMediaSection(
+    onGoogleSignInClick: () -> Unit
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = "Or continue with",
@@ -128,10 +129,10 @@ private fun SocialMediaSection() {
             SocialMediaLogIn(
                 icon = R.drawable.google,
                 text = "Google",
-                modifier = Modifier.weight(1f)
-            ) {
+                modifier = Modifier.weight(1f),
+                onSignInClick = onGoogleSignInClick
+            )
 
-            }
             Spacer(modifier = Modifier.width(20.dp))
             SocialMediaLogIn(
                 icon = R.drawable.facebook,
@@ -258,5 +259,5 @@ private fun TopSection() {
 @Composable
 fun PreviewLoginScreen() {
     val navController = rememberNavController()
-    LoginScreen(navController = navController)
+//    LoginScreen(navController = navController)
 }

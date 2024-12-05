@@ -32,14 +32,14 @@ fun SocialMediaLogIn(
     modifier: Modifier = Modifier,
     @DrawableRes icon: Int,
     text: String,
-    onClick: () -> Unit,
+    onSignInClick: () -> Unit,
 ) {
 
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(4.dp))
             .socialMedia()
-            .clickable { onClick() }
+            .clickable { onSignInClick() }
             .height(40.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
