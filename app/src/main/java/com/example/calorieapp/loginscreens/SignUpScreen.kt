@@ -2,7 +2,6 @@ package com.example.calorieapp.loginscreens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,16 +17,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navOptions
 import com.example.calorieapp.R
 import com.example.calorieapp.ui.theme.Roboto
 
@@ -60,53 +54,24 @@ fun SignUpScreen(navController: NavController) {
                     .fillMaxSize()
                     .padding(horizontal = 30.dp)
             ) {
-                SignUpSection(navController)
+                SignUpSection(navController, onSignUpClick = { /* Handle Sign Up Logic */ })
                 Spacer(modifier = Modifier.height(30.dp))
-                SocialMediaSection()
             }
         }
     }
 }
 
-@Composable
-private fun SocialMediaSection() {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = "Or continue with",
-            style = MaterialTheme.typography.labelMedium.copy(color = Color(0xFFFFFFFF))
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            SocialMediaLogIn(
-                icon = R.drawable.google,
-                text = "Google",
-                modifier = Modifier.weight(1f)
-            ) {
-
-            }
-            Spacer(modifier = Modifier.width(20.dp))
-            SocialMediaLogIn(
-                icon = R.drawable.facebook,
-                text = "Facebook",
-                modifier = Modifier.weight(1f)
-            ) {
-
-            }
-        }
-    }
-}
 
 @Composable
-private fun SignUpSection(navController: NavController) {
+private fun SignUpSection(
+    navController: NavController,
+    onSignUpClick: () -> Unit
+) {
     val nameState = remember { mutableStateOf("") }
     val surnameState = remember { mutableStateOf("") }
     val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
     val repeatPasswordState = remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) } // Track password visibility
 
     Column(modifier = Modifier.padding(horizontal = 30.dp)) {
         LoginTextField(
@@ -135,23 +100,6 @@ private fun SignUpSection(navController: NavController) {
             onValueChange = { passwordState.value = it },
         )
 
-//        LoginTextField(
-//            value = passwordState.value,
-//            onValueChange = { passwordState.value = it },
-//            label = "Password",
-//            trailing = {
-//                // Show eye icon based on password visibility state
-//                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-//                    Icon(
-//                        painter = painterResource(id = if (passwordVisible) R.drawable.visibility_24px else R.drawable.visibility_off_24px),
-//                        contentDescription = "Toggle password visibility",
-//                        modifier = Modifier.size(24.dp),
-//                        tint = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
-//                    )
-//                }
-//            },
-//            modifier = Modifier.fillMaxWidth()
-//        )
         Spacer(modifier = Modifier.height(15.dp))
 
         ConfirmPasswordSignUpTextField(
@@ -159,23 +107,7 @@ private fun SignUpSection(navController: NavController) {
             confirmValue = passwordState.value,
             onValueChange = { repeatPasswordState.value = it },
         )
-//        LoginTextField(
-//            value = repeatPasswordState.value,
-//            onValueChange = { repeatPasswordState.value = it },
-//            label = "Repeat Password",
-//            trailing = {
-//                // Show eye icon based on password visibility state
-//                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-//                    Icon(
-//                        painter = painterResource(id = if (passwordVisible) R.drawable.visibility_24px else R.drawable.visibility_off_24px),
-//                        contentDescription = "Toggle password visibility",
-//                        modifier = Modifier.size(24.dp),
-//                        tint = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
-//                    )
-//                }
-//            },
-//            modifier = Modifier.fillMaxWidth()
-//        )
+
         Spacer(modifier = Modifier.height(20.dp))
 
         // Sign-up button

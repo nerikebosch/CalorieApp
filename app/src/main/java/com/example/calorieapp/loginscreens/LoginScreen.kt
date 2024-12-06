@@ -49,27 +49,113 @@ import com.example.calorieapp.ui.theme.Roboto
 @Composable
 fun LoginScreen(
      navController: NavController,
-     onSignInClick: () -> Unit
+     onGoogleSignInClick: () -> Unit,
+     onEmailPasswordSignInClick: (String, String) -> Unit,
+     onFacebookSignInClick: () -> Unit,
+     //onForgotPasswordClick: () -> Unit,
 ) {
+    var emailState by remember { mutableStateOf("") }
+    var passwordState by remember { mutableStateOf("") }
     val uiColor = MaterialTheme.colorScheme.primary
+
 
     Surface {
         Column(modifier = Modifier.fillMaxSize()) {
+            // Show app name and logo
             TopSection()
-            Spacer(modifier = Modifier.height(26.dp))
 
+            Spacer(modifier = Modifier.height(26.dp))
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 30.dp)
             ) {
-                LoginSection()
+                // LoginSection()
+                Column (modifier = Modifier.padding(16.dp)
+                ){
+                    LoginTextField(
+                        value = emailState,
+                        onValueChange = { emailState = it },
+                        label = "Email",
+                        trailing = null,
+                    )
+                    Spacer(modifier = Modifier.height(15.dp))
+
+                    PasswordTextField(
+                        value = passwordState,
+                        onValueChange = { passwordState = it }
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Text(
+                            modifier = Modifier.clickable{ /*TODO*/}, // Forgot password function
+                            text = "Forgot password?",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            textDecoration = TextDecoration.Underline
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(40.dp),
+                        onClick = {
+                            onEmailPasswordSignInClick(emailState, passwordState)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(size = 4.dp)
+                    ) {
+                        Text(
+                            text = "Log in",
+                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium)
+                        )
+                    }
+
+                } // End of Login section
 
                 Spacer(modifier = Modifier.height(30.dp))
-                SocialMediaSection(
-                    onGoogleSignInClick = onSignInClick
-                )
 
+                // SOCIAL MEDIA LOGIN SECTION
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "Or continue with",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color(0xFF94A3B8),
+                        fontWeight = FontWeight.Normal
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        SocialMediaLogIn(
+                            icon = R.drawable.google,
+                            text = "Google",
+                            modifier = Modifier.weight(1f),
+                            onSignInClick = onGoogleSignInClick
+                        )
+
+                        Spacer(modifier = Modifier.width(20.dp))
+                        SocialMediaLogIn(
+                            icon = R.drawable.facebook,
+                            text = "Facebook",
+                            modifier = Modifier.weight(1f),
+                            onSignInClick = onFacebookSignInClick
+                        )
+
+                    }
+                } // END OF SOCIAL MEDIA LOGIN SECTION
+
+
+                // SIGN UP PROMPT SECTION
                 Box(modifier = Modifier
                     .fillMaxHeight(fraction = 0.8f)
                     .fillMaxWidth(),
@@ -110,95 +196,7 @@ fun LoginScreen(
     }
 }
 
-@Composable
-private fun SocialMediaSection(
-    onGoogleSignInClick: () -> Unit
-) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = "Or continue with",
-            style = MaterialTheme.typography.labelMedium,
-            color = Color(0xFF94A3B8),
-            fontWeight = FontWeight.Normal
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            SocialMediaLogIn(
-                icon = R.drawable.google,
-                text = "Google",
-                modifier = Modifier.weight(1f),
-                onSignInClick = onGoogleSignInClick
-            )
 
-            Spacer(modifier = Modifier.width(20.dp))
-            SocialMediaLogIn(
-                icon = R.drawable.facebook,
-                text = "Facebook",
-                modifier = Modifier.weight(1f)
-            ) {
-
-            }
-        }
-    }
-}
-
-@Composable
-private fun LoginSection() {
-    var emailState by remember { mutableStateOf("") }
-    var passwordState by remember { mutableStateOf("") }
-
-    Column (
-        modifier = Modifier.padding(16.dp)
-    ){
-        LoginTextField(
-            value = emailState,
-            onValueChange = { emailState = it },
-            label = "Email",
-            trailing = null,
-        )
-        Spacer(modifier = Modifier.height(15.dp))
-
-        PasswordTextField(
-            value = passwordState,
-            onValueChange = { passwordState = it }
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            Text(
-                modifier = Modifier.clickable{ /*TODO*/},
-                text = "Forgot password?",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary,
-                textDecoration = TextDecoration.Underline
-            )
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(40.dp),
-            onClick = { /* TODO: Handle Login Logic */ },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Color.White
-            ),
-            shape = RoundedCornerShape(size = 4.dp)
-        ) {
-            Text(
-                text = "Log in",
-                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium)
-            )
-        }
-
-    }
-}
 
 @Composable
 private fun TopSection() {
