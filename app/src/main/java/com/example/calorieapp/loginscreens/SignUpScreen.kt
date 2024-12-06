@@ -1,5 +1,7 @@
 package com.example.calorieapp.loginscreens
 
+//
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -21,8 +23,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +45,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.calorieapp.R
 import com.example.calorieapp.ui.theme.Roboto
 
-
 @Composable
 fun SignUpScreen(navController: NavController) {
     Surface {
@@ -54,7 +57,7 @@ fun SignUpScreen(navController: NavController) {
                     .fillMaxSize()
                     .padding(horizontal = 30.dp)
             ) {
-                SignUpSection(navController, onSignUpClick = { /* Handle Sign Up Logic */ })
+                //SignUpSection(navController, onSignUpClick = { /* Handle Sign Up Logic */ })
                 Spacer(modifier = Modifier.height(30.dp))
             }
         }
@@ -63,15 +66,20 @@ fun SignUpScreen(navController: NavController) {
 
 
 @Composable
-private fun SignUpSection(
+fun SignUpSection(
+    viewModel: SignUpViewModel = remember { SignUpViewModel() },
     navController: NavController,
-    onSignUpClick: () -> Unit
+    //onSignUpClick: () -> Unit
 ) {
     val nameState = remember { mutableStateOf("") }
     val surnameState = remember { mutableStateOf("") }
     val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
     val repeatPasswordState = remember { mutableStateOf("") }
+
+    // Error state
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.padding(horizontal = 30.dp)) {
         LoginTextField(
@@ -110,12 +118,33 @@ private fun SignUpSection(
 
         Spacer(modifier = Modifier.height(20.dp))
 
+
+        // Display error message if exists
+        errorMessage?.let { error ->
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+            Spacer(modifier = Modifier.height(15.dp))
+        }
+
+
         // Sign-up button
         Button(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(40.dp),
-            onClick = { /* Handle Sign Up Logic */ },
+            onClick = { /* Handle Sign Up Logic */
+                when {
+                    nameState.value.isBlank() -> errorMessage = "Name is required"
+                    surnameState.value.isBlank() -> errorMessage = "Surname is required"
+                    emailState.value.isBlank() -> errorMessage = "Email is required"
+                    passwordState.value.isBlank() -> errorMessage = "Password is required"
+                    passwordState.value != repeatPasswordState.value -> {
+                        errorMessage = "Passwords do not match"
+                    }
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Color.White
@@ -167,7 +196,7 @@ private fun SignUpSection(
 
 
 @Composable
-private fun TopSection() {
+fun TopSection() {
     val uiColor = MaterialTheme.colorScheme.primary
 
     Box(
