@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -26,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,12 +46,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.calorieapp.R
 import com.example.calorieapp.ui.theme.Roboto
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(navController: NavController) {
     Surface {
         Column(modifier = Modifier.fillMaxSize()) {
-            TopSection()
+            SignUpTopSection()
             Spacer(modifier = Modifier.height(10.dp))
 
             Column(
@@ -57,7 +60,7 @@ fun SignUpScreen(navController: NavController) {
                     .fillMaxSize()
                     .padding(horizontal = 30.dp)
             ) {
-                //SignUpSection(navController, onSignUpClick = { /* Handle Sign Up Logic */ })
+                SignUpSection(navController = navController)
                 Spacer(modifier = Modifier.height(30.dp))
             }
         }
@@ -71,15 +74,18 @@ fun SignUpSection(
     navController: NavController,
     //onSignUpClick: () -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val nameState = remember { mutableStateOf("") }
     val surnameState = remember { mutableStateOf("") }
     val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
-    val repeatPasswordState = remember { mutableStateOf("") }
 
     // Error state
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
+
+    // For email validation
+    var emailErrorMessage by remember { mutableStateOf<String?>(null) }
 
     Column(modifier = Modifier.padding(horizontal = 30.dp)) {
         LoginTextField(
@@ -98,8 +104,13 @@ fun SignUpSection(
 
         LoginTextField(
             value = emailState.value,
-            onValueChange = { emailState.value = it },
-            label = "Email"
+            onValueChange = {
+                emailState.value = it
+                emailErrorMessage = if (it.isNotEmpty() && !isValidEmail(it)) "Invalid email address" else null
+            },
+            label = "Email",
+            isError = emailErrorMessage != null,
+            errorMessage = emailErrorMessage
         )
         Spacer(modifier = Modifier.height(15.dp))
 
@@ -108,15 +119,13 @@ fun SignUpSection(
             onValueChange = { passwordState.value = it },
         )
 
-        Spacer(modifier = Modifier.height(15.dp))
+//        ConfirmPasswordSignUpTextField(
+//            value = repeatPasswordState.value,
+//            confirmValue = passwordState.value,
+//            onValueChange = { repeatPasswordState.value = it },
+//        )
 
-        ConfirmPasswordSignUpTextField(
-            value = repeatPasswordState.value,
-            confirmValue = passwordState.value,
-            onValueChange = { repeatPasswordState.value = it },
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
 
         // Display error message if exists
@@ -135,36 +144,68 @@ fun SignUpSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(40.dp),
-            onClick = { /* Handle Sign Up Logic */
+            onClick = {
                 when {
                     nameState.value.isBlank() -> errorMessage = "Name is required"
                     surnameState.value.isBlank() -> errorMessage = "Surname is required"
                     emailState.value.isBlank() -> errorMessage = "Email is required"
                     passwordState.value.isBlank() -> errorMessage = "Password is required"
-                    passwordState.value != repeatPasswordState.value -> {
-                        errorMessage = "Passwords do not match"
+
+                    else -> {
+
+                        errorMessage = null
+                        isLoading = true
+
+                        coroutineScope.launch {
+                            try {
+                                viewModel.name = nameState.value
+                                viewModel.surname = surnameState.value
+                                viewModel.email = emailState.value
+                                viewModel.password = passwordState.value
+
+                                viewModel.onSignUpClick()
+
+                                // If signup is successful, navigate to next screen
+                                navController.navigate("home")
+                            } catch (e: Exception) {
+                                // Handle signup errors
+                                errorMessage = e.localizedMessage ?: "Signup failed"
+                            } finally {
+                                isLoading = false
+                            }
+                        }
                     }
+                }
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Color.White
             ),
+            enabled = !isLoading,
             shape = RoundedCornerShape(size = 4.dp)
         ) {
-            Text(
-                text = "Sign Up",
-                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium)
-            )
+            if (isLoading) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier.size(20.dp)
+                )
+            } else {
+                Text(
+                    fontSize = 14.sp,
+                    text = "Sign Up",
+                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium)
+                )
+            }
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
-        // Sign Up Text (or navigate to the login screen)
+        // navigate to login if have account
         Text(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .clickable {
-                    // Navigate to the LoginScreen when the "Login" text is clicked
+                    // Navigate to the LoginScreen when the (all the line) "Login" text is clicked
                     navController.navigate("login")
                 },
             text = buildAnnotatedString {
@@ -196,7 +237,7 @@ fun SignUpSection(
 
 
 @Composable
-fun TopSection() {
+fun SignUpTopSection() {
     val uiColor = MaterialTheme.colorScheme.primary
 
     Box(
@@ -249,6 +290,12 @@ fun TopSection() {
     }
 }
 
+// function validate email
+// https://medium.com/@kalpeshdoru/10-kotlin-extension-functions-for-input-validation-5776c6139e8f#:~:text=isEmailValid()%20%2D%20This%20extension%20function,of%20a%20valid%20email%20address.
+private fun isValidEmail(email: String): Boolean {
+    val emailRegex = Regex("^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})")
+    return email.matches(emailRegex)
+}
 
 @Preview
 @Composable

@@ -3,10 +3,8 @@ package com.example.calorieapp.loginscreens
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -18,7 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -129,6 +127,7 @@ fun PasswordSignUpTextField(
     //var isPasswordError by remember { mutableState(true) }
     var isPasswordError by remember { mutableStateOf(true) }
 
+
     val uiColor = if (isSystemInDarkTheme()) Color.White else MaterialTheme.colorScheme.primary
 
     // OutlinedTextField for entering user password
@@ -183,32 +182,39 @@ fun PasswordSignUpTextField(
             ),
         )
         Spacer(modifier = Modifier.height(8.dp))
-        if (validPassword && !value.isEmpty()) {
+        Text(
+            text = stringResource(id = R.string.password_requirement),
+            style = MaterialTheme.typography.bodySmall,
+            color = uiColor,
+            fontSize = 12.sp)
+        // check for strong password
+        if (value.isNotEmpty()) {
             val strongPassword = isValidPassword(value)
-            if (strongPassword) {
-                onHasStrongPassword(true)
-            } else {
-                onHasStrongPassword(false)
-            }
+            onHasStrongPassword(strongPassword)
+
             Text(
                 modifier = Modifier.semantics { contentDescription = "StrengthPasswordMessage" },
                 text = buildAnnotatedString {
                     withStyle(
                         style = SpanStyle(
                             color = uiColor,
-                            fontSize = 10.sp,
+                            fontSize = 12.sp,
                         )
                     ) {
+
                         append(stringResource(id = R.string.password_level))
                         withStyle(
                             style = SpanStyle(
-                                color = if (strongPassword) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+                                fontSize = 13.sp,
+                                fontWeight = MaterialTheme.typography.labelLarge.fontWeight,
+                                color = if (strongPassword) /*MaterialTheme.colorScheme.primary*/Color(0xFF2B6A46) else MaterialTheme.colorScheme.error,
                             )
                         ) {
                             if (strongPassword) {
                                 append(stringResource(id = R.string.password_valid))
                             } else {
                                 append(stringResource(id = R.string.password_not_valid))
+
                             }
                         }
                     }
@@ -219,6 +225,7 @@ fun PasswordSignUpTextField(
     }
 }
 
+// Not in used
 @Composable
 fun ConfirmPasswordSignUpTextField(
     value: String,
@@ -346,6 +353,8 @@ private fun isValidPassword(password: String): Boolean {
     )
     return password.matches(strongPasswordRegex)
 }
+
+
 
 @Preview
 @Composable

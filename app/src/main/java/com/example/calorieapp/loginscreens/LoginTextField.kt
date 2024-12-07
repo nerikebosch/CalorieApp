@@ -3,33 +3,21 @@ package com.example.calorieapp.loginscreens
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.calorieapp.R
-import com.example.calorieapp.ui.theme.primaryDark
-import com.example.calorieapp.ui.theme.focusedTextFieldText
-import com.example.calorieapp.ui.theme.textFieldContainer
-import com.example.calorieapp.ui.theme.unfocusedTextFieldText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,6 +27,8 @@ fun LoginTextField(
     onValueChange: (String) -> Unit,
     label: String,
     trailing: @Composable (() -> Unit)? = null,
+    isError: Boolean = false,
+    errorMessage: String? = null,
 ) {
     val uiColor = if (isSystemInDarkTheme()) Color.White else MaterialTheme.colorScheme.primary
 
@@ -67,6 +57,7 @@ fun LoginTextField(
         modifier = modifier
             .fillMaxWidth()
             .height(64.dp),
+        isError = isError,
         colors = TextFieldDefaults.outlinedTextFieldColors(
             containerColor = Color.White,
             focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -84,5 +75,14 @@ fun LoginTextField(
             imeAction = ImeAction.Next
         )
     )
+        // Show error message below the text field if applicable
+        if (isError && errorMessage != null) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            )
+        }
 }
 

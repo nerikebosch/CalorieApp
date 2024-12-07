@@ -3,8 +3,10 @@ package com.example.calorieapp.loginscreens
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.example.calorieapp.firebase.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 
 class SignUpViewModel {
@@ -37,18 +39,25 @@ class SignUpViewModel {
             val firebaseUser = authResult.user ?: throw Exception("User creation failed")
 
             // Create user document in Firestore
-            val userDocument = hashMapOf(
-                "firstName" to name,
-                "lastName" to surname,
-                "email" to email,
-                "createdAt" to com.google.firebase.Timestamp.now()
-            )
+//            val userDocument = hashMapOf(
+//                "firstName" to name,
+//                "lastName" to surname,
+//                "email" to email,
+//                "createdAt" to com.google.firebase.Timestamp.now()
+//            )
 
+            val user = User(
+                id = firebaseUser.uid,
+                name = name,
+                surname = surname,
+                registeredUser = true,
+                email = email
+            )
             // Save additional user details to Firestore
             FirebaseFirestore.getInstance()
                 .collection("users")
-                .document(firebaseUser.uid)
-                .set(userDocument)
+                .document(user.id)
+                .set(user, SetOptions.merge())
                 .await()
 
             // Signup successful
