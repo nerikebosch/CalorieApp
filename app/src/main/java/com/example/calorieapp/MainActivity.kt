@@ -11,7 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calorieapp.auth.AuthManagerSetup
-import com.example.calorieapp.homescreen.HomeScreen
+import com.example.calorieapp.screens.homescreen.HomeScreen
 import com.example.calorieapp.loginscreens.LoginScreen
 import com.example.calorieapp.loginscreens.SignUpScreen
 import com.example.calorieapp.ui.theme.CalorieAppTheme

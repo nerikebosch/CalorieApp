@@ -1,4 +1,4 @@
-package com.example.calorieapp.homescreen
+package com.example.calorieapp.screens.homescreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

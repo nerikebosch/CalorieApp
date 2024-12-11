@@ -1,4 +1,4 @@
-package com.example.calorieapp.homescreen
+package com.example.calorieapp.screens.homescreen
 
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.TabPosition

@@ -1,4 +1,4 @@
-package com.example.calorieapp.homescreen
+package com.example.calorieapp.screens.homescreen
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
