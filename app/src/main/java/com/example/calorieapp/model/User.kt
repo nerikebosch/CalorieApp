@@ -1,4 +1,4 @@
-package com.example.calorieapp.firebase
+package com.example.calorieapp.model
 
 class User( val id: String="",
             val name: String="",

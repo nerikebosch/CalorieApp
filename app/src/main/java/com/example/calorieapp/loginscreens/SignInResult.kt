@@ -1,12 +1,10 @@
 package com.example.calorieapp.loginscreens
+import com.example.calorieapp.model.User
+
 
 data class SignInResult(
-    val data: UserData?,
+    val data: User?,
     val errorMessage: String?,
 )
 
-data class UserData(
-    val userId: String?,
-    val userName: String?,
-    val profilePictureUrl: String?,
-)
+
