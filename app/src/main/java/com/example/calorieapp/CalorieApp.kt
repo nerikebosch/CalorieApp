@@ -50,7 +50,7 @@ fun rememberAppState(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     navController: NavHostController = rememberNavController(),
     snackbarManager: SnackbarManager = SnackbarManager,
-    resources: Resources // = resources(),
+    resources: Resources, // = resources(),
     coroutineScope: CoroutineScope = rememberCoroutineScope()
 ) =
     remember(snackbarHostState, navController, snackbarManager, resources, coroutineScope) {
