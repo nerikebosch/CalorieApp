@@ -7,6 +7,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.firebase.firebase-perf")
     // Add the Crashlytics Gradle plugin
+    // Needed
     id("com.google.firebase.crashlytics")
 }
 
