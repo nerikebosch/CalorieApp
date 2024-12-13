@@ -58,14 +58,38 @@ fun LoginTextField(
             .fillMaxWidth()
             .height(64.dp),
         isError = isError,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            containerColor = Color.White,
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-            cursorColor = MaterialTheme.colorScheme.primary,
+        colors = TextFieldDefaults.colors(
+            // Text colors
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+            disabledTextColor = Color.Gray,
+
+            // Container colors
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            disabledContainerColor = Color.White,
+
+            // Border/Indicator colors
+            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+
+            // Label colors
             focusedLabelColor = MaterialTheme.colorScheme.primary,
-            unfocusedLabelColor = uiColor.copy(alpha = 0.8f)
+            unfocusedLabelColor = uiColor.copy(alpha = 0.8f),
+
+            // Cursor color
+            cursorColor = MaterialTheme.colorScheme.primary
         ),
+//        colors = TextFieldDefaults.colors(
+//            containerColor = Color.White,
+//            focusedContainerColor = Color.White,
+//            unfocusedContainerColor = Color.White,
+//            focusedBorderColor = MaterialTheme.colorScheme.primary,
+//            unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+//            cursorColor = MaterialTheme.colorScheme.primary,
+//            focusedLabelColor = MaterialTheme.colorScheme.primary,
+//            unfocusedLabelColor = uiColor.copy(alpha = 0.8f)
+//        ),
         shape = RoundedCornerShape(10.dp),
         textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
 
@@ -75,14 +99,48 @@ fun LoginTextField(
             imeAction = ImeAction.Next
         )
     )
-        // Show error message below the text field if applicable
-        if (isError && errorMessage != null) {
-            Text(
-                text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
-            )
-        }
+
+    // Show error message below the text field if applicable
+    if (isError && errorMessage != null) {
+        Text(
+            text = errorMessage,
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TestOutlinedTextField() {
+    val uiColor = if (isSystemInDarkTheme()) Color.White else MaterialTheme.colorScheme.primary
+    OutlinedTextField(
+        value = "Test",
+        onValueChange = {},
+        label = { Text("Label") },
+        colors = TextFieldDefaults.colors(
+            // Text colors
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+            disabledTextColor = Color.Gray,
+
+            // Container colors
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            disabledContainerColor = Color.White,
+
+            // Border/Indicator colors
+            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+
+            // Label colors
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = uiColor.copy(alpha = 0.8f),
+
+            // Cursor color
+            cursorColor = MaterialTheme.colorScheme.primary
+        ),
+    )
 }
 

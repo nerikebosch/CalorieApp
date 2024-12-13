@@ -1,13 +1,14 @@
 package com.example.calorieapp.model.service.impl
 
-import com.example.calorieapp.model.service.ConfigurationService
 import com.example.calorieapp.BuildConfig
+import com.example.calorieapp.model.service.ConfigurationService
 import com.google.firebase.Firebase
+import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.remoteconfig.get
 import com.google.firebase.remoteconfig.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
-import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 import com.example.calorieapp.R.xml as AppConfig
 
 class ConfigurationServiceImpl @Inject constructor() : ConfigurationService {
@@ -23,8 +24,18 @@ class ConfigurationServiceImpl @Inject constructor() : ConfigurationService {
         remoteConfig.setDefaultsAsync(AppConfig.remote_config_defaults)
     }
 
-    override suspend fun fetchConfiguration(): Boolean =
-        trace(FETCH_CONFIG_TRACE) { remoteConfig.fetchAndActivate().await() }
+    override suspend fun fetchConfiguration(): Boolean {
+        val trace = FirebasePerformance.getInstance().newTrace(FETCH_CONFIG_TRACE)
+        return try {
+            trace.start()
+            val result = remoteConfig.fetchAndActivate().await()
+            trace.stop()
+            result
+        } catch (e: Exception) {
+            trace.stop()
+            false
+        }
+    }
 
     override val isShowTaskEditButtonConfig: Boolean
         get() = remoteConfig[SHOW_TASK_EDIT_BUTTON_KEY].asBoolean()

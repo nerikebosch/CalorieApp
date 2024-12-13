@@ -59,13 +59,13 @@ fun InformationTextField(
             modifier = Modifier
                 .weight(1f)
                 .height(64.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = Color.White,
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+
                 cursorColor = MaterialTheme.colorScheme.primary,
                 focusedLabelColor = MaterialTheme.colorScheme.primary,
-                unfocusedLabelColor = uiColor.copy(alpha = 0.8f)
+                unfocusedLabelColor = uiColor.copy(alpha = 0.8f),
             ),
             isError = isError,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
@@ -117,10 +117,9 @@ fun InformationTextFieldGender(
             modifier = Modifier
                 .weight(1f)
                 .height(64.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = Color.White,
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
                 cursorColor = MaterialTheme.colorScheme.primary,
                 focusedLabelColor = MaterialTheme.colorScheme.primary,
                 unfocusedLabelColor = uiColor.copy(alpha = 0.8f)

@@ -6,14 +6,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import androidx.credentials.CredentialManager
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calorieapp.auth.AuthManagerSetup
-import com.example.calorieapp.screens.homescreen.HomeScreen
 import com.example.calorieapp.loginscreens.LoginScreen
 import com.example.calorieapp.loginscreens.SignUpScreen
+import com.example.calorieapp.screens.homescreen.HomeScreen
 import com.example.calorieapp.ui.theme.CalorieAppTheme
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -30,7 +29,7 @@ class MainActivity : ComponentActivity() {
 
         // Create AuthManager and GoogleSignInManager
         val authManagerSetup = AuthManagerSetup(auth, context = this)
-        val credentialManager = CredentialManager.create(this)
+        //val credentialManager = CredentialManager.create(this)
         val authManager = authManagerSetup.authManager
         val googleSignInManager = authManagerSetup.googleSignInManager
         val emailPasswordAuthManager = authManagerSetup.emailPasswordAuthManager
@@ -47,7 +46,7 @@ class MainActivity : ComponentActivity() {
                 // Set up NavHost to manage navigation
                 NavHost(
                     navController = navController,
-                    startDestination = startDestination,
+                    startDestination = "login",
                 ) {
                     composable("login") {
                         LoginScreen(
