@@ -24,5 +24,5 @@ fun TabRow(
     },
     divider: @Composable () -> Unit = @Composable { HorizontalDivider() },
     tabs: @Composable () -> Unit
-): Unit {
+) {
 }

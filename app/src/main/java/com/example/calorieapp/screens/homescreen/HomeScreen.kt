@@ -8,10 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -33,11 +31,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.calorieapp.R
-import com.example.calorieapp.model.User
-import com.google.firebase.auth.FirebaseUser
+import com.example.calorieapp.common.composable.ActionToolbar
+import com.example.calorieapp.common.ext.toolbarActions
+import com.example.calorieapp.R.string as AppText
+import com.example.calorieapp.R.drawable as AppIcon
+
 
 @Composable
 fun GradientProgressIndicator(
@@ -104,31 +105,39 @@ fun CalorieProgressIndicator(
 
 @Composable
 fun HomeScreen(
-    navController: NavController,
+    openScreen: (String) -> Unit,
     modifier: Modifier = Modifier.fillMaxSize(),
-    currentUser: FirebaseUser?,
-    onSignOutClick: () -> Unit
+    //currentUser: FirebaseUser?,
+    //onSignOutClick: () -> Unit
+    viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
-    val name: String = User().name
-    val navController = rememberNavController()
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    val data = viewModel.data.collectAsStateWithLifecycle(emptyList<String>())
 
-                Text(
-                    text = "Hello",
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally)
-                )
-
-
+//    Column(modifier = Modifier.padding(16.dp)) {
+//        currentUser?.let { user ->
+//            user.displayName?.let { firstName ->
+//                Text(
+//                    text = "Hello $firstName",
+//                    style = MaterialTheme.typography.headlineLarge,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .align(Alignment.CenterHorizontally)
+//                )
+//            }
+//        }
+    ActionToolbar(
+        title = AppText.tasks,
+        modifier = Modifier.toolbarActions(),
+        endActionIcon = AppIcon.ic_settings,
+        endAction = { viewModel.onSettingsClick(openScreen) }
+    )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         ElevatedCardCalorieTracker(
             title = "Today's Calories",
-            currentCalories = 1500, // Replace with actual data
+            currentCalories = 1200, // Replace with actual data
             goalCalories = 2000,  // Replace with actual data
             modifier = Modifier.fillMaxWidth()
         )
@@ -139,15 +148,7 @@ fun HomeScreen(
             ElevatedCardHomeScreen(
                 title = "Weight",
                 modifier = Modifier.weight(1f) // Each card takes up equal space
-            ){
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ){
-
-                }
-            }
+            )
             Spacer(modifier = Modifier.width(16.dp))
             ElevatedCardHomeScreen(
                 title = "Water balance",
@@ -162,7 +163,11 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     // Display the vector image
-
+                    Icon(
+                        painter = waterGlassImage,
+                        contentDescription = "Water Glass",
+                        modifier = Modifier.size(48.dp) // Adjust size as needed
+                    )
                     Spacer(modifier = Modifier.width(8.dp)) // Space between icon and text
                     // Optionally, add text or other components here
                     Text(
@@ -178,87 +183,20 @@ fun HomeScreen(
         ElevatedCardHomeScreen(
             modifier = Modifier.fillMaxWidth(),
             title = "Breakfast"
-        ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    Text(
-                        modifier = Modifier.padding(15.dp),
-                        text = "750 calories",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Spacer(modifier = Modifier.height(15.dp))
+        )
 
-                    Row() {
-                        Spacer(modifier = Modifier.width(15.dp))
-                        Column() {
-                            Text(
-                                text = "Proteins",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Text(
-                                text = "150",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(50.dp))
-                        Column() {
-
-                            Text(
-                                text = "Carbs",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Text(
-                                text = "150",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(50.dp))
-                        Column(){
-
-                            Text(
-                                text = "Fats",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Text(
-                                text = "150",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(50.dp))
-                        Column() {
-                            Text(
-                                text = "RDC",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Text(
-                                text = "150",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                    }
-
-
-
-
-
-                }
-
-
-        }
-
-
-        Button(onClick = { onSignOutClick() }) {
-            Text(
-                text = "Sign out",
-            )
-        }
+//        Button(onClick = { onSignOutClick() }) {
+//            Text(
+//                text = "Sign out",
+//            )
+//        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         TabRowExample()
     }
-}
+
+
 
 
 @Composable
@@ -282,8 +220,5 @@ fun TabRowExample() {
 @Preview(showBackground = true)
 @Composable
 fun TabRowExamplePreview() {
-    val navController = rememberNavController()
-    HomeScreen(navController = navController, currentUser = null, onSignOutClick = {},
 
-        )
 }

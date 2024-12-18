@@ -1,8 +1,12 @@
 package com.example.calorieapp.model.service.impl
 
+import android.R.attr.password
 import com.example.calorieapp.model.User
 import com.example.calorieapp.model.service.AccountService
+import com.example.calorieapp.model.service.trace
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -39,11 +43,11 @@ class AccountServiceImpl @Inject constructor(private val auth: FirebaseAuth) : A
         auth.signInAnonymously().await()
     }
 
-//    override suspend fun linkAccount(email: String, password: String): Unit =
-//        trace(LINK_ACCOUNT_TRACE) {
-//            val credential = EmailAuthProvider.getCredential(email, password)
-//            auth.currentUser!!.linkWithCredential(credential).await()
-//        }
+    override suspend fun linkAccount(email: String, password: String): Unit =
+        trace(LINK_ACCOUNT_TRACE) {
+            val credential = EmailAuthProvider.getCredential(email, password)
+            auth.currentUser!!.linkWithCredential(credential).await()
+        }
 //
 //    override suspend fun deleteAccount() {
 //        auth.currentUser!!.delete().await()
@@ -58,6 +62,12 @@ class AccountServiceImpl @Inject constructor(private val auth: FirebaseAuth) : A
         // Sign the user back in anonymously.
         createAnonymousAccount()
     }
+
+    override suspend fun signInWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential).await()
+    }
+
 
     companion object {
         private const val LINK_ACCOUNT_TRACE = "linkAccount"

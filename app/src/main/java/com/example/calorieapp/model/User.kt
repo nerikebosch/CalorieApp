@@ -5,5 +5,4 @@ class User( val id: String="",
             val surname: String="",
             val registeredUser: Boolean = false,
             val email: String="",
-
 )

@@ -33,7 +33,7 @@ fun LoginTextField(
     val uiColor = if (isSystemInDarkTheme()) Color.White else MaterialTheme.colorScheme.primary
 
     // Adjust the icon tint for visibility in both light and dark themes
-    val iconTint = if (isSystemInDarkTheme()) {
+    if (isSystemInDarkTheme()) {
         MaterialTheme.colorScheme.onPrimary // Dark mode: use a light icon color
     } else {
         MaterialTheme.colorScheme.onSurface // Light mode: use a dark icon color
@@ -80,16 +80,6 @@ fun LoginTextField(
             // Cursor color
             cursorColor = MaterialTheme.colorScheme.primary
         ),
-//        colors = TextFieldDefaults.colors(
-//            containerColor = Color.White,
-//            focusedContainerColor = Color.White,
-//            unfocusedContainerColor = Color.White,
-//            focusedBorderColor = MaterialTheme.colorScheme.primary,
-//            unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-//            cursorColor = MaterialTheme.colorScheme.primary,
-//            focusedLabelColor = MaterialTheme.colorScheme.primary,
-//            unfocusedLabelColor = uiColor.copy(alpha = 0.8f)
-//        ),
         shape = RoundedCornerShape(10.dp),
         textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
 

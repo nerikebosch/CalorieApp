@@ -6,6 +6,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
     id("com.google.firebase.firebase-perf")
+    id("dagger.hilt.android.plugin")
     // Add the Crashlytics Gradle plugin
     // Needed
     id("com.google.firebase.crashlytics")
@@ -49,6 +50,13 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.15"
     }
+    kapt {
+        javacOptions {
+            // These options are normally set automatically
+            option("-source", "8")
+            option("-target", "8")
+        }
+    }
 }
 
 dependencies {
@@ -88,9 +96,12 @@ dependencies {
     implementation("com.google.firebase:firebase-config")
     //implementation("com.google.firebase:firebase-analytics")
 
-    implementation("com.google.dagger:hilt-android:2.53")
-    kapt("com.google.dagger:hilt-compiler:2.53")
-
+    implementation("com.google.dagger:hilt-android:2.53.1")
+    kapt("com.google.dagger:hilt-compiler:2.53.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    kapt("androidx.hilt:hilt-compiler:1.2.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
     // Authentication with Credential Manager
     //implementation("com.google.android.gms:play-services-auth-api-credential:21.2.0")
     implementation("com.google.android.gms:play-services-auth:21.3.0")
