@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -14,6 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -24,6 +27,7 @@ import com.example.calorieapp.screens.homescreen.HomeScreen
 import com.example.calorieapp.screens.login.LoginScreen
 import com.example.calorieapp.screens.settings.SettingsScreen
 import com.example.calorieapp.screens.sign_up.SignUpScreen
+import com.example.calorieapp.screens.splash.SplashScreen
 import com.example.calorieapp.ui.theme.CalorieAppTheme
 import kotlinx.coroutines.CoroutineScope
 
@@ -33,12 +37,22 @@ fun CalorieApp() {
     CalorieAppTheme{
         Surface(color = MaterialTheme.colorScheme.background) {
             val appState = rememberAppState()
-
-            Scaffold( /*TODO snackbar*/ )
-            { innerPaddingModifier ->
+            val snackbarHostState = appState.snackbarHostState
+                //
+            Scaffold(
+                snackbarHost = {
+                    SnackbarHost(
+                        hostState = snackbarHostState,
+                        modifier = Modifier.padding(9.dp),
+                        snackbar = { snackbarData ->
+                            Snackbar(snackbarData, contentColor = MaterialTheme.colorScheme.onPrimary)
+                        }
+                    )
+                }
+            ) { innerPaddingModifier ->
                 NavHost(
                     navController = appState.navController,
-                    startDestination = "login",
+                    startDestination = LOGIN_SCREEN,
                     modifier = Modifier.padding(innerPaddingModifier)
                 ) {
                     calorieGraph(appState)
@@ -90,5 +104,9 @@ fun NavGraphBuilder.calorieGraph(appState: CalorieAppState) {
             restartApp = { route -> appState.clearAndNavigate(route) },
             //openScreen = { route -> appState.navigate(route) }
         )
+    }
+
+    composable(SPLASH_SCREEN) {
+        SplashScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
     }
 }

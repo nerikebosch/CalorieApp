@@ -16,7 +16,7 @@ android {
     defaultConfig {
         applicationId = "com.example.calorieapp"
         minSdk = 29
-        targetSdk = 35
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -79,7 +79,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
-    //implementation(platform(libs.firebase.bom))
+
     implementation(libs.firebase.analytics)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -88,38 +88,34 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(libs.androidx.material.icons.extended)
+    //implementation(libs.androidx.material.icons.extended)
     implementation(libs.material.icons.extended)
 
     implementation(platform(libs.firebase.bom))
-    implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-config-ktx")
     implementation("com.google.firebase:firebase-perf-ktx")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
 
     implementation("com.google.dagger:hilt-android:2.53.1")
     kapt("com.google.dagger:hilt-compiler:2.53.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    kapt("androidx.hilt:hilt-compiler:1.2.0")
+    //kapt("androidx.hilt:hilt-compiler:1.2.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
     implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
-    // Authentication with Credential Manager
-    //implementation("com.google.android.gms:play-services-auth-api-credential:21.2.0")
-    implementation("com.google.android.gms:play-services-auth:21.3.0")
 
+
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
     implementation("androidx.credentials:credentials:1.5.0-beta01")
     implementation("androidx.credentials:credentials-play-services-auth:1.5.0-beta01")
 
+
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
-
-
 }
 
 kapt {
