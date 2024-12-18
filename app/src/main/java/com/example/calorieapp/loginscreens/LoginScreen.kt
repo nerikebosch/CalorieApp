@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -46,7 +45,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.calorieapp.R
 import com.example.calorieapp.ui.theme.Roboto
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun LoginScreen(
      navController: NavController,
@@ -256,10 +255,7 @@ private fun TopSection() {
 
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
-    LoginScreen(
-        navController = rememberNavController(),
-        onGoogleSignInClick = {},
-        onEmailPasswordSignInClick = { _, _ -> },
-        onFacebookSignInClick = {})
+fun PreviewLoginScreen() {
+    val navController = rememberNavController()
+//    LoginScreen(navController = navController)
 }

@@ -9,7 +9,7 @@
 
     <string name="login">Login</string>
     <string name="signup">Sign Up</string>
-    <string name="password_level">"Password Level: "</string>
+    <string name="password_level">Password Level: </string>
     <string name="password_requirement">Must be at least 8 characters, contain at least 1 uppercase letter, 1 number and 1 special character</string>
     <string name="password_valid">Strong password</string>
     <string name="password_not_valid">Weak password</string>

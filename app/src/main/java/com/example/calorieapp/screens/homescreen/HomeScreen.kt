@@ -113,23 +113,22 @@ fun HomeScreen(
     val navController = rememberNavController()
 
     Column(modifier = Modifier.padding(16.dp)) {
-        currentUser?.let { user ->
-            user.displayName?.let { firstName ->
+
                 Text(
-                    text = "Hello $firstName",
+                    text = "Hello",
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally)
                 )
-            }
-        }
+
+
 
         Spacer(modifier = Modifier.height(16.dp))
 
         ElevatedCardCalorieTracker(
             title = "Today's Calories",
-            currentCalories = 1200, // Replace with actual data
+            currentCalories = 1500, // Replace with actual data
             goalCalories = 2000,  // Replace with actual data
             modifier = Modifier.fillMaxWidth()
         )
@@ -140,7 +139,15 @@ fun HomeScreen(
             ElevatedCardHomeScreen(
                 title = "Weight",
                 modifier = Modifier.weight(1f) // Each card takes up equal space
-            )
+            ){
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ){
+
+                }
+            }
             Spacer(modifier = Modifier.width(16.dp))
             ElevatedCardHomeScreen(
                 title = "Water balance",
@@ -155,11 +162,7 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     // Display the vector image
-                    Icon(
-                        painter = waterGlassImage,
-                        contentDescription = "Water Glass",
-                        modifier = Modifier.size(48.dp) // Adjust size as needed
-                    )
+
                     Spacer(modifier = Modifier.width(8.dp)) // Space between icon and text
                     // Optionally, add text or other components here
                     Text(
@@ -175,7 +178,75 @@ fun HomeScreen(
         ElevatedCardHomeScreen(
             modifier = Modifier.fillMaxWidth(),
             title = "Breakfast"
-        )
+        ) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    Text(
+                        modifier = Modifier.padding(15.dp),
+                        text = "750 calories",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Spacer(modifier = Modifier.height(15.dp))
+
+                    Row() {
+                        Spacer(modifier = Modifier.width(15.dp))
+                        Column() {
+                            Text(
+                                text = "Proteins",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "150",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(50.dp))
+                        Column() {
+
+                            Text(
+                                text = "Carbs",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "150",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(50.dp))
+                        Column(){
+
+                            Text(
+                                text = "Fats",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "150",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(50.dp))
+                        Column() {
+                            Text(
+                                text = "RDC",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "150",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+
+
+
+
+
+                }
+
+
+        }
+
 
         Button(onClick = { onSignOutClick() }) {
             Text(
