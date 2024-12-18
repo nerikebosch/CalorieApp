@@ -38,15 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.calorieapp.R
 
-/**
- * Jetpack Compose component for a password text field with validation and visibility toggle.
- *
- * @param password The current value of the password text field.
- * @param onPasswordChange The callback to be invoked when the password value changes.
- * @param errorColor The color to be used for displaying error messages.
- * @param textFieldLabel The label for the password text field.
- * @param errorText The error message to be displayed when the password is not valid.
- */
+
 /*
 https://medium.com/@munbonecci/how-to-add-a-password-textfield-component-with-toggle-icon-in-jetpack-compose-46652d771833
  */
@@ -60,7 +52,6 @@ fun PasswordTextField(
 ) {
     // State variables to manage password visibility and validity
     var showPassword by remember { mutableStateOf(false) }
-    var isPasswordError by remember { mutableStateOf(true) }
 
     val uiColor = if (isSystemInDarkTheme()) Color.White else MaterialTheme.colorScheme.primary
 
