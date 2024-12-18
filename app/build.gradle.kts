@@ -2,13 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("org.jetbrains.kotlin.kapt") 
     id("com.google.gms.google-services")
     id("com.google.dagger.hilt.android")
-    id("kotlin-kapt")
     id("com.google.firebase.firebase-perf")
-    id("dagger.hilt.android.plugin")
-    // Add the Crashlytics Gradle plugin
-    // Needed
     id("com.google.firebase.crashlytics")
 }
 
@@ -18,8 +15,8 @@ android {
 
     defaultConfig {
         applicationId = "com.example.calorieapp"
-        minSdk = 34
-        targetSdk = 34
+        minSdk = 29
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -50,6 +47,11 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.15"
     }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
     kapt {
         javacOptions {
             // These options are normally set automatically
@@ -57,6 +59,7 @@ android {
             option("-target", "8")
         }
     }
+
 }
 
 dependencies {
@@ -86,21 +89,23 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.material.icons.extended)
+    implementation(libs.material.icons.extended)
+
+    implementation(platform(libs.firebase.bom))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-config-ktx")
+    implementation("com.google.firebase:firebase-perf-ktx")
 
-    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
-    implementation("com.google.firebase:firebase-crashlytics")
-    implementation("com.google.firebase:firebase-analytics")
-
-    implementation("com.google.firebase:firebase-config")
-    //implementation("com.google.firebase:firebase-analytics")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
 
     implementation("com.google.dagger:hilt-android:2.53.1")
     kapt("com.google.dagger:hilt-compiler:2.53.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     kapt("androidx.hilt:hilt-compiler:1.2.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
     implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
     // Authentication with Credential Manager
     //implementation("com.google.android.gms:play-services-auth-api-credential:21.2.0")
@@ -114,7 +119,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
 
-    implementation("com.google.firebase:firebase-perf-ktx")
+
 }
 
 kapt {

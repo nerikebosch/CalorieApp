@@ -74,10 +74,10 @@ class SignUpViewModel @Inject constructor(
 
             val user = User(
                 id = firebaseUser.uid,
-                name = name,
-                surname = surname,
+                name = uiState.value.name,
+                surname = uiState.value.surname,
                 registeredUser = true,
-                email = email
+                email = uiState.value.email
             )
 
             FirebaseFirestore.getInstance()

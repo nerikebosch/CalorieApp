@@ -1,7 +1,6 @@
 package com.example.calorieapp.screens.login
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.viewModelScope
 import com.example.calorieapp.LOGIN_SCREEN
 import com.example.calorieapp.SETTINGS_SCREEN
 import com.example.calorieapp.auth.GoogleSignInManager
@@ -19,7 +18,7 @@ import com.example.calorieapp.R.string as AppText
 class LoginViewModel @Inject constructor(
     private val accountService: AccountService,
     private val googleSignInManager: GoogleSignInManager,
-    private val logService: LogService
+    logService: LogService
 ) : CalorieAppViewModel(logService) {
 
     var uiState = mutableStateOf(LoginUiState())
@@ -73,7 +72,7 @@ class LoginViewModel @Inject constructor(
     ) {
         launchCatching {
             googleSignInManager.initiateGoogleSignIn(
-                scope = viewModelScope,
+                //scope = viewModelScope,
                 onSuccess = {
                     // Navigate to settings screen after successful Google Sign-In
                     openAndPopUp(SETTINGS_SCREEN, LOGIN_SCREEN)

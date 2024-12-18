@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 * getTask to get the task that the user has picked the date to do/ to finish
 */
 interface StorageService {
-    val data: Flow<UserData>
+    val data: Flow<List<UserData>>
 
     suspend fun save(userData: UserData)
     suspend fun getHeight(height: Double): Double?

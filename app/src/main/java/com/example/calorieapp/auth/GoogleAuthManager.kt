@@ -10,8 +10,6 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class GoogleSignInManager(
@@ -30,7 +28,7 @@ class GoogleSignInManager(
      * @param onError Callback for sign-in errors
      */
     suspend fun initiateGoogleSignIn(
-        scope: CoroutineScope,
+        //scope: CoroutineScope,
         onSuccess: () -> Unit,
         onError: (Exception) -> Unit
     ) {
@@ -94,10 +92,6 @@ class GoogleSignInManager(
             // Check if this is a new user
             val isNewUser = authResult.additionalUserInfo?.isNewUser == true
 
-            // Perform any additional actions for new users
-            if (isNewUser) {
-                handleNewUserSignUp(authResult.user)
-            }
 
             // Invoke success callback
             onSuccess()
@@ -108,47 +102,6 @@ class GoogleSignInManager(
         }
     }
 
-    /**
-     * Handles additional setup for new users
-     * @param user Newly signed-up user
-     */
-    private suspend fun handleNewUserSignUp(user: com.google.firebase.auth.FirebaseUser?) {
-        user?.let {
-            // Optional: Create user profile in Firestore
-            // Optional: Send welcome email
-            // Optional: Log new user registration
-            Log.d("GoogleSignInManager", "New user signed up: ${it.uid}")
-        }
-    }
-
-    /**
-     * Signs out the current user
-     * @param scope CoroutineScope for launching coroutines
-     * @param onSignOutComplete Callback for sign-out completion
-     */
-    suspend fun signOut(
-        scope: CoroutineScope,
-        onSignOutComplete: () -> Unit
-    ) {
-        try {
-            // Sign out from Firebase
-            auth.signOut()
-
-            // Clear credential state
-            scope.launch {
-                credentialManager.clearCredentialState(
-                    androidx.credentials.ClearCredentialStateRequest()
-                )
-            }
-
-            // Invoke sign-out completion callback
-            onSignOutComplete()
-
-        } catch (e: Exception) {
-            Log.e("GoogleSignInManager", "Sign-out error", e)
-            // Optionally handle sign-out errors
-        }
-    }
 
     /**
      * Retrieves additional user information after sign-in
