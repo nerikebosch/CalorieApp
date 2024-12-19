@@ -9,8 +9,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -29,7 +32,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.calorieapp.loginscreens.PasswordVisibilityToggleIcon
 import com.example.calorieapp.R.string as AppText
 
 @Composable
@@ -282,4 +284,24 @@ fun LabelTextField(
         )
     )
 
+}
+
+
+@Composable
+fun PasswordVisibilityToggleIcon(
+    showPassword: Boolean,
+    onTogglePasswordVisibility: () -> Unit
+) {
+    val uiColor = if (isSystemInDarkTheme()) Color.White else MaterialTheme.colorScheme.primary
+    // Determine the icon based on password visibility
+    val image = if (showPassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+    val contentDescription = if (showPassword) "Hide password icon" else "Show password icon"
+
+    // IconButton to toggle password visibility
+    IconButton(onClick = onTogglePasswordVisibility) {
+        Icon(imageVector = image,
+            contentDescription = contentDescription,
+            tint = uiColor
+        )
+    }
 }
