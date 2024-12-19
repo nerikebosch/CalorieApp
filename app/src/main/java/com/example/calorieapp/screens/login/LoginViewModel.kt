@@ -89,6 +89,6 @@ class LoginViewModel @Inject constructor(
     fun onFacebookSignInClick() {
         // Placeholder for Facebook sign-in implementation
         // You'll need to implement this method similarly to Google Sign-In
-        //SnackbarManager.showMessage(AppText.feature_not_implemented)
+        SnackbarManager.showMessage(AppText.generic_error)
     }
 }
