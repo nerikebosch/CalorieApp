@@ -88,7 +88,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    //implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.material.icons.extended)
     implementation(libs.material.icons.extended)
 
     implementation(platform(libs.firebase.bom))
@@ -120,4 +120,5 @@ dependencies {
 
 kapt {
     correctErrorTypes = true
+    useBuildCache = true // Ensure faster builds by caching
 }
