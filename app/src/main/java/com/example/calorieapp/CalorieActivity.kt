@@ -8,7 +8,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 @ExperimentalMaterial3Api()
-//class CalorieActivity : ComponentActivity() {
 class CalorieActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
