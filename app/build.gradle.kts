@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "com.example.calorieapp"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.calorieapp"
@@ -34,11 +34,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -55,15 +55,15 @@ android {
     kapt {
         javacOptions {
             // These options are normally set automatically
-            option("-source", "8")
-            option("-target", "8")
+            option("-source", "17")
+            option("-target", "17")
         }
     }
 
 }
 
 dependencies {
-    //implementation("androidx.compose.material3:material3:1.4.0-alpha04")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -71,8 +71,8 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.firebase.firestore.ktx)
+
+    implementation(libs.firebase.firestore)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
@@ -80,7 +80,10 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
 
-    implementation(libs.firebase.analytics)
+    implementation("androidx.compose.material3:material3:1.3.1")
+    implementation("androidx.compose.material3:material3-window-size-class:1.3.1")
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.4.0-alpha05")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -89,33 +92,29 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.material.icons.extended)
-    implementation(libs.material.icons.extended)
 
     implementation(platform(libs.firebase.bom))
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-crashlytics-ktx")
-    implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-config-ktx")
-    implementation("com.google.firebase:firebase-perf-ktx")
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.config)
+    implementation(libs.firebase.perf)
 
 
-    implementation("com.google.dagger:hilt-android:2.53.1")
-    kapt("com.google.dagger:hilt-compiler:2.53.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    //kapt("androidx.hilt:hilt-compiler:1.2.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
-    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
 
-    implementation("com.google.android.gms:play-services-auth:21.3.0")
-    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
-    implementation("androidx.credentials:credentials:1.5.0-beta01")
-    implementation("androidx.credentials:credentials-play-services-auth:1.5.0-beta01")
 
+    implementation(libs.play.services.auth)
+    implementation(libs.googleid)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.play.services)
 }
 
 kapt {

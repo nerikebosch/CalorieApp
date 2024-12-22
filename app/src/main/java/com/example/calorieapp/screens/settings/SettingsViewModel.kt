@@ -1,9 +1,9 @@
 package com.example.calorieapp.screens.settings
 
 
+import com.example.calorieapp.HOME_SCREEN
 import com.example.calorieapp.LOGIN_SCREEN
 import com.example.calorieapp.SIGN_UP_SCREEN
-import com.example.calorieapp.SPLASH_SCREEN
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LogService
 import com.example.calorieapp.model.service.StorageService
@@ -27,7 +27,7 @@ class SettingsViewModel @Inject constructor(
     fun onSignOutClick(restartApp: (String) -> Unit) {
         launchCatching {
             accountService.signOut()
-            restartApp(SPLASH_SCREEN)
+            restartApp(HOME_SCREEN   )
         }
     }
 

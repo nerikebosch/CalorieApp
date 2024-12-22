@@ -1,6 +1,5 @@
 package com.example.calorieapp.common.composable
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -9,15 +8,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+
 
 @ExperimentalMaterial3Api
 @Composable
 fun DangerousCardEditor(
     @StringRes title: Int,
-    @DrawableRes icon: Int,
+    //@DrawableRes icon: Int,
+    icon: ImageVector,
     content: String,
     modifier: Modifier,
     onEditClick: () -> Unit
@@ -29,7 +30,8 @@ fun DangerousCardEditor(
 @Composable
 fun RegularCardEditor(
     @StringRes title: Int,
-    @DrawableRes icon: Int,
+    //@DrawableRes icon: Int,
+    icon: ImageVector,
     content: String,
     modifier: Modifier,
     onEditClick: () -> Unit
@@ -41,7 +43,8 @@ fun RegularCardEditor(
 @Composable
 private fun CardEditor(
     @StringRes title: Int,
-    @DrawableRes icon: Int,
+    //@DrawableRes icon: Int,
+    icon: ImageVector,
     content: String,
     onEditClick: () -> Unit,
     highlightColor: Color,
@@ -68,7 +71,10 @@ private fun CardEditor(
                 )
             }
 
-            Icon(painter = painterResource(icon), contentDescription = "Icon", tint = highlightColor)
+            Icon(
+                imageVector = icon,
+                contentDescription = "Icon",
+                tint = highlightColor)
         }
     }
 }

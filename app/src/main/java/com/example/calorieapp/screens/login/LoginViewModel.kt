@@ -1,6 +1,7 @@
 package com.example.calorieapp.screens.login
 
 import androidx.compose.runtime.mutableStateOf
+import com.example.calorieapp.HOME_SCREEN
 import com.example.calorieapp.LOGIN_SCREEN
 import com.example.calorieapp.SETTINGS_SCREEN
 import com.example.calorieapp.auth.GoogleSignInManager
@@ -50,8 +51,8 @@ class LoginViewModel @Inject constructor(
 
         launchCatching {
             accountService.authenticate(email, password)
-            //openAndPopUp(HOME_SCREEN, LOGIN_SCREEN)
-            openAndPopUp(SETTINGS_SCREEN, LOGIN_SCREEN)
+            openAndPopUp(HOME_SCREEN, LOGIN_SCREEN)
+            //openAndPopUp(SETTINGS_SCREEN, LOGIN_SCREEN)
         }
     }
 

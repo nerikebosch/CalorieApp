@@ -15,6 +15,9 @@ import com.example.calorieapp.common.composable.*
 import com.example.calorieapp.common.ext.*
 import com.example.calorieapp.R.drawable as AppIcon
 import com.example.calorieapp.R.string as AppText
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
 
 @ExperimentalMaterial3Api
 @Composable
@@ -55,7 +58,7 @@ private fun SignOutCard(signOut: () -> Unit) {
 
     RegularCardEditor(
         AppText.sign_out,
-        AppIcon.ic_exit,
+        Icons.Filled.Settings,
         "",
         Modifier.card()) {
         showWarningDialog = true
