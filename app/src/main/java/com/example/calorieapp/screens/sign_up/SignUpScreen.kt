@@ -52,8 +52,9 @@ fun SignUpScreen(
     val uiState by viewModel.uiState
     val fieldModifier = Modifier.fieldModifier()
 
-    BasicToolbar(AppText.create_account)
+    //BasicToolbar(AppText.create_account)
     SignUpTopSection()
+
     Column(
         modifier = modifier.fillMaxWidth().fillMaxHeight().verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
