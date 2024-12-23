@@ -61,7 +61,7 @@ fun DropdownSelector(
     ) {
         TextField(
             modifier = Modifier
-                .menuAnchor()
+                //.menuAnchor()
                 .fillMaxWidth(),
             readOnly = true,
             value = selection,

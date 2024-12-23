@@ -17,7 +17,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,8 +36,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.calorieapp.R
 import com.example.calorieapp.common.composable.ActionToolbar
 import com.example.calorieapp.common.ext.toolbarActions
-import com.example.calorieapp.R.string as AppText
 import com.example.calorieapp.R.drawable as AppIcon
+import com.example.calorieapp.R.string as AppText
 
 
 @Composable
@@ -201,7 +201,7 @@ fun HomeScreen(
 
 @Composable
 fun TabRowExample() {
-    var state by remember { mutableStateOf(0) }
+    var state by remember { mutableIntStateOf(0) }
     val titles = listOf("Recipes", "Add data", "Statistics")
 
     Column {

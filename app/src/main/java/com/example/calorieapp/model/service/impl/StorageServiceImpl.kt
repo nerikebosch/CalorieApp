@@ -5,8 +5,9 @@ import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.StorageService
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.snapshots
-import com.google.firebase.firestore.ktx.toObjects
+import com.google.firebase.firestore.snapshots
+import com.google.firebase.firestore.toObjects
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -18,12 +19,14 @@ class StorageServiceImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: AccountService
 ) : StorageService {
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override val data: Flow<List<UserData>>
-        get() =
-            auth.currentUser.flatMapLatest { user ->
-                currentCollection(user.id).snapshots().map { snapshot -> snapshot.toObjects() }
+        get() = auth.currentUser.flatMapLatest { user ->
+            currentCollection(user.id).snapshots().map { snapshot ->
+                snapshot.toObjects<UserData>() // Use KTX toObjects()
             }
+        }
 
     override suspend fun save(userData: UserData) {
         TODO("Not yet implemented")

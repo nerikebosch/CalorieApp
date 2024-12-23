@@ -5,8 +5,6 @@ import androidx.credentials.CredentialManager
 import com.example.calorieapp.R
 import com.example.calorieapp.auth.GoogleSignInManager
 import com.example.calorieapp.model.service.AccountService
-import com.example.calorieapp.model.service.impl.AccountServiceImpl
-import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,12 +25,6 @@ object AuthModule {
         return GoogleSignInManager(context, accountService, credentialManager, webClientId)
     }
 
-    @Provides
-    fun provideAccountService(auth: FirebaseAuth): AccountService =
-        AccountServiceImpl(auth)
-
-    @Provides
-    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
     @Provides
     fun provideCredentialManager(@ApplicationContext context: Context): CredentialManager =

@@ -34,9 +34,10 @@ class GoogleSignInManager(
     ) {
         try {
             // Configure Google Sign-In options
-            val googleIdOption = GetGoogleIdOption.Builder()
-                .setFilterByAuthorizedAccounts(false)
+            val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(true)
                 .setServerClientId(webClientId)
+                .setAutoSelectEnabled(true)
                 .build()
 
             // Create credential request
@@ -50,15 +51,24 @@ class GoogleSignInManager(
                 context = context
             )
 
-            val googleIdTokenCredential = GoogleIdTokenCredential
-                .createFrom((result.credential as CustomCredential).data)
-            val googleIdToken = googleIdTokenCredential.idToken
+            val credential = result.credential
+            if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                val googleIdTokenCredential = GoogleIdTokenCredential
+                    .createFrom((result.credential as CustomCredential).data)
 
-            accountService.signInWithGoogle(googleIdToken) // Use AccountService here
+                val googleIdToken = googleIdTokenCredential.idToken
 
-            onSuccess()
+                accountService.signInWithGoogle(googleIdToken) // Use AccountService here
+
+                authenticateWithFirebase(googleIdToken)
+
+                onSuccess()
+            } else {
+                Log.e("GoogleSignIn", "Unsupported credential type: ${credential.type}")
+                onError(Exception("Unsupported credential type"))
+            }
             // Process the credential
-            processGoogleSignInCredential(result.credential as CustomCredential, onSuccess, onError)
+            // processGoogleSignInCredential(result.credential as CustomCredential, onSuccess, onError)
 
         } catch (e: Exception) {
             Log.e("GoogleSignInManager", "Sign-in error", e)
@@ -67,38 +77,17 @@ class GoogleSignInManager(
     }
 
     /**
-     * Processes the obtained Google Sign-In credential
-     * @param credential Obtained credential
-     * @param onSuccess Callback for successful sign-in
-     * @param onError Callback for sign-in errors
+     * Optionally authenticate with Firebase using the Google ID Token.
+     * @param googleIdToken The Google ID Token obtained from credentials.
      */
-    private suspend fun processGoogleSignInCredential(
-        credential: CustomCredential,
-        onSuccess: () -> Unit,
-        onError: (Exception) -> Unit
-    ) {
+    private suspend fun authenticateWithFirebase(googleIdToken: String) {
         try {
-            // Extract Google ID Token
-            val googleIdTokenCredential = GoogleIdTokenCredential
-                .createFrom(credential.data)
-            val googleIdToken = googleIdTokenCredential.idToken
-
-            // Create Firebase credential
             val firebaseCredential = GoogleAuthProvider.getCredential(googleIdToken, null)
-
-            // Sign in to Firebase
-            val authResult = auth.signInWithCredential(firebaseCredential).await()
-
-            // Check if this is a new user
-            val isNewUser = authResult.additionalUserInfo?.isNewUser == true
-
-
-            // Invoke success callback
-            onSuccess()
-
+            auth.signInWithCredential(firebaseCredential).await() // Coroutine-safe await
+            Log.d("GoogleSignInManager", "Firebase authentication successful")
         } catch (e: Exception) {
-            Log.e("GoogleSignInManager", "Firebase sign-in error", e)
-            onError(e)
+            Log.e("GoogleSignInManager", "Firebase authentication error", e)
+            throw e // Propagate the error if needed
         }
     }
 
@@ -113,15 +102,9 @@ class GoogleSignInManager(
             "uid" to user?.uid,
             "name" to user?.displayName,
             "email" to user?.email,
-            "photoUrl" to user?.photoUrl?.toString()
         )
     }
 
-    /**
-     * Checks if the user is currently signed in
-     * @return Boolean indicating sign-in status
-     */
-    fun isSignedIn(): Boolean {
-        return auth.currentUser != null
-    }
+
+
 }
