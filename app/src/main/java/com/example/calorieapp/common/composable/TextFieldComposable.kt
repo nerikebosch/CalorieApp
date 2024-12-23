@@ -102,7 +102,7 @@ fun EmailField(
         shape = RoundedCornerShape(10.dp),
         textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
 
-        leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = "Email") }
+        //leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = "Email") }
     )
 }
 

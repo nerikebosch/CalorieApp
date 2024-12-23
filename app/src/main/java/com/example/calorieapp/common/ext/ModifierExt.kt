@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 fun Modifier.fieldModifier(): Modifier {
-    return this.fillMaxWidth().height(24.dp)
+    return this.fillMaxWidth().height(64.dp)
 }
 fun Modifier.textButton(): Modifier {
     return this.fillMaxWidth().padding(16.dp, 8.dp, 16.dp, 0.dp)
@@ -44,3 +44,4 @@ fun Modifier.spacer(): Modifier {
 fun Modifier.smallSpacer(): Modifier {
     return this.fillMaxWidth().height(8.dp)
 }
+

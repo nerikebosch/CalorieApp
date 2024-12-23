@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import com.example.calorieapp.HOME_SCREEN
 import com.example.calorieapp.LOGIN_SCREEN
 import com.example.calorieapp.SETTINGS_SCREEN
+import com.example.calorieapp.SIGN_UP_SCREEN
 import com.example.calorieapp.auth.GoogleSignInManager
 import com.example.calorieapp.common.ext.isValidEmail
 import com.example.calorieapp.common.snackbar.SnackbarManager
@@ -91,5 +92,10 @@ class LoginViewModel @Inject constructor(
         // Placeholder for Facebook sign-in implementation
         // You'll need to implement this method similarly to Google Sign-In
         SnackbarManager.showMessage(AppText.generic_error)
+    }
+
+    fun onSignUpClick(openAndPopUp: (String, String) -> Unit) {
+        openAndPopUp(SIGN_UP_SCREEN, LOGIN_SCREEN)
+
     }
 }
