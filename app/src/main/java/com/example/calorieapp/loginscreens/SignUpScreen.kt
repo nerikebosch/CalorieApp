@@ -45,6 +45,8 @@
 //import androidx.navigation.NavController
 //import androidx.navigation.compose.rememberNavController
 //import com.example.calorieapp.R
+//import com.example.calorieapp.common.composable.PasswordSignUpTextField
+//import com.example.calorieapp.screens.sign_up.SignUpViewModel
 //import com.example.calorieapp.ui.theme.Roboto
 //import kotlinx.coroutines.launch
 //
@@ -119,11 +121,6 @@
 //            onValueChange = { passwordState.value = it },
 //        )
 //
-////        ConfirmPasswordSignUpTextField(
-////            value = repeatPasswordState.value,
-////            confirmValue = passwordState.value,
-////            onValueChange = { repeatPasswordState.value = it },
-////        )
 //
 //        Spacer(modifier = Modifier.height(30.dp))
 //

@@ -1,6 +1,7 @@
 package com.example.calorieapp.screens.homescreen
 
 import androidx.compose.runtime.mutableStateOf
+import com.example.calorieapp.LOGIN_SCREEN
 import com.example.calorieapp.SETTINGS_SCREEN
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LogService
@@ -21,6 +22,12 @@ class HomeScreenViewModel @Inject constructor(
 
     fun onSettingsClick(openScreen: (String) -> Unit) = openScreen(SETTINGS_SCREEN)
 
+    fun onSignOutClick(restartApp: (String) -> Unit) {
+        launchCatching {
+            accountService.signOut()
+            restartApp(LOGIN_SCREEN)
+        }
 
+    }
 
 }

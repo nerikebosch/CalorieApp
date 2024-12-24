@@ -70,13 +70,12 @@ fun LoginScreen(
         onForgotPasswordClick = viewModel::onForgotPasswordClick,
         onGoogleSignInClick = { viewModel.onGoogleSignInClick(openAndPopUp) },
         onFacebookSignInClick = { viewModel::onFacebookSignInClick },
-        onSignUpClick = { viewModel.onSignUpClick(openAndPopUp) }
+        onSignUpScreenClick = { viewModel.onSignUpScreenClick(openAndPopUp) }
     )
 }
 
 @Composable
 fun LoginScreenContent(
-    modifier: Modifier = Modifier,
     uiState: LoginUiState,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
@@ -84,7 +83,7 @@ fun LoginScreenContent(
     onForgotPasswordClick: () -> Unit,
     onGoogleSignInClick: () -> Unit,
     onFacebookSignInClick: () -> Unit,
-    onSignUpClick: () -> Unit
+    onSignUpScreenClick: () -> Unit
 ) {
     val uiColor = MaterialTheme.colorScheme.primary
 
@@ -196,7 +195,7 @@ fun LoginScreenContent(
                         },
                         modifier = Modifier.clickable {
                             // Navigate to the SignUpScreen
-                            onSignUpClick()
+                            onSignUpScreenClick()
                         }
                     )
                 }
@@ -331,7 +330,7 @@ fun LoginScreenPreview() {
             onForgotPasswordClick = { },
             onGoogleSignInClick = { },
             onFacebookSignInClick = { },
-            onSignUpClick = { }
+            onSignUpScreenClick = { }
         )
     }
 }

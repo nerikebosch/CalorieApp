@@ -9,7 +9,7 @@
 //import com.google.firebase.firestore.SetOptions
 //import kotlinx.coroutines.tasks.await
 //
-//class SignUpViewModel {
+//class SignUpViewModel1 {
 //    // State variables for form fields and error handling
 //    var name by mutableStateOf("")
 //    var surname by mutableStateOf("")
@@ -37,7 +37,6 @@
 //
 //            // Get the current user
 //            val firebaseUser = authResult.user ?: throw Exception("User creation failed")
-//
 //
 //            val user = User(
 //                id = firebaseUser.uid,

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -32,12 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.calorieapp.R
-import com.example.calorieapp.common.composable.ActionToolbar
-import com.example.calorieapp.common.ext.toolbarActions
-import com.example.calorieapp.R.drawable as AppIcon
-import com.example.calorieapp.R.string as AppText
 
 
 @Composable
@@ -102,17 +98,23 @@ fun CalorieProgressIndicator(
     )
 }
 
-
 @Composable
 fun HomeScreen(
     openScreen: (String) -> Unit,
+    viewModel: HomeScreenViewModel = hiltViewModel(),
+) {
+    HomeScreenContent(onSignOutClick = {viewModel.onSignOutClick(openScreen)})
+}
+
+
+@Composable
+fun HomeScreenContent(
     modifier: Modifier = Modifier.fillMaxSize(),
     //currentUser: FirebaseUser?,
-    //onSignOutClick: () -> Unit
-    viewModel: HomeScreenViewModel = hiltViewModel()
+    onSignOutClick: () -> Unit,
 ) {
 
-    val data = viewModel.data.collectAsStateWithLifecycle(emptyList<String>())
+//    val data = viewModel.data.collectAsStateWithLifecycle(emptyList<String>())
 
 //    Column(modifier = Modifier.padding(16.dp)) {
 //        currentUser?.let { user ->
@@ -126,12 +128,6 @@ fun HomeScreen(
 //                )
 //            }
 //        }
-    ActionToolbar(
-        title = AppText.tasks,
-        modifier = Modifier.toolbarActions(),
-        endActionIcon = AppIcon.ic_settings,
-        endAction = { viewModel.onSettingsClick(openScreen) }
-    )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -185,11 +181,11 @@ fun HomeScreen(
             title = "Breakfast"
         )
 
-//        Button(onClick = { onSignOutClick() }) {
-//            Text(
-//                text = "Sign out",
-//            )
-//        }
+        Button(onClick = {onSignOutClick()} ) {
+            Text(
+                text = "Sign out",
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -219,6 +215,6 @@ fun TabRowExample() {
 
 @Preview(showBackground = true)
 @Composable
-fun TabRowExamplePreview() {
-
+fun HomeScreenPreview() {
+    HomeScreenContent(onSignOutClick = {})
 }

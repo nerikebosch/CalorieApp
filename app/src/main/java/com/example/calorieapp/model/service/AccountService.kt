@@ -13,7 +13,7 @@ interface AccountService {
     suspend fun sendRecoveryEmail(email: String)
     suspend fun createAnonymousAccount()
     suspend fun signOut()
-    suspend fun linkAccount(email: String, password: String)
+    suspend fun linkAccount(user: User)
     //suspend fun deleteAccount()
     suspend fun signInWithGoogle(idToken: String)
 }

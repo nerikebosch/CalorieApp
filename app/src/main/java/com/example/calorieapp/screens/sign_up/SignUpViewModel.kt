@@ -1,7 +1,8 @@
 package com.example.calorieapp.screens.sign_up
 
 import androidx.compose.runtime.mutableStateOf
-import com.example.calorieapp.SETTINGS_SCREEN
+import com.example.calorieapp.HOME_SCREEN
+import com.example.calorieapp.LOGIN_SCREEN
 import com.example.calorieapp.SIGN_UP_SCREEN
 import com.example.calorieapp.common.ext.isValidEmail
 import com.example.calorieapp.common.ext.isValidPassword
@@ -11,8 +12,6 @@ import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LogService
 import com.example.calorieapp.screens.CalorieAppViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -53,6 +52,11 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun onSignUpClick(openAndPopUp: (String, String) -> Unit) {
+        if (name.isBlank() || surname.isBlank() || email.isBlank() || password.isBlank()) {
+            SnackbarManager.showMessage(AppText.all_fields_required)
+            return
+        }
+
         if (!email.isValidEmail()) {
             SnackbarManager.showMessage(AppText.email_error)
             return
@@ -80,14 +84,10 @@ class SignUpViewModel @Inject constructor(
                 email = uiState.value.email
             )
 
-            FirebaseFirestore.getInstance()
-                .collection("users")
-                .document(user.id)
-                .set(user, SetOptions.merge())
-                .await()
-
-            accountService.linkAccount(email, password)
-            openAndPopUp(SETTINGS_SCREEN, SIGN_UP_SCREEN)
+            accountService.linkAccount(user)
+            openAndPopUp(HOME_SCREEN, SIGN_UP_SCREEN)
         }
     }
+
+    fun onLoginScreenClick(openAndPopUp: (String, String) -> Unit) = openAndPopUp(LOGIN_SCREEN, SIGN_UP_SCREEN)
 }

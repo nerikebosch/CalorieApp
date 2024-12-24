@@ -21,9 +21,9 @@
 
     <!-- SignUpScreen -->
     <string name="create_account">Create account</string>
-    <string name="password_error">Your password should have at least six digits and include one digit, one lower case letter and one upper case letter.</string>
-    <string name="password_match_error">Passwords do not match.</string>
-
+    <string name="password_error">Password does not meet the requirement. Please use a stronger password.</string>
+    <string name="password_match_error">Passwords does not match.</string>
+    <string name="all_fields_required">All fields are required.</string>">
     <!-- TasksScreen -->
     <string name="tasks">Tasks</string>
 

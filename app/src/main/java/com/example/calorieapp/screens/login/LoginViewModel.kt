@@ -3,7 +3,6 @@ package com.example.calorieapp.screens.login
 import androidx.compose.runtime.mutableStateOf
 import com.example.calorieapp.HOME_SCREEN
 import com.example.calorieapp.LOGIN_SCREEN
-import com.example.calorieapp.SETTINGS_SCREEN
 import com.example.calorieapp.SIGN_UP_SCREEN
 import com.example.calorieapp.auth.GoogleSignInManager
 import com.example.calorieapp.common.ext.isValidEmail
@@ -76,8 +75,8 @@ class LoginViewModel @Inject constructor(
             googleSignInManager.initiateGoogleSignIn(
                 //scope = viewModelScope,
                 onSuccess = {
-                    // Navigate to settings screen after successful Google Sign-In
-                    openAndPopUp(SETTINGS_SCREEN, LOGIN_SCREEN)
+                    // Navigate to screen after successful Google Sign-In
+                    openAndPopUp(HOME_SCREEN, LOGIN_SCREEN)
                 },
                 onError = { exception ->
                     // Handle sign-in error
@@ -94,7 +93,7 @@ class LoginViewModel @Inject constructor(
         SnackbarManager.showMessage(AppText.generic_error)
     }
 
-    fun onSignUpClick(openAndPopUp: (String, String) -> Unit) {
+    fun onSignUpScreenClick(openAndPopUp: (String, String) -> Unit) {
         openAndPopUp(SIGN_UP_SCREEN, LOGIN_SCREEN)
 
     }
