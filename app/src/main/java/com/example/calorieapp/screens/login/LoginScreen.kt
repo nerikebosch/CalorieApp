@@ -72,6 +72,7 @@ fun LoginScreen(
         onFacebookSignInClick = { viewModel::onFacebookSignInClick },
         onSignUpScreenClick = { viewModel.onSignUpScreenClick(openAndPopUp) }
     )
+
 }
 
 @Composable

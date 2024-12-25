@@ -1,7 +1,6 @@
 package com.example.calorieapp.screens.homescreen
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -30,16 +28,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.calorieapp.R
-import com.example.calorieapp.model.User
-import com.google.firebase.auth.FirebaseUser
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun GradientProgressIndicator(
@@ -164,12 +156,24 @@ fun WaterProgressIndicator(
     )
 }
 
-
 @Composable
 fun HomeScreen(
-    navController: NavController,
-    modifier: Modifier = Modifier.fillMaxSize(),
-    currentUser: FirebaseUser?,
+    openScreen: (String) -> Unit,
+    viewModel: HomeScreenViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState
+
+    HomeScreenContent(
+        uiState = uiState,
+        onSettingsClick = { viewModel.onSettingsClick(openScreen) },
+        onSignOutClick = { viewModel.onSignOutClick(openScreen) }
+    )
+}
+
+@Composable
+fun HomeScreenContent(
+    uiState: HomeScreenUiState,
+    onSettingsClick: () -> Unit,
     onSignOutClick: () -> Unit
 ) {
     val date = java.time.LocalDate.now()
@@ -345,8 +349,10 @@ fun TabRowExample() {
 @Preview(showBackground = true)
 @Composable
 fun TabRowExamplePreview() {
-    val navController = rememberNavController()
-    HomeScreen(navController = navController, currentUser = null, onSignOutClick = {},
-
-        )
+    val uiState = HomeScreenUiState()
+    HomeScreenContent(
+        uiState = uiState,
+        onSettingsClick = { },
+        onSignOutClick = { }
+    )
 }
