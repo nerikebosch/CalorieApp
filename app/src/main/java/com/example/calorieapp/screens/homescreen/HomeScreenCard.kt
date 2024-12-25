@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CardDefaults
@@ -110,6 +112,66 @@ fun ElevatedCardCalorieTracker(
             )
         }
     }
+}
+
+
+    @Composable
+    fun ElevatedCardWaterTracker(
+        title: String,
+        currentIntake: Int = 0,
+        goalIntake: Int = 1, // Default value to prevent division by zero
+        unit: String,
+        modifier: Modifier = Modifier,
+        gradientStart: Color = MaterialTheme.colorScheme.primary,
+        gradientEnd: Color = MaterialTheme.colorScheme.secondary,
+        trackColor: Color = White,
+        strokeWidth: Dp = 8.dp
+    ) {
+        ElevatedCard(
+            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+            modifier = modifier.size(width = 180.dp, height = 200.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // Text content on the left
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = "$currentIntake / $goalIntake $unit",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    WaterProgressIndicator(
+                        currentIntake = currentIntake,
+                        goalIntake = goalIntake,
+                        modifier = Modifier.size(50.dp).align(Alignment.CenterHorizontally),
+                        gradientStart = gradientStart,
+                        gradientEnd = gradientEnd,
+                        trackColor = trackColor,
+                        strokeWidth = strokeWidth
+                    )
+                }
+
+                // Progress indicator on the right
+
+            }
+        }
+
 }
 
 

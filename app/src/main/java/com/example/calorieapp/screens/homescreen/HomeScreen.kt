@@ -1,6 +1,7 @@
 package com.example.calorieapp.screens.homescreen
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -41,6 +43,44 @@ import com.google.firebase.auth.FirebaseUser
 
 @Composable
 fun GradientProgressIndicator(
+    progress: Float,
+    modifier: Modifier = Modifier,
+    gradientStart: Color,
+    gradientEnd: Color,
+    trackColor: Color,
+    strokeWidth: Dp
+) {
+    Canvas(modifier = modifier) {
+        val size = size.minDimension // Ensure it's square
+        val radius = (size / 2) - strokeWidth.toPx() / 2
+
+        // Draw the track (background of the progress bar)
+        drawCircle(
+            color = trackColor,
+            radius = radius,
+            style = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round)
+        )
+
+        // Draw the gradient progress arc
+        val sweepAngle = progress * 360f
+        val brush = Brush.linearGradient(
+            colors = listOf(gradientStart, gradientEnd),
+            start = Offset.Zero,
+            end = Offset(size, size)
+        )
+
+        drawArc(
+            brush = brush,
+            startAngle = -90f,
+            sweepAngle = sweepAngle,
+            useCenter = false,
+            style = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round)
+        )
+    }
+}
+
+@Composable
+fun GradientProgressIndicatorWater(
     progress: Float,
     modifier: Modifier = Modifier,
     gradientStart: Color,
@@ -101,6 +141,29 @@ fun CalorieProgressIndicator(
     )
 }
 
+@Composable
+fun WaterProgressIndicator(
+    currentIntake: Int,
+    goalIntake: Int,
+    modifier: Modifier = Modifier,
+    gradientStart: Color,
+    gradientEnd: Color,
+    trackColor: Color,
+    strokeWidth: Dp
+) {
+    // Calculate progress as a ratio of current to goal
+    val progress = (currentIntake.toFloat() / goalIntake).coerceIn(0f, 1f)
+
+    GradientProgressIndicatorWater(
+        progress = progress,
+        modifier = modifier,
+        gradientStart = gradientStart,
+        gradientEnd = gradientEnd,
+        trackColor = trackColor,
+        strokeWidth = strokeWidth
+    )
+}
+
 
 @Composable
 fun HomeScreen(
@@ -109,19 +172,37 @@ fun HomeScreen(
     currentUser: FirebaseUser?,
     onSignOutClick: () -> Unit
 ) {
-    val name: String = User().name
-    val navController = rememberNavController()
+    val date = java.time.LocalDate.now()
 
     Column(modifier = Modifier.padding(16.dp)) {
 
-                Text(
-                    text = "Hello",
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally)
-                )
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = "Summary",
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+            )
 
+//            Image(
+//                painter = painterResource(id = R.drawable.profile),
+//                contentDescription = null,
+//                modifier = Modifier
+//                    .size(60.dp)
+//                    .align(Alignment.CenterVertically)
+//            )
+
+
+        }
+
+        Text(
+            text = "$date",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
+        )
 
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -136,41 +217,23 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            ElevatedCardHomeScreen(
-                title = "Weight",
-                modifier = Modifier.weight(1f) // Each card takes up equal space
-            ){
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ){
 
-                }
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-            ElevatedCardHomeScreen(
-                title = "Water balance",
-                modifier = Modifier.weight(1f)
-            ) {
-                // Add vector image here inside the ElevatedCard
-                val waterGlassImage = painterResource(id = R.drawable.water_glass)
+            ElevatedCardWaterTracker(
+                title = "Weight Balance",
+                currentIntake = 150, // Replace with actual data
+                goalIntake = 200,  // Replace with actual data
+                unit = "kg",
+                modifier = Modifier.size(width = 170.dp, height = 200.dp)
+            )
+            //Spacer(modifier = Modifier.width(10.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    // Display the vector image
-
-                    Spacer(modifier = Modifier.width(8.dp)) // Space between icon and text
-                    // Optionally, add text or other components here
-                    Text(
-                        text = "Water Balance",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
+            ElevatedCardWaterTracker(
+                title = "Water Balance",
+                currentIntake = 150, // Replace with actual data
+                goalIntake = 200,  // Replace with actual data
+                unit = "ml",
+                modifier = Modifier.size(width = 180.dp, height = 200.dp)
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
