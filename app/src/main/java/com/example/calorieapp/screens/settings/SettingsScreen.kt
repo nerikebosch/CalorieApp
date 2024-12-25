@@ -4,7 +4,10 @@ package com.example.calorieapp.screens.settings
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,11 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.calorieapp.common.composable.*
 import com.example.calorieapp.common.ext.*
-import com.example.calorieapp.R.drawable as AppIcon
+import com.example.calorieapp.ui.theme.CalorieAppTheme
 import com.example.calorieapp.R.string as AppText
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.ExperimentalMaterial3Api
 
 @ExperimentalMaterial3Api
 @Composable
@@ -36,17 +36,6 @@ fun SettingsScreen(
 
         Spacer(modifier = Modifier.spacer())
 
-//        if (uiState.isAnonymousAccount) {
-//            RegularCardEditor(AppText.sign_in, AppIcon.ic_sign_in, "", Modifier.card()) {
-//                viewModel.onLoginClick(openScreen)
-//            }
-//
-//            RegularCardEditor(AppText.create_account, AppIcon.ic_create_account, "", Modifier.card()) {
-//                viewModel.onSignUpClick(openScreen)
-//            }
-//        } else {
-//            SignOutCard { viewModel.onSignOutClick(restartApp) }
-//        }
         SignOutCard { viewModel.onSignOutClick(restartApp) }
     }
 }
@@ -83,7 +72,25 @@ private fun SignOutCard(signOut: () -> Unit) {
 
 @ExperimentalMaterial3Api
 @Composable
-@Preview
+fun ChangeDataCard() {
+
+}
+
+@ExperimentalMaterial3Api
+@Composable
+@Preview(showBackground = true, showSystemUi = true)
 fun SettingsScreenPreview() {
-    SettingsScreen(restartApp = {})
+    CalorieAppTheme {
+        // Create a simplified version for preview
+        Column(
+            modifier = Modifier.fillMaxWidth().fillMaxHeight().verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            BasicToolbar(AppText.settings)
+
+            Spacer(modifier = Modifier.spacer())
+
+            SignOutCard { }
+        }
+    }
 }

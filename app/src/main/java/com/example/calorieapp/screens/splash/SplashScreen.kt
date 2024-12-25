@@ -15,6 +15,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.calorieapp.common.composable.BasicButton
 import com.example.calorieapp.common.ext.basicButton
@@ -52,4 +53,10 @@ fun SplashScreen(
         delay(SPLASH_TIMEOUT)
         viewModel.onAppStart(openAndPopUp)
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SplashScreenPreview() {
+    SplashScreen(openAndPopUp = { _, _ -> })
 }

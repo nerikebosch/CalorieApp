@@ -172,25 +172,25 @@ fun HomeScreenContent(
                     )
                 }
             }
-        }
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        ElevatedCardHomeScreen(
-            modifier = Modifier.fillMaxWidth(),
-            title = "Breakfast"
-        )
-
-        Button(onClick = {onSignOutClick()} ) {
-            Text(
-                text = "Sign out",
+            ElevatedCardHomeScreen(
+                title = "Breakfast"
             )
+
+            Button(onClick = {onSignOutClick()} ) {
+                Text(
+                    text = "Sign out",
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            TabRowExample()
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
 
-        TabRowExample()
-    }
+}
 
 
 
