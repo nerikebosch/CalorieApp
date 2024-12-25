@@ -16,9 +16,9 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,16 +36,16 @@ import androidx.compose.ui.unit.toSize
 @Composable
 fun MoreAboutYou() {
     val weight = remember { mutableStateOf("") }
-    val goalweight = remember { mutableStateOf("") }
+    val goalWeight = remember { mutableStateOf("") }
     val height = remember { mutableStateOf("") }
     val age = remember { mutableStateOf("") }
     var gender by remember { mutableStateOf("") }
-    var genderexpanded by remember { mutableStateOf(false) }
-    val genderlist = listOf("Male", "Female", "Prefer not to say")
+    var genderExpanded by remember { mutableStateOf(false) }
+    val genderList = listOf("Male", "Female", "Prefer not to say")
     var mTextFieldSize by remember { mutableStateOf(Size.Zero) }
 
     // Dropdown for gender icon
-    val icon = if (genderexpanded)
+    val icon = if (genderExpanded)
         Icons.Filled.KeyboardArrowUp
     else
         Icons.Filled.KeyboardArrowDown
@@ -75,7 +75,7 @@ fun MoreAboutYou() {
                 unit = "",
                 trailingIcon = {
                     Icon(icon, contentDescription = null,
-                        Modifier.clickable { genderexpanded = !genderexpanded })
+                        Modifier.clickable { genderExpanded = !genderExpanded })
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -84,16 +84,16 @@ fun MoreAboutYou() {
                     }
             )
             DropdownMenu(
-                expanded = genderexpanded,
-                onDismissRequest = { genderexpanded = false },
+                expanded = genderExpanded,
+                onDismissRequest = { genderExpanded = false },
                 modifier = Modifier
                     .width(with(LocalDensity.current) { if (mTextFieldSize.width > 0) mTextFieldSize.width.toDp() else 50.dp })
             ) {
-                genderlist.forEach { label ->
+                genderList.forEach { label ->
                     DropdownMenuItem(
                         text = { Text(text = label) }, onClick = {
                             gender = label
-                            genderexpanded = false
+                            genderExpanded = false
                         })
                 }
             }
@@ -108,8 +108,8 @@ fun MoreAboutYou() {
                 )
             Spacer(modifier = Modifier.height(25.dp))
             InformationTextField(
-                value = goalweight.value,
-                onValueChange = { goalweight.value = it },
+                value = goalWeight.value,
+                onValueChange = { goalWeight.value = it },
                 label = "Goal Weight",
                 unit = "kg",
                 modifier = Modifier.fillMaxWidth(),
