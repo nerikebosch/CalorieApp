@@ -304,11 +304,6 @@ fun HomeScreenContent(
                             )
                         }
                     }
-
-
-
-
-
                 }
 
 
@@ -333,8 +328,10 @@ fun TabRowExample() {
     var state by remember { mutableStateOf(0) }
     val titles = listOf("Recipes", "Add data", "Statistics")
 
+
+
     Column {
-        TabRow(selectedTabIndex = state) {
+        TabRow(selectedTabIndex = state, modifier = Modifier.align(Alignment.End)) {
             titles.forEachIndexed { index, title ->
                 Tab(
                     text = { Text(title) },
