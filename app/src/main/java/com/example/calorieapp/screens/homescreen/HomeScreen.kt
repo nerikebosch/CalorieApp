@@ -327,7 +327,9 @@ fun HomeScreenContent(
 
 
 @Composable
-fun TabRowExample() {
+fun TabRowExample(
+    modifier: Modifier = Modifier
+) {
     var state by remember { mutableIntStateOf(0) }
     val titles = listOf("Recipes", "Add data", "Statistics")
 

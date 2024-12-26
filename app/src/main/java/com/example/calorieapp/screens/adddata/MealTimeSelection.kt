@@ -19,6 +19,7 @@ import androidx.compose.material3.TopAppBarDefaults // For default styling of th
 import androidx.compose.runtime.Composable // For defining composable functions
 import androidx.compose.runtime.mutableStateOf // For managing state in Compose
 import androidx.compose.runtime.remember // For remembering state across recompositions
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier // For modifying UI elements
 import androidx.compose.ui.platform.LocalContext // For accessing the local context
 import androidx.compose.ui.res.painterResource // For loading drawable resources
@@ -40,7 +41,9 @@ fun MealTimeSelection(){
 
     val selectedDate = remember { mutableStateOf(dateFormatter.format(calendar.value.time)) }
 
-    Surface() {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+    ) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -70,7 +73,7 @@ fun MealTimeSelection(){
                             text = selectedDate.value,
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.align(androidx.compose.ui.Alignment.CenterVertically)
+                            modifier = Modifier.align(Alignment.CenterVertically)
                         )
                     }
                 },
@@ -145,7 +148,9 @@ fun MealTimeSelection(){
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            TabRowExample()
+            TabRowExample(
+                modifier = Modifier.align(Alignment.End)
+            )
         }
 
 
