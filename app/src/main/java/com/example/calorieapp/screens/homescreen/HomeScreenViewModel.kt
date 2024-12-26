@@ -1,8 +1,8 @@
 package com.example.calorieapp.screens.homescreen
 
 import androidx.compose.runtime.mutableStateOf
-import com.example.calorieapp.LOGIN_SCREEN
 import com.example.calorieapp.SETTINGS_SCREEN
+import com.example.calorieapp.SPLASH_SCREEN
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LogService
 import com.example.calorieapp.model.service.StorageService
@@ -60,7 +60,6 @@ class HomeScreenViewModel @Inject constructor(
         uiState.value = newState
     }
 
-    // You can add functions to update individual values like this:
     fun updateCalories(current: Int, goal: Int) {
         updateUiState(uiState.value.copy(
             currentCalorie = current,
@@ -68,14 +67,14 @@ class HomeScreenViewModel @Inject constructor(
         ))
     }
 
-    fun updateWeight(current: Double, goal: Double) {
+    fun updateWeight(current: Float, goal: Float) {
         updateUiState(uiState.value.copy(
             currentWeight = current,
             goalWeight = goal
         ))
     }
 
-    fun updateWater(current: Int, goal: Int) {
+    fun updateWater(current: Float, goal: Float) {
         updateUiState(uiState.value.copy(
             currentWater = current,
             goalWater = goal
@@ -108,7 +107,7 @@ class HomeScreenViewModel @Inject constructor(
     fun onSignOutClick(restartApp: (String) -> Unit) {
         launchCatching {
             accountService.signOut()
-            restartApp(LOGIN_SCREEN)
+            restartApp(SPLASH_SCREEN)
         }
 
     }

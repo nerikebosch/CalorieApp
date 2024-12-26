@@ -20,7 +20,7 @@ import com.example.calorieapp.ui.theme.CalorieAppTheme
 import com.example.calorieapp.R.string as AppText
 
 @ExperimentalMaterial3Api
-@Composable
+@Composable 
 fun SettingsScreen(
     restartApp: (String) -> Unit,
     //openScreen: (String) -> Unit,

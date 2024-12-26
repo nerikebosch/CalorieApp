@@ -2,11 +2,9 @@ package com.example.calorieapp.screens.homescreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -118,8 +116,8 @@ fun ElevatedCardCalorieTracker(
     @Composable
     fun ElevatedCardWaterTracker(
         title: String,
-        currentIntake: Int = 0,
-        goalIntake: Int = 1, // Default value to prevent division by zero
+        currentIntake: Float = 0.0f,
+        goalIntake: Float = 1.0f, // Default value to prevent division by zero
         unit: String,
         modifier: Modifier = Modifier,
         gradientStart: Color = MaterialTheme.colorScheme.primary,

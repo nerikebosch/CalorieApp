@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.ExperimentalMaterial3Api
+import com.example.calorieapp.ui.theme.CalorieAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -14,7 +15,8 @@ class CalorieActivity: AppCompatActivity() {
 
         setContent {
             // Create a NavController to handle navigation
-            CalorieApp()
+            CalorieAppTheme { CalorieApp() }
+
         }
     }
 }

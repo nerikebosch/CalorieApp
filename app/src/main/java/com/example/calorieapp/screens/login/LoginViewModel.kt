@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import com.example.calorieapp.HOME_SCREEN
 import com.example.calorieapp.LOGIN_SCREEN
 import com.example.calorieapp.SIGN_UP_SCREEN
+import com.example.calorieapp.SPLASH_SCREEN
 import com.example.calorieapp.auth.GoogleSignInManager
 import com.example.calorieapp.common.ext.isValidEmail
 import com.example.calorieapp.common.snackbar.SnackbarManager
@@ -76,7 +77,7 @@ class LoginViewModel @Inject constructor(
                 //scope = viewModelScope,
                 onSuccess = {
                     // Navigate to screen after successful Google Sign-In
-                    openAndPopUp(HOME_SCREEN, LOGIN_SCREEN)
+                    openAndPopUp(SPLASH_SCREEN, LOGIN_SCREEN)
                 },
                 onError = { exception ->
                     // Handle sign-in error

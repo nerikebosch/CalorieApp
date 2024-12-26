@@ -1,9 +1,9 @@
 package com.example.calorieapp.screens.sign_up
 
 import androidx.compose.runtime.mutableStateOf
-import com.example.calorieapp.HOME_SCREEN
 import com.example.calorieapp.LOGIN_SCREEN
 import com.example.calorieapp.SIGN_UP_SCREEN
+import com.example.calorieapp.SPLASH_SCREEN
 import com.example.calorieapp.common.ext.isValidEmail
 import com.example.calorieapp.common.ext.isValidPassword
 import com.example.calorieapp.common.snackbar.SnackbarManager
@@ -85,7 +85,7 @@ class SignUpViewModel @Inject constructor(
             )
 
             accountService.linkAccount(user)
-            openAndPopUp(HOME_SCREEN, SIGN_UP_SCREEN)
+            openAndPopUp(SPLASH_SCREEN, SIGN_UP_SCREEN)
         }
     }
 

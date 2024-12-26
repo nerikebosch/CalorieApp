@@ -1,9 +1,7 @@
 package com.example.calorieapp.screens.settings
 
 
-import com.example.calorieapp.HOME_SCREEN
-import com.example.calorieapp.LOGIN_SCREEN
-import com.example.calorieapp.SIGN_UP_SCREEN
+import com.example.calorieapp.SPLASH_SCREEN
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LogService
 import com.example.calorieapp.model.service.StorageService
@@ -20,14 +18,10 @@ class SettingsViewModel @Inject constructor(
 ) : CalorieAppViewModel(logService) {
     val uiState = accountService.currentUser.map { SettingsUiState(it.registeredUser) }
 
-    fun onLoginClick(openScreen: (String) -> Unit) = openScreen(LOGIN_SCREEN)
-
-    fun onSignUpClick(openScreen: (String) -> Unit) = openScreen(SIGN_UP_SCREEN)
-
     fun onSignOutClick(restartApp: (String) -> Unit) {
         launchCatching {
             accountService.signOut()
-            restartApp(HOME_SCREEN   )
+            restartApp(SPLASH_SCREEN)
         }
     }
 

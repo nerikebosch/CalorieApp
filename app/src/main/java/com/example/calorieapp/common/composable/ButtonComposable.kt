@@ -28,8 +28,8 @@ fun BasicButton(@StringRes text: Int, modifier: Modifier, action: () -> Unit) {
         modifier = modifier,
         colors =
         ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
         )
     ) {
         Text(text = stringResource(text), fontSize = 16.sp)

@@ -47,10 +47,6 @@ class AccountServiceImpl @Inject constructor(
         auth.sendPasswordResetEmail(email).await()
     }
 
-    override suspend fun createAnonymousAccount() {
-        auth.signInAnonymously().await()
-    }
-
     override suspend fun linkAccount(user: User): Unit =
         trace(LINK_ACCOUNT_TRACE) {
             firestore.collection("users")

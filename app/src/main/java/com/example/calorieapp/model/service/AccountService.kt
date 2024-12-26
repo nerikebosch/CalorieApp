@@ -11,7 +11,6 @@ interface AccountService {
 
     suspend fun authenticate(email: String, password: String)
     suspend fun sendRecoveryEmail(email: String)
-    suspend fun createAnonymousAccount()
     suspend fun signOut()
     suspend fun linkAccount(user: User)
     //suspend fun deleteAccount()

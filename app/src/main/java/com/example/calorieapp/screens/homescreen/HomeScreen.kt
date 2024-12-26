@@ -11,14 +11,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -32,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlin.Int
 
 @Composable
 fun GradientProgressIndicator(
@@ -135,8 +139,8 @@ fun CalorieProgressIndicator(
 
 @Composable
 fun WaterProgressIndicator(
-    currentIntake: Int,
-    goalIntake: Int,
+    currentIntake: Float,
+    goalIntake: Float,
     modifier: Modifier = Modifier,
     gradientStart: Color,
     gradientEnd: Color,
@@ -166,7 +170,6 @@ fun HomeScreen(
     HomeScreenContent(
         uiState = uiState,
         onSettingsClick = { viewModel.onSettingsClick(openScreen) },
-        onSignOutClick = { viewModel.onSignOutClick(openScreen) }
     )
 }
 
@@ -174,19 +177,25 @@ fun HomeScreen(
 fun HomeScreenContent(
     uiState: HomeScreenUiState,
     onSettingsClick: () -> Unit,
-    onSignOutClick: () -> Unit
 ) {
     val date = java.time.LocalDate.now()
 
     Column(modifier = Modifier.padding(16.dp)) {
 
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
                 text = "Summary",
                 style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
+
             )
+
+            IconButton(
+                onClick = { onSettingsClick() },
+                modifier = Modifier.align(Alignment.CenterVertically)) {
+                Icon(Icons.Filled.Menu, contentDescription = "Menu")
+            }
 
 //            Image(
 //                painter = painterResource(id = R.drawable.profile),
@@ -213,8 +222,8 @@ fun HomeScreenContent(
 
         ElevatedCardCalorieTracker(
             title = "Today's Calories",
-            currentCalories = 1500, // Replace with actual data
-            goalCalories = 2000,  // Replace with actual data
+            currentCalories = uiState.currentCalorie, // Replace with actual data
+            goalCalories = uiState.goalCalorie,  // Replace with actual data
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -224,8 +233,8 @@ fun HomeScreenContent(
 
             ElevatedCardWaterTracker(
                 title = "Weight Balance",
-                currentIntake = 150, // Replace with actual data
-                goalIntake = 200,  // Replace with actual data
+                currentIntake = uiState.currentWeight, // Replace with actual data
+                goalIntake = uiState.goalWeight,  // Replace with actual data
                 unit = "kg",
                 modifier = Modifier.size(width = 170.dp, height = 200.dp)
             )
@@ -233,8 +242,8 @@ fun HomeScreenContent(
 
             ElevatedCardWaterTracker(
                 title = "Water Balance",
-                currentIntake = 150, // Replace with actual data
-                goalIntake = 200,  // Replace with actual data
+                currentIntake = uiState.currentWater, // Replace with actual data
+                goalIntake = uiState.goalWater,  // Replace with actual data
                 unit = "ml",
                 modifier = Modifier.size(width = 180.dp, height = 200.dp)
             )
@@ -251,7 +260,7 @@ fun HomeScreenContent(
                 ) {
                     Text(
                         modifier = Modifier.padding(15.dp),
-                        text = "750 calories",
+                        text = uiState.mealCalories.toString() + " calories",
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Spacer(modifier = Modifier.height(15.dp))
@@ -264,7 +273,7 @@ fun HomeScreenContent(
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Text(
-                                text = "150",
+                                text = uiState.mealProteins.toString(),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }
@@ -276,7 +285,7 @@ fun HomeScreenContent(
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Text(
-                                text = "150",
+                                text = uiState.mealCarbs.toString(),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }
@@ -288,7 +297,7 @@ fun HomeScreenContent(
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Text(
-                                text = "150",
+                                text = uiState.mealFats.toString(),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }
@@ -299,27 +308,16 @@ fun HomeScreenContent(
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Text(
-                                text = "150",
+                                text = uiState.mealRDC.toString(),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }
                     }
 
-
-
-
-
                 }
 
-
         }
 
-
-        Button(onClick = { onSignOutClick() }) {
-            Text(
-                text = "Sign out",
-            )
-        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -330,7 +328,7 @@ fun HomeScreenContent(
 
 @Composable
 fun TabRowExample() {
-    var state by remember { mutableStateOf(0) }
+    var state by remember { mutableIntStateOf(0) }
     val titles = listOf("Recipes", "Add data", "Statistics")
 
     Column {
@@ -349,10 +347,23 @@ fun TabRowExample() {
 @Preview(showBackground = true)
 @Composable
 fun TabRowExamplePreview() {
-    val uiState = HomeScreenUiState()
+    val uiState = HomeScreenUiState(
+        currentCalorie = 1200,
+        goalCalorie = 2500,
+        currentWeight = 78.0f,
+        goalWeight = 70.0f,
+        currentWater = 1230.0f,
+        goalWater = 2000.0f,
+
+        mealTitle = "Breakfast",
+        mealCalories = 1234,
+        mealProteins = 60,
+        mealCarbs = 100,
+        mealFats = 20,
+        mealRDC = 20,
+    )
     HomeScreenContent(
         uiState = uiState,
         onSettingsClick = { },
-        onSignOutClick = { }
     )
 }
