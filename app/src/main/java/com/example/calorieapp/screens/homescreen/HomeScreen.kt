@@ -339,7 +339,8 @@ fun TabRowExample(
                 Tab(
                     text = { Text(title) },
                     selected = (index == state),
-                    onClick = { state = index }
+                    onClick = { state = index },
+                    modifier = modifier.align(Alignment.End)
                 )
             }
         }
