@@ -23,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.calorieapp.common.snackbar.SnackbarManager
+import com.example.calorieapp.screens.adddata.MealTimeSelection
 import com.example.calorieapp.screens.homescreen.HomeScreen
 import com.example.calorieapp.screens.login.LoginScreen
 import com.example.calorieapp.screens.settings.SettingsScreen
@@ -108,5 +109,10 @@ fun NavGraphBuilder.calorieGraph(appState: CalorieAppState) {
 
     composable(SPLASH_SCREEN) {
         SplashScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+    }
+
+    composable(MEAL_TIME_SCREEN) {
+        MealTimeSelection(openScreen = { route -> appState.navigate(route) })
+
     }
 }

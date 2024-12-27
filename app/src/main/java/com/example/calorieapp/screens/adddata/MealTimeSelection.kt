@@ -34,7 +34,9 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MealTimeSelection(){
+fun MealTimeSelection(
+
+){
     val context = LocalContext.current
     val dateFormatter = SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault())
     val calendar = remember { mutableStateOf(Calendar.getInstance()) }
