@@ -11,9 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 open class CalorieAppViewModel(private val logService: LogService) : ViewModel() {
-//open class CalorieAppViewModel @Inject constructor(
-//    private val logService: LogService
-//) : ViewModel() {
+
     fun launchCatching(snackbar: Boolean = true, block: suspend CoroutineScope.() -> Unit) =
         viewModelScope.launch(
             CoroutineExceptionHandler { _, throwable ->

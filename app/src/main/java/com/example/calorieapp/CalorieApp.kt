@@ -1,6 +1,7 @@
 package com.example.calorieapp
 
 import android.content.res.Resources
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -21,9 +22,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.calorieapp.common.snackbar.SnackbarManager
-import com.example.calorieapp.screens.adddata.MealTimeSelection
+import com.example.calorieapp.screens.adddata.MealTimeScreen
 import com.example.calorieapp.screens.homescreen.HomeScreen
 import com.example.calorieapp.screens.login.LoginScreen
 import com.example.calorieapp.screens.settings.SettingsScreen
@@ -35,11 +37,17 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun CalorieApp() {
-    CalorieAppTheme{
+    CalorieAppTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             val appState = rememberAppState()
             val snackbarHostState = appState.snackbarHostState
-                //
+
+            // Get current route to determine if we should show TabRow
+            val currentRoute = appState.navController.currentBackStackEntryAsState().value?.destination?.route
+            val showTabRow = !(currentRoute == SPLASH_SCREEN ||
+                    currentRoute == LOGIN_SCREEN ||
+                    currentRoute == SIGN_UP_SCREEN)
+
             Scaffold(
                 snackbarHost = {
                     SnackbarHost(
@@ -49,12 +57,28 @@ fun CalorieApp() {
                             Snackbar(snackbarData, contentColor = MaterialTheme.colorScheme.onPrimary)
                         }
                     )
+                },
+                bottomBar = {
+                    if (showTabRow) {
+                        Surface(
+                            color = MaterialTheme.colorScheme.surface,
+                            shadowElevation = 4.dp,
+                            modifier = Modifier
+                                .navigationBarsPadding()
+
+                        ) {
+                            CalorieAppTabRow(
+                                currentRoute = currentRoute ?: HOME_SCREEN,
+                                onTabSelected = { route -> appState.navigate(route) }
+                            )
+                        }
+                    }
                 }
-            ) { innerPaddingModifier ->
+            ) { paddingValues ->
                 NavHost(
                     navController = appState.navController,
                     startDestination = SPLASH_SCREEN,
-                    modifier = Modifier.padding(innerPaddingModifier)
+                    modifier = Modifier.padding(paddingValues)
                 ) {
                     calorieGraph(appState)
                 }
@@ -62,7 +86,6 @@ fun CalorieApp() {
         }
     }
 }
-
 
 @Composable
 fun rememberAppState(
@@ -112,7 +135,7 @@ fun NavGraphBuilder.calorieGraph(appState: CalorieAppState) {
     }
 
     composable(MEAL_TIME_SCREEN) {
-        MealTimeSelection(openScreen = { route -> appState.navigate(route) })
-
+        MealTimeScreen(openScreen = { route -> appState.navigate(route) })
     }
+
 }
