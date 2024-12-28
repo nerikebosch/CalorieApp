@@ -12,8 +12,8 @@ import javax.inject.Inject
 class MealTimeViewModel @Inject constructor(
     logService: LogService,
     private val accountService: AccountService,
-    private val storageService: StorageService
+    storageService: StorageService
 ) : CalorieAppViewModel(logService) {
 
-    val data = storageService.data
+    val userData = storageService.userData
 }

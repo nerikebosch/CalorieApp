@@ -16,6 +16,7 @@ class SettingsViewModel @Inject constructor(
     private val accountService: AccountService,
     private val storageService: StorageService
 ) : CalorieAppViewModel(logService) {
+
     val uiState = accountService.currentUser.map { SettingsUiState(it.registeredUser) }
 
     fun onSignOutClick(restartApp: (String) -> Unit) {

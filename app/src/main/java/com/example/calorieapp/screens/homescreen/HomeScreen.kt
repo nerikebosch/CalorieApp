@@ -18,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.calorieapp.model.User
 import java.time.LocalDate
 import kotlin.Int
 
@@ -162,8 +164,12 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState
+    val user by viewModel.user.collectAsState(initial = User())
+
+    //if (user.id.isEmpty()) {Text("EMpty")}
     Column {
         HomeScreenContent(
+            user = user,
             uiState = uiState,
             onSettingsClick = { viewModel.onSettingsClick(openScreen) },
         )
@@ -172,6 +178,7 @@ fun HomeScreen(
 
 @Composable
 fun HomeScreenContent(
+    user: User,
     uiState: HomeScreenUiState,
     onSettingsClick: () -> Unit,
 ) {
@@ -181,26 +188,19 @@ fun HomeScreenContent(
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
-                text = "Summary",
+                text = "Hi, ${user.name}!",
                 style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
-
             )
 
+            // Go to settings screen
             IconButton(
                 onClick = { onSettingsClick() },
                 modifier = Modifier.align(Alignment.CenterVertically)) {
                 Icon(Icons.Filled.Menu, contentDescription = "Menu")
             }
 
-//            Image(
-//                painter = painterResource(id = R.drawable.profile),
-//                contentDescription = null,
-//                modifier = Modifier
-//                    .size(60.dp)
-//                    .align(Alignment.CenterVertically)
-//            )
 
 
         }
@@ -342,7 +342,14 @@ fun HomeScreenPreview() {
         mealFats = 20,
         mealRDC = 20,
     )
+    val user = User(
+        email = "nerike.b@gmail.com",
+        name = "Nerike",
+        surname = "Bosch",
+        registeredUser = true
+    )
     HomeScreenContent(
+        user = user,
         uiState = uiState,
         onSettingsClick = { }
     )
