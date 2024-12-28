@@ -1,40 +1,52 @@
 package com.example.calorieapp.screens.adddata
 
-import androidx.appcompat.app.AppCompatActivity // For MaterialDatePicker usage
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding // For padding modifiers
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon // For icons in navigation buttons
-import androidx.compose.material3.IconButton // For clickable navigation icons
-import androidx.compose.material3.MaterialTheme // For styling text and colors
-import androidx.compose.material3.Surface // For the Surface container
-import androidx.compose.material3.Text // For displaying selected date as text
-import androidx.compose.material3.TextButton // For clickable date text button
-import androidx.compose.material3.TopAppBar // For creating the top app bar
-import androidx.compose.material3.TopAppBarDefaults // For default styling of the top app bar
-import androidx.compose.runtime.Composable // For defining composable functions
-import androidx.compose.runtime.mutableStateOf // For managing state in Compose
-import androidx.compose.runtime.remember // For remembering state across recompositions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier // For modifying UI elements
-import androidx.compose.ui.platform.LocalContext // For accessing the local context
-import androidx.compose.ui.res.painterResource // For loading drawable resources
-import androidx.compose.ui.tooling.preview.Preview // For the preview annotation
-import androidx.compose.ui.unit.dp // For specifying padding and size
-import com.example.calorieapp.R // Replace with your actual package for resources (arrows)
-import com.example.calorieapp.screens.homescreen.TabRowExample
-import com.google.android.material.datepicker.MaterialDatePicker // For the Material Date Picker
-import java.text.SimpleDateFormat // For formatting dates
-import java.util.Calendar // For working with dates
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.calorieapp.R
+import com.google.android.material.datepicker.MaterialDatePicker
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MealTimeSelection(){
+fun MealTimeScreen(
+    openScreen: (String) -> Unit,
+    viewModel: MealTimeViewModel = hiltViewModel()
+) {
+    MealTimeSelection(onTabSelected = openScreen)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MealTimeSelection(
+    onTabSelected: (String) -> Unit = {}
+){
     val context = LocalContext.current
     val dateFormatter = SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault())
     val calendar = remember { mutableStateOf(Calendar.getInstance()) }
@@ -148,9 +160,6 @@ fun MealTimeSelection(){
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            TabRowExample(
-                modifier = Modifier.align(Alignment.End)
-            )
         }
 
 

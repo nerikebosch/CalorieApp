@@ -16,14 +16,9 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -35,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import java.time.LocalDate
 import kotlin.Int
 
 @Composable
@@ -159,18 +155,19 @@ fun WaterProgressIndicator(
         strokeWidth = strokeWidth
     )
 }
-
+/* ***************************************** */
 @Composable
 fun HomeScreen(
     openScreen: (String) -> Unit,
-    viewModel: HomeScreenViewModel = hiltViewModel()
+    viewModel: HomeScreenViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState
-
-    HomeScreenContent(
-        uiState = uiState,
-        onSettingsClick = { viewModel.onSettingsClick(openScreen) },
-    )
+    Column {
+        HomeScreenContent(
+            uiState = uiState,
+            onSettingsClick = { viewModel.onSettingsClick(openScreen) },
+        )
+    }
 }
 
 @Composable
@@ -178,7 +175,7 @@ fun HomeScreenContent(
     uiState: HomeScreenUiState,
     onSettingsClick: () -> Unit,
 ) {
-    val date = java.time.LocalDate.now()
+    val date = LocalDate.now()
 
     Column(modifier = Modifier.padding(16.dp)) {
 
@@ -318,38 +315,18 @@ fun HomeScreenContent(
 
         }
 
-
         Spacer(modifier = Modifier.height(16.dp))
 
-        TabRowExample()
     }
 }
 
 
-@Composable
-fun TabRowExample(
-    modifier: Modifier = Modifier
-) {
-    var state by remember { mutableIntStateOf(0) }
-    val titles = listOf("Recipes", "Add data", "Statistics")
 
-    Column {
-        TabRow(selectedTabIndex = state) {
-            titles.forEachIndexed { index, title ->
-                Tab(
-                    text = { Text(title) },
-                    selected = (index == state),
-                    onClick = { state = index },
-                    modifier = modifier.align(Alignment.End)
-                )
-            }
-        }
-    }
-}
+
 
 @Preview(showBackground = true)
 @Composable
-fun TabRowExamplePreview() {
+fun HomeScreenPreview() {
     val uiState = HomeScreenUiState(
         currentCalorie = 1200,
         goalCalorie = 2500,
@@ -367,6 +344,7 @@ fun TabRowExamplePreview() {
     )
     HomeScreenContent(
         uiState = uiState,
-        onSettingsClick = { },
+        onSettingsClick = { }
     )
+
 }
