@@ -28,6 +28,9 @@ class HomeScreenViewModel @Inject constructor(
     init {
         // Collect user data when ViewModel is initialized
         viewModelScope.launch {
+            println("Debug: Is user authenticated? ${accountService.hasUser}")
+            println("Debug: Current user ID: ${accountService.currentUserId}")
+
             storageService.user.collect { fetchedUser ->
                 _user.value = fetchedUser
             }

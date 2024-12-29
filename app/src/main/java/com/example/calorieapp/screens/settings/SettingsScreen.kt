@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,6 +38,8 @@ fun SettingsScreen(
         Spacer(modifier = Modifier.spacer())
 
         SignOutCard { viewModel.onSignOutClick(restartApp) }
+
+        //ChangeDataCard { viewModel.onUserChangeClick(openAndPopUp = ) }
     }
 }
 
@@ -72,8 +75,14 @@ private fun SignOutCard(signOut: () -> Unit) {
 
 @ExperimentalMaterial3Api
 @Composable
-fun ChangeDataCard() {
-
+fun ChangeDataCard(onUserChangeClick: () -> Unit) {
+    RegularCardEditor(
+        title = AppText.your_data,
+        icon = Icons.Filled.Person,
+        content = "",
+        onEditClick = { onUserChangeClick() },
+        modifier = Modifier.card()
+    )
 }
 
 @ExperimentalMaterial3Api

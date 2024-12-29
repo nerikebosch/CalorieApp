@@ -1,5 +1,6 @@
 package com.example.calorieapp.model.service.impl
 
+import android.util.Log
 import com.example.calorieapp.model.User
 import com.example.calorieapp.model.UserData
 import com.example.calorieapp.model.service.AccountService
@@ -33,16 +34,21 @@ class StorageServiceImpl @Inject constructor(
 //                }
 //        }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     override val user: Flow<User>
-        get() = auth.currentUserObj.flatMapLatest { user ->
+        get() = auth.currentUser.flatMapLatest { user ->
+            Log.d("StorageDebug", "StorageService received user ID: ${user.id}")
+
             if (user.id.isEmpty()) {
+                Log.d("StorageDebug", "Empty user ID in StorageService")
                 flowOf(User())
             } else {
                 firestore.collection(USER_COLLECTION)
                     .document(user.id)
                     .snapshots()
                     .map { snapshot ->
+                        Log.d("StorageDebug", "Firestore snapshot exists: ${snapshot.exists()}")
+                        Log.d("StorageDebug", "Firestore data: ${snapshot.data}")
+
                         snapshot.toObject(User::class.java)?.copy(id = user.id)
                             ?: User(
                                 id = user.id,

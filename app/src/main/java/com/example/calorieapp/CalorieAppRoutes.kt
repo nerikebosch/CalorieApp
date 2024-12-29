@@ -11,3 +11,4 @@ const val STATS_SCREEN = "StatsScreen"
 const val HOME_SCREEN = "HomeScreen"
 const val MEAL_TIME_SCREEN = "MealTimeScreen"
 const val RECIPE_SCREEN = "RecipeScreen"
+const val USER_CHANGE_SCREEN = "UserChangeScreen" // to change user data (Your data) from setting screen

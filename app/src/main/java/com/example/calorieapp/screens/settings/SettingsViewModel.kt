@@ -1,7 +1,9 @@
 package com.example.calorieapp.screens.settings
 
 
+import com.example.calorieapp.SETTINGS_SCREEN
 import com.example.calorieapp.SPLASH_SCREEN
+import com.example.calorieapp.USER_CHANGE_SCREEN
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LogService
 import com.example.calorieapp.model.service.StorageService
@@ -24,6 +26,13 @@ class SettingsViewModel @Inject constructor(
             accountService.signOut()
             restartApp(SPLASH_SCREEN)
         }
+    }
+
+    fun onUserChangeClick(openAndPopUp: (String, String) -> Unit) {
+        launchCatching {
+            openAndPopUp(USER_CHANGE_SCREEN, SETTINGS_SCREEN)
+        }
+
     }
 
 //    fun onDeleteMyAccountClick(restartApp: (String) -> Unit) {
