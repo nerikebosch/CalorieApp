@@ -1,5 +1,7 @@
 package com.example.calorieapp.model.service.impl
 
+import android.util.Log
+import com.example.calorieapp.model.User
 import com.example.calorieapp.model.UserData
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.StorageService
@@ -7,10 +9,10 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObjects
-import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -20,8 +22,48 @@ class StorageServiceImpl @Inject constructor(
     private val auth: AccountService
 ) : StorageService {
 
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    override val user: Flow<User>
+//        get() = auth.currentUserObj.flatMapLatest { user ->
+//            firestore.collection(USER_COLLECTION)
+//                .document(user.id)
+//                .snapshots()
+//                .map { snapshot ->
+//                    snapshot.toObject(User::class.java)
+//                        ?: throw IllegalStateException("User data is null or invalid")
+//                }
+//        }
+
+    override val user: Flow<User>
+        get() = auth.currentUser.flatMapLatest { user ->
+            Log.d("StorageDebug", "StorageService received user ID: ${user.id}")
+
+            if (user.id.isEmpty()) {
+                Log.d("StorageDebug", "Empty user ID in StorageService")
+                flowOf(User())
+            } else {
+                firestore.collection(USER_COLLECTION)
+                    .document(user.id)
+                    .snapshots()
+                    .map { snapshot ->
+                        Log.d("StorageDebug", "Firestore snapshot exists: ${snapshot.exists()}")
+                        Log.d("StorageDebug", "Firestore data: ${snapshot.data}")
+
+                        snapshot.toObject(User::class.java)?.copy(id = user.id)
+                            ?: User(
+                                id = user.id,
+                                email = user.email,
+                                name = user.name,
+                                surname = user.surname,
+                                registeredUser = true
+                            )
+                    }
+            }
+        }
+
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    override val data: Flow<List<UserData>>
+    override val userData: Flow<List<UserData>>
         get() = auth.currentUser.flatMapLatest { user ->
             currentCollection(user.id).snapshots().map { snapshot ->
                 snapshot.toObjects<UserData>() // Use KTX toObjects()

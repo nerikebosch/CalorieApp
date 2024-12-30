@@ -2,6 +2,7 @@ package com.example.calorieapp.screens.settings
 
 
 import com.example.calorieapp.SPLASH_SCREEN
+import com.example.calorieapp.USER_CHANGE_SCREEN
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LogService
 import com.example.calorieapp.model.service.StorageService
@@ -16,6 +17,7 @@ class SettingsViewModel @Inject constructor(
     private val accountService: AccountService,
     private val storageService: StorageService
 ) : CalorieAppViewModel(logService) {
+
     val uiState = accountService.currentUser.map { SettingsUiState(it.registeredUser) }
 
     fun onSignOutClick(restartApp: (String) -> Unit) {
@@ -25,6 +27,11 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun onUserChangeClick(openScreen: (String) -> Unit) {
+        launchCatching {
+            openScreen(USER_CHANGE_SCREEN)
+        }
+    }
 //    fun onDeleteMyAccountClick(restartApp: (String) -> Unit) {
 //        launchCatching {
 //            storageService.deleteAllForUser(accountService.currentUserId)

@@ -1,9 +1,7 @@
 package com.example.calorieapp.screens.adddata
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,7 +34,7 @@ import com.example.calorieapp.R
 fun ElevatedCardAddDataScreen(
     title: String, // Title of the card
     modifier: Modifier = Modifier, // Custom modifier for layout
-    content: @Composable (() -> Unit)? = null // Lambda that can accept other composables (like icons, images)
+    content: @Composable (() -> Unit)? = null // Lambda that can accept other composable (like icons, images)
 ) {
     ElevatedCard(
         elevation = CardDefaults.cardElevation(

@@ -1,13 +1,18 @@
 package com.example.calorieapp.screens.homescreen
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.viewModelScope
 import com.example.calorieapp.SETTINGS_SCREEN
 import com.example.calorieapp.SPLASH_SCREEN
+import com.example.calorieapp.model.User
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LogService
 import com.example.calorieapp.model.service.StorageService
 import com.example.calorieapp.screens.CalorieAppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,6 +21,21 @@ class HomeScreenViewModel @Inject constructor(
     private val accountService: AccountService,
     private val storageService: StorageService
 ) : CalorieAppViewModel(logService) {
+
+    private val _user = MutableStateFlow(User())
+    val user = _user.asStateFlow()
+
+    init {
+        // Collect user data when ViewModel is initialized
+        viewModelScope.launch {
+            println("Debug: Is user authenticated? ${accountService.hasUser}")
+            println("Debug: Current user ID: ${accountService.currentUserId}")
+
+            storageService.user.collect { fetchedUser ->
+                _user.value = fetchedUser
+            }
+        }
+    }
 
     var uiState = mutableStateOf(HomeScreenUiState())
         private set
@@ -100,7 +120,8 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     val options = mutableStateOf<List<String>>(listOf())
-    val data = storageService.data
+
+    val userData = storageService.userData
 
     fun onSettingsClick(openScreen: (String) -> Unit) = openScreen(SETTINGS_SCREEN)
 
