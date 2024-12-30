@@ -24,7 +24,7 @@ import com.example.calorieapp.R.string as AppText
 @Composable 
 fun SettingsScreen(
     restartApp: (String) -> Unit,
-    //openScreen: (String) -> Unit,
+    openScreen: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
@@ -39,7 +39,7 @@ fun SettingsScreen(
 
         SignOutCard { viewModel.onSignOutClick(restartApp) }
 
-        //ChangeDataCard { viewModel.onUserChangeClick(openAndPopUp = ) }
+        ChangeDataCard { viewModel.onUserChangeClick(openScreen) }
     }
 }
 
@@ -100,6 +100,8 @@ fun SettingsScreenPreview() {
             Spacer(modifier = Modifier.spacer())
 
             SignOutCard { }
+            ChangeDataCard { }
+
         }
     }
 }

@@ -24,6 +24,10 @@ fun Modifier.card(): Modifier {
     return this.padding(16.dp, 0.dp, 16.dp, 8.dp)
 }
 
+fun Modifier.textCard(): Modifier {
+    return this.padding(16.dp, 8.dp, 16.dp, 8.dp)
+}
+
 fun Modifier.contextMenu(): Modifier {
     return this.wrapContentWidth()
 }
