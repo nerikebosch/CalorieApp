@@ -37,15 +37,26 @@ import java.util.Locale
 @Composable
 fun MealTimeScreen(
     openScreen: (String) -> Unit,
+    openAndPopUp: (String, String) -> Unit,
     viewModel: MealTimeViewModel = hiltViewModel()
 ) {
-    MealTimeSelection(onTabSelected = openScreen)
+    MealTimeSelection(
+        onTabSelected = openScreen,
+        onBreakfastClick = { viewModel.onBreakfastClick(openAndPopUp) },
+        onLunchClick = { viewModel.onLunchClick(openAndPopUp) },
+        onDinnerClick = { viewModel.onDinnerClick(openAndPopUp) },
+        onSnackClick = { viewModel.onSnackClick(openAndPopUp) }
+        )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MealTimeSelection(
-    onTabSelected: (String) -> Unit = {}
+    onTabSelected: (String) -> Unit = {},
+    onBreakfastClick: () -> Unit = {},
+    onLunchClick: () -> Unit = {},
+    onDinnerClick: () -> Unit = {},
+    onSnackClick: () -> Unit = {}
 ){
     val context = LocalContext.current
     val dateFormatter = SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault())
@@ -121,17 +132,19 @@ fun MealTimeSelection(
 
             ElevatedCardAddDataScreen(
                 title = "Breakfast",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onBreakfastClick() }
             )
 
             FilledCardExample(
                 title = "",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
 
             ElevatedCardAddDataScreen(
                 title = "Lunch",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onLunchClick() }
             )
 
             FilledCardExample(
@@ -141,7 +154,8 @@ fun MealTimeSelection(
 
             ElevatedCardAddDataScreen(
                 title = "Dinner",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onDinnerClick() }
             )
 
             FilledCardExample(
@@ -151,7 +165,8 @@ fun MealTimeSelection(
 
             ElevatedCardAddDataScreen(
                 title = "Snack",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onSnackClick() }
             )
 
             FilledCardExample(

@@ -1,5 +1,6 @@
-package com.example.calorieapp.screens.adddata
+package com.example.calorieapp.api
 
+import com.example.calorieapp.model.OpenFoodFactsResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

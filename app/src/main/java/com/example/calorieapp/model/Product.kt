@@ -1,4 +1,4 @@
-package com.example.calorieapp.screens.adddata
+package com.example.calorieapp.model
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,4 +1,4 @@
-
+package com.example.calorieapp.screens.adddata
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,7 +10,6 @@ import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
@@ -22,18 +21,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.traversalIndex
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.calorieapp.screens.adddata.MealTimeSelection
-import com.example.calorieapp.screens.adddata.Nutrients
-import com.example.calorieapp.screens.adddata.Product
-import com.example.calorieapp.screens.adddata.RetrofitClient
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.calorieapp.model.Nutrients
+import com.example.calorieapp.model.Product
+import com.example.calorieapp.api.RetrofitClient
+import com.example.calorieapp.screens.adddata.AddDataViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBarSample() {
+fun AddDataScreen(
+    openAndPopUp: (String, String) -> Unit,
+    viewModel: AddDataViewModel = hiltViewModel()
+) {
     val textFieldState = rememberTextFieldState()
     var expanded by rememberSaveable { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -45,6 +47,9 @@ fun SearchBarSample() {
     var loading by remember { mutableStateOf(false) } // Loading state
     var errorMessage by remember { mutableStateOf<String?>(null) } // Error message state
     var selectedProduct by remember { mutableStateOf<Product?>(null) }
+
+    // State to track checked items (if the checkbox is selected)
+    var checkedItems by remember { mutableStateOf(mutableListOf<String>()) }
 
     Surface {
         Box(Modifier.fillMaxSize().semantics { isTraversalGroup = true }) {
@@ -109,23 +114,32 @@ fun SearchBarSample() {
                             modifier = Modifier.align(Alignment.CenterHorizontally).padding(16.dp)
                         )
                     } else {
-                        // Show suggestions if available
                         suggestions.forEach { product ->
                             val productName = product.productName ?: "Unknown Product"
+                            val isChecked = checkedItems.contains(productName) // Check if the item is selected
+
                             ListItem(
                                 headlineContent = { Text(productName) },
-                                leadingContent = { Icon(Icons.Filled.Star, contentDescription = null) },
-                                colors = ListItemDefaults.colors(containerColor = Color.Transparent),
-                                modifier =
-                                Modifier.clickable {
-                                    textFieldState.setTextAndPlaceCursorAtEnd(productName)
-                                    selectedProduct = product
-                                    expanded = false
-                                    errorMessage = null // Clear error message on selection
-                                    suggestions = emptyList() // Clear suggestions after selection
-                                }
+                                leadingContent = {
+                                    Checkbox(
+                                        checked = isChecked,
+                                        onCheckedChange = { isChecked ->
+                                            // Add or remove the product from the checkedItems list based on its checked state
+                                            if (isChecked) {
+                                                checkedItems.add(productName)
+                                            } else {
+                                                checkedItems.remove(productName)
+                                            }
+                                        }
+                                    )
+                                },
+                                modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 16.dp, vertical = 4.dp)
+                                    .clickable {
+                                        // Set the selected product when clicked
+                                        selectedProduct = product
+                                    }
                             )
                         }
                     }
@@ -164,6 +178,7 @@ fun SearchBarSample() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
+            // Display the selected product's nutritional info, if available
             selectedProduct?.let { product ->
                 NutritionalInfo(product.nutrients)
             }
@@ -190,6 +205,6 @@ fun NutritionalInfo(nutrients: Nutrients?) {
 @Preview(showBackground = true)
 @Composable
 fun AddDataPreview() {
-    SearchBarSample()
+    AddDataScreen(openAndPopUp = { _, _ -> })
 }
 

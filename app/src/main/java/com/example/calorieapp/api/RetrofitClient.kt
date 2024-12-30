@@ -1,4 +1,4 @@
-package com.example.calorieapp.screens.adddata
+package com.example.calorieapp.api
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
