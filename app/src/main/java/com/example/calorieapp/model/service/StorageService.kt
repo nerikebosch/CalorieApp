@@ -3,6 +3,7 @@ package com.example.calorieapp.model.service
 import com.example.calorieapp.model.User
 import com.example.calorieapp.model.UserData
 import kotlinx.coroutines.flow.Flow
+import com.example.calorieapp.model.UserProducts
 
 /*
 * An interface for managing data relate to
@@ -23,4 +24,10 @@ interface StorageService {
     suspend fun getCalories(calories: Double): Double?
     suspend fun saveCalories(calories: Double)
     suspend fun getTask(task: String): String?
+
+
+    suspend fun saveBreakfast(userproducts : UserProducts)
+    suspend fun saveLunch(userproducts : UserProducts)
+    suspend fun saveDinner(userproducts : UserProducts)
+    suspend fun saveSnack(userproducts : UserProducts)
 }

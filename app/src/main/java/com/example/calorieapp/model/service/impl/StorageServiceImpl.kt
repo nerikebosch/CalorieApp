@@ -3,6 +3,7 @@ package com.example.calorieapp.model.service.impl
 import android.util.Log
 import com.example.calorieapp.model.User
 import com.example.calorieapp.model.UserData
+import com.example.calorieapp.model.UserProducts
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.StorageService
 import com.google.firebase.firestore.CollectionReference
@@ -99,6 +100,22 @@ class StorageServiceImpl @Inject constructor(
     }
 
     override suspend fun getTask(task: String): String? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun saveBreakfast(userproducts: UserProducts) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun saveLunch(userproducts: UserProducts) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun saveDinner(userproducts: UserProducts) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun saveSnack(userproducts: UserProducts) {
         TODO("Not yet implemented")
     }
 

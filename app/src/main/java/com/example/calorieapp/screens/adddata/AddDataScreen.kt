@@ -1,5 +1,7 @@
 package com.example.calorieapp.screens.adddata
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,6 +12,7 @@ import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
@@ -27,14 +30,27 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.calorieapp.model.Nutrients
 import com.example.calorieapp.model.Product
 import com.example.calorieapp.api.RetrofitClient
+import com.example.calorieapp.common.composable.TextActionToolbar
 import com.example.calorieapp.screens.adddata.AddDataViewModel
 import kotlinx.coroutines.launch
+import com.example.calorieapp.R.string as AppText
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun AddDataScreen(
     openAndPopUp: (String, String) -> Unit,
     viewModel: AddDataViewModel = hiltViewModel()
+
+){
+    AddDataSelection(
+        onSaveClick = { viewModel.onSaveClick(openAndPopUp) }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddDataSelection(
+    onSaveClick: () -> Unit = {}
 ) {
     val textFieldState = rememberTextFieldState()
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -52,9 +68,20 @@ fun AddDataScreen(
     var checkedItems by remember { mutableStateOf(mutableListOf<String>()) }
 
     Surface {
-        Box(Modifier.fillMaxSize().semantics { isTraversalGroup = true }) {
+        Column(modifier = Modifier.fillMaxSize()){
+
+            TextActionToolbar(
+                title = AppText.select_product,
+                text = "Save",
+                modifier = Modifier,
+                endAction = onSaveClick
+
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             SearchBar(
-                modifier = Modifier.align(Alignment.TopCenter).semantics { traversalIndex = 0f },
+                modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
                 inputField = {
                     SearchBarDefaults.InputField(
                         query = searchQuery,
@@ -126,7 +153,8 @@ fun AddDataScreen(
                                         onCheckedChange = { isChecked ->
                                             // Add or remove the product from the checkedItems list based on its checked state
                                             if (isChecked) {
-                                                checkedItems.add(productName)
+                                                checkedItems.remove(productName)
+                                                checkedItems.add(0,productName)
                                             } else {
                                                 checkedItems.remove(productName)
                                             }
@@ -140,6 +168,7 @@ fun AddDataScreen(
                                         // Set the selected product when clicked
                                         selectedProduct = product
                                     }
+
                             )
                         }
                     }
@@ -171,17 +200,8 @@ fun AddDataScreen(
                     )
                 }
             }
-        }
-        Spacer(modifier = Modifier.height(50.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
 
-            // Display the selected product's nutritional info, if available
-            selectedProduct?.let { product ->
-                NutritionalInfo(product.nutrients)
-            }
+
         }
     }
 }
@@ -205,6 +225,6 @@ fun NutritionalInfo(nutrients: Nutrients?) {
 @Preview(showBackground = true)
 @Composable
 fun AddDataPreview() {
-    AddDataScreen(openAndPopUp = { _, _ -> })
+    AddDataSelection()
 }
 

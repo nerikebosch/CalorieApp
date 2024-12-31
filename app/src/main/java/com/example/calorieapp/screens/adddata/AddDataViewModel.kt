@@ -14,9 +14,5 @@ class AddDataViewModel @Inject constructor(
     storageService: StorageService
 ) : CalorieAppViewModel(logService) {
 
-    fun onSaveClick(openAndPopUp: (String, String) -> Unit) {
-        TODO("Not yet implemented")
-
-
-    }
+    fun onSaveClick(openAndPopUp: (String, String) -> Unit) = openAndPopUp("MealTimeScreen", "AddDataScreen")
 }
