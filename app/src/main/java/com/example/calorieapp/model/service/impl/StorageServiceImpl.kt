@@ -20,47 +20,8 @@ import javax.inject.Inject
 
 class StorageServiceImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val auth: AccountService
+    private val auth: AccountService,
 ) : StorageService {
-
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    override val user: Flow<User>
-//        get() = auth.currentUserObj.flatMapLatest { user ->
-//            firestore.collection(USER_COLLECTION)
-//                .document(user.id)
-//                .snapshots()
-//                .map { snapshot ->
-//                    snapshot.toObject(User::class.java)
-//                        ?: throw IllegalStateException("User data is null or invalid")
-//                }
-//        }
-
-    override val user: Flow<User>
-        get() = auth.currentUser.flatMapLatest { user ->
-            Log.d("StorageDebug", "StorageService received user ID: ${user.id}")
-
-            if (user.id.isEmpty()) {
-                Log.d("StorageDebug", "Empty user ID in StorageService")
-                flowOf(User())
-            } else {
-                firestore.collection(USER_COLLECTION)
-                    .document(user.id)
-                    .snapshots()
-                    .map { snapshot ->
-                        Log.d("StorageDebug", "Firestore snapshot exists: ${snapshot.exists()}")
-                        Log.d("StorageDebug", "Firestore data: ${snapshot.data}")
-
-                        snapshot.toObject(User::class.java)?.copy(id = user.id)
-                            ?: User(
-                                id = user.id,
-                                email = user.email,
-                                name = user.name,
-                                surname = user.surname,
-                                registeredUser = true
-                            )
-                    }
-            }
-        }
 
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -70,6 +31,12 @@ class StorageServiceImpl @Inject constructor(
                 snapshot.toObjects<UserData>() // Use KTX toObjects()
             }
         }
+
+
+    override suspend fun updateUser(user: User) {
+        TODO("Not yet implemented")
+    }
+
 
     override suspend fun save(userData: UserData) {
         TODO("Not yet implemented")

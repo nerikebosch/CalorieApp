@@ -1,5 +1,6 @@
 package com.example.calorieapp.model.service.impl
 
+import android.R.attr.name
 import com.example.calorieapp.model.User
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.trace
@@ -7,9 +8,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.snapshots
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -26,40 +29,31 @@ class AccountServiceImpl @Inject constructor(
 
     override val currentUser: Flow<User>
         get() = callbackFlow {
-            val listener =
-                FirebaseAuth.AuthStateListener { auth ->
-                    this.trySend(auth.currentUser?.let {
-                        User(
-                            it.uid
-                        ) } ?: User())
-                }
-            auth.addAuthStateListener(listener)
-            awaitClose { auth.removeAuthStateListener(listener) }
-        }
-
-    override val currentUserObj: Flow<User>
-        get() = callbackFlow {
             val listener = FirebaseAuth.AuthStateListener { auth ->
                 auth.currentUser?.let { firebaseUser ->
                     firestore.collection("users")
                         .document(firebaseUser.uid)
                         .get()
                         .addOnSuccessListener { document ->
-                            val user = document.toObject(User::class.java) ?: User(
-                                id = firebaseUser.uid,
-                                email = firebaseUser.email ?: "",
-                                name = firebaseUser.displayName?.split(" ")?.firstOrNull() ?: "",
-                                surname = firebaseUser.displayName?.split(" ")?.lastOrNull() ?: "",
-                                registeredUser = document.exists()
-                            )
-                            trySend(user)
+                            if (document.exists()) {
+                                val user = document.toObject(User::class.java)?.copy(id = firebaseUser.uid)
+                                println("AccountServiceDebug: User retrieved from Firestore: $user")
+                                trySend(user ?: User())
+                            } else {
+                                trySend(User()) // Send an empty User if the document doesn't exist
+                            }
                         }
-                } ?: trySend(User()) // Send empty user if not authenticated
+                        .addOnFailureListener { exception ->
+                            exception.printStackTrace()
+                            trySend(User())
+                        }
+                } ?: trySend(User())
             }
 
             auth.addAuthStateListener(listener)
             awaitClose { auth.removeAuthStateListener(listener) }
         }
+
 
     override suspend fun authenticate(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password).await()
@@ -90,4 +84,6 @@ class AccountServiceImpl @Inject constructor(
     companion object {
         private const val LINK_ACCOUNT_TRACE = "linkAccount"
     }
+
+
 }

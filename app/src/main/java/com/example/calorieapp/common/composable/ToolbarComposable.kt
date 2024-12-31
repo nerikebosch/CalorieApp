@@ -105,3 +105,14 @@ fun TextActionToolBarPreview(){
         endAction = { }
     )
 }
+
+@Preview
+@Composable
+fun ActionToolBarPreview(){
+    ActionToolbar(
+        title = AppText.settings,
+        endActionIcon = AppIcon.ic_settings,
+        modifier = Modifier,
+        endAction = { }
+    )
+}

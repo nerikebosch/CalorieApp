@@ -27,16 +27,6 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onUserChangeClick(openScreen: (String) -> Unit) {
-        launchCatching {
-            openScreen(USER_CHANGE_SCREEN)
-        }
-    }
-//    fun onDeleteMyAccountClick(restartApp: (String) -> Unit) {
-//        launchCatching {
-//            storageService.deleteAllForUser(accountService.currentUserId)
-//            accountService.deleteAccount()
-//            restartApp(SPLASH_SCREEN)
-//        }
-//    }
+    fun onUserChangeClick(openScreen: (String) -> Unit) = openScreen(USER_CHANGE_SCREEN)
+
 }

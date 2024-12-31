@@ -13,9 +13,9 @@ import com.example.calorieapp.model.UserProducts
 */
 interface StorageService {
 
-    val user: Flow<User>
     val userData: Flow<List<UserData>>
 
+    suspend fun updateUser(user: User)
     suspend fun save(userData: UserData)
     suspend fun getHeight(height: Double): Double?
     suspend fun saveHeight(height: Double)

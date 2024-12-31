@@ -131,6 +131,7 @@ fun CalorieAppTheme(
             //window.statusBarColor = colorScheme.primary.toArgb()
             window.statusBarColor = Color.Transparent.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+
         }
     }
 

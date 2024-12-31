@@ -31,7 +31,7 @@ class HomeScreenViewModel @Inject constructor(
             println("Debug: Is user authenticated? ${accountService.hasUser}")
             println("Debug: Current user ID: ${accountService.currentUserId}")
 
-            storageService.user.collect { fetchedUser ->
+            accountService.currentUser.collect { fetchedUser ->
                 _user.value = fetchedUser
             }
         }
@@ -132,5 +132,4 @@ class HomeScreenViewModel @Inject constructor(
         }
 
     }
-
 }

@@ -335,14 +335,7 @@ fun LabelTextField(
     label: String,
     trailing: @Composable (() -> Unit)? = null,
 ) {
-    val uiColor = if (isSystemInDarkTheme()) Color.White else MaterialTheme.colorScheme.primary
-
-    // Adjust the icon tint for visibility in both light and dark themes
-    if (isSystemInDarkTheme()) {
-        MaterialTheme.colorScheme.onPrimary // Dark mode: use a light icon color
-    } else {
-        MaterialTheme.colorScheme.onSurface // Light mode: use a dark icon color
-    }
+    val uiColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.primary
 
     OutlinedTextField(
         value = value,

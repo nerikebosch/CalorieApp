@@ -10,7 +10,6 @@ interface AccountService {
 
     val currentUser: Flow<User>
 
-    val currentUserObj: Flow<User>
 
     suspend fun authenticate(email: String, password: String)
     suspend fun sendRecoveryEmail(email: String)

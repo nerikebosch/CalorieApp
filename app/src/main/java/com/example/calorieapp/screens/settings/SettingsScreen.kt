@@ -39,7 +39,9 @@ fun SettingsScreen(
 
         SignOutCard { viewModel.onSignOutClick(restartApp) }
 
-        ChangeDataCard { viewModel.onUserChangeClick(openScreen) }
+        ChangeDataCard {
+            println("ChangeDataDebug: On user change clicked!!")
+            viewModel.onUserChangeClick(openScreen) }
     }
 }
 
