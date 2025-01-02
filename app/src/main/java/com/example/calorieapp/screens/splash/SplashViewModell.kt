@@ -18,6 +18,7 @@ class SplashViewModel @Inject constructor(
     private val accountService: AccountService,
     logService: LogService
 ) : CalorieAppViewModel(logService) {
+
     private val _showError = mutableStateOf(false)
     val showError = _showError as State<Boolean> // Make it read-only for the UI
 

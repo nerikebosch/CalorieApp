@@ -1,20 +1,21 @@
 package com.example.calorieapp.model.service.impl
 
-import android.util.Log
 import com.example.calorieapp.model.User
 import com.example.calorieapp.model.UserData
 import com.example.calorieapp.model.UserProducts
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.StorageService
+import com.example.calorieapp.model.service.trace
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObjects
+import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 
@@ -27,11 +28,17 @@ class StorageServiceImpl @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     override val userData: Flow<List<UserData>>
         get() = auth.currentUser.flatMapLatest { user ->
-            currentCollection(user.id).snapshots().map { snapshot ->
+            currentCollection(user.id, USER_DATA_COLLECTION).snapshots().map { snapshot ->
                 snapshot.toObjects<UserData>() // Use KTX toObjects()
             }
         }
 
+    override val userProducts: Flow<List<UserProducts>>
+        get() = auth.currentUser.flatMapLatest { user ->
+            currentCollection(user.id, USER_PRODUCT_COLLECTION).snapshots().map { snapshot ->
+                snapshot.toObjects<UserProducts>() // Use KTX toObjects()
+            }
+        }
 
     override suspend fun updateUser(user: User) {
         TODO("Not yet implemented")
@@ -70,28 +77,25 @@ class StorageServiceImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun saveBreakfast(userproducts: UserProducts) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getUserProduct(userProducId: String): UserProducts? =
+        currentCollection(auth.currentUserId, USER_PRODUCT_COLLECTION).document(userProducId).get().await().toObject()
 
-    override suspend fun saveLunch(userproducts: UserProducts) {
-        TODO("Not yet implemented")
-    }
 
-    override suspend fun saveDinner(userproducts: UserProducts) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun saveUserProduct(userProduct: UserProducts): String =
+        trace(SAVE_USER_PRODUCT) {
+            currentCollection(auth.currentUserId, USER_PRODUCT_COLLECTION).add(userProduct).await().id
+        }
 
-    override suspend fun saveSnack(userproducts: UserProducts) {
-        TODO("Not yet implemented")
-    }
 
-    private fun currentCollection(uid: String): CollectionReference =
-        firestore.collection(USER_COLLECTION).document(uid).collection(USER_DATA_COLLECTION)
+    private fun currentCollection(uid: String, data: String): CollectionReference =
+        firestore.collection(USER_COLLECTION).document(uid).collection(data)
+
 
     companion object {
         private const val USER_COLLECTION = "users"
         private const val USER_DATA_COLLECTION = "userData"
+        private const val USER_PRODUCT_COLLECTION = "userProducts"
+        private const val SAVE_USER_PRODUCT = "saveUserProducts"
 
     }
 

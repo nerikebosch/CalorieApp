@@ -1,8 +1,8 @@
 package com.example.calorieapp.screens.homescreen
 
 data class HomeScreenUiState(
-    val currentCalorie: Int = 0,
-    val goalCalorie: Int = 0,
+    val currentCalorie: Float = 0.0f,
+    val goalCalorie: Float = 0.0f,
     val currentWeight: Float = 0.0f,
     val goalWeight : Float = 0.0f,
     val currentWater: Float = 0.0f,

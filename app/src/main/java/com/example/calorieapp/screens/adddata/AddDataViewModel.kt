@@ -11,8 +11,11 @@ import javax.inject.Inject
 class AddDataViewModel @Inject constructor(
     logService: LogService,
     private val accountService: AccountService,
-    storageService: StorageService
+    private val storageService: StorageService,
 ) : CalorieAppViewModel(logService) {
 
-    fun onSaveClick(openAndPopUp: (String, String) -> Unit) = openAndPopUp("MealTimeScreen", "AddDataScreen")
+    fun onSaveClick(openAndPopUp: (String, String) -> Unit) {
+
+        openAndPopUp("MealTimeScreen", "AddDataScreen")
+    }
 }

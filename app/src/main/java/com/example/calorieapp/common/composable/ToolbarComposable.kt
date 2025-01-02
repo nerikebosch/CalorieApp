@@ -25,13 +25,14 @@ import com.example.calorieapp.R.string as AppText
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BasicToolbar(@StringRes title: Int) {
-    TopAppBar(title = { Text(stringResource(title)) },
+    CenterAlignedTopAppBar(title = { Text(stringResource(title))},
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             titleContentColor = MaterialTheme.colorScheme.onPrimary
         )
     )
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

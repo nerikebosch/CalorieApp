@@ -61,8 +61,8 @@ fun ElevatedCardHomeScreen(
 @Composable
 fun ElevatedCardCalorieTracker(
     title: String,
-    currentCalories: Int = 0,
-    goalCalories: Int = 1, // Default value to prevent division by zero
+    currentCalories: Float = 0.0f,
+    goalCalories: Float = 1.0f, // Default value to prevent division by zero
     modifier: Modifier = Modifier,
     gradientStart: Color = MaterialTheme.colorScheme.primary,
     gradientEnd: Color = MaterialTheme.colorScheme.secondary,

@@ -1,5 +1,6 @@
 package com.example.calorieapp.common.composable
 
+import android.R.attr.label
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -102,5 +103,50 @@ fun CardSelector(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             onNewValue = onNewValue
         )
+    }
+}
+
+@ExperimentalMaterial3Api
+@Composable
+fun TextCardEditor(
+    label: String,
+    detail: String,
+    icon: ImageVector,
+    onEditClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val highlightColor = MaterialTheme.colorScheme.onSurface
+
+    ElevatedCard(
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        ),
+        modifier = modifier,
+        onClick = onEditClick
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth().padding(16.dp)
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                if (label.isNotBlank()) {
+                    Text(label, color = highlightColor)
+                }
+
+                if (detail.isNotBlank()) {
+                    Text(
+                        text = detail,
+                        modifier = Modifier.padding(top = 2.dp),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            }
+
+            Icon(
+                imageVector = icon,
+                contentDescription = "Icon",
+                tint = highlightColor)
+        }
     }
 }

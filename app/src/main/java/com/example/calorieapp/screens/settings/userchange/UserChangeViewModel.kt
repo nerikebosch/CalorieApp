@@ -1,7 +1,7 @@
 package com.example.calorieapp.screens.settings.userchange
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
+import com.example.calorieapp.common.snackbar.SnackbarManager
 import com.example.calorieapp.model.User
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LogService
@@ -12,13 +12,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.example.calorieapp.R.string as AppText
 
 @HiltViewModel
 class UserChangeViewModel @Inject constructor(
     private val accountService: AccountService,
     private val storageService: StorageService,
-    logService: LogService
+    logService: LogService,
 ) : CalorieAppViewModel(logService) {
+
 
     private val _user = MutableStateFlow(User())
     val user = _user.asStateFlow()
@@ -26,7 +28,7 @@ class UserChangeViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
-    fun loadUserData() {
+    init {
         // Collect user data when ViewModel is initialized
         viewModelScope.launch {
             println("ChangeScreenDebug: Is user authenticated? ${accountService.hasUser}")
@@ -49,17 +51,28 @@ class UserChangeViewModel @Inject constructor(
     }
 
     fun onDoneClick(popUpScreen: () -> Unit) {
+        if (_user.value.name.isBlank() ) {
+            SnackbarManager.showMessage(AppText.empty_name_error)
+            return
+        }
+
+        if (_user.value.surname.isBlank() ) {
+            SnackbarManager.showMessage(AppText.empty_surname_error)
+            return
+        }
+
         if (_user.value.id.isBlank()) {
             launchCatching { throw IllegalStateException("User ID cannot be empty") }
             return
         }
 
         launchCatching {
-            _isLoading.value = true
             accountService.linkAccount(_user.value)
-            _isLoading.value = false
             popUpScreen()
         }
 
     }
+
 }
+
+

@@ -1,9 +1,12 @@
 package com.example.calorieapp.screens.settings.userchange
 
+import android.R.attr.label
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -32,6 +35,7 @@ import com.example.calorieapp.model.User
 import com.example.calorieapp.screens.settings.SettingsViewModel
 import com.example.calorieapp.ui.theme.CalorieAppTheme
 import com.example.calorieapp.R.string as AppText
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 
 @Composable
@@ -39,38 +43,19 @@ fun UserChangeScreen(
     popUpScreen: () -> Unit,
     viewModel: UserChangeViewModel = hiltViewModel()
 ) {
-    val user by viewModel.user.collectAsState(initial = User())
+    val user by viewModel.user.collectAsStateWithLifecycle()
 
-    println("UserChangeScreenDebug: screen Loaded")
+    println("UserChangeScreenDebug: Screen loaded")
     println("UserChangeScreenDebug: User ID: ${user.id}, Name: ${user.name}, Surname: ${user.surname}")
 
-    val isLoading by viewModel.isLoading.collectAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.loadUserData()
-    }
-
-    if (isLoading) {
-
-        CircularProgressIndicator(modifier = Modifier.size(48.dp))
-    } else {
         UserChangeScreenContent(
             onDoneClick = { viewModel.onDoneClick(popUpScreen) },
             user = user,
             onNameChange = viewModel::onNameChange,
             onSurnameChange = viewModel::onSurnameChange
         )
-    }
 
 }
-//@Composable
-//fun UserChangeScreen(
-//    popUpScreen: () -> Unit,
-//    modifier: Modifier = Modifier
-//) {
-//    println("UserChangeScreenDebug: screen Loaded")
-//    Text(text = "hello", modifier = modifier)
-//}
 
 @Composable
 fun UserChangeScreenContent(
@@ -93,8 +78,8 @@ fun UserChangeScreenContent(
         }
         Spacer(modifier = Modifier.spacer())
         LabelTextField(
-            value = "${user.name}", // user.name
-            onValueChange = onNameChange , //viewModel::onNameChange,
+            value = user.name,
+            onValueChange = onNameChange ,
             label = "Your name",
             modifier = Modifier.textCard()
         )
@@ -106,6 +91,14 @@ fun UserChangeScreenContent(
         )
         Spacer(modifier = Modifier.spacer())
 
+    }
+}
+
+@Composable
+fun LoadingChangeScreen() {
+    Box(modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center)  {
+        CircularProgressIndicator(modifier = Modifier.size(48.dp))
     }
 }
 

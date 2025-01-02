@@ -41,6 +41,9 @@
     <string name="settings">Settings</string>
     <string name="sign_out">Sign out</string>
     <string name="your_data">Your data</string>
+    <string name="empty_name_error">Name cannot be empty.</string>
+    <string name="empty_surname_error">Surname cannot be empty</string>
+
     <!-- StatsScreen -->
     <string name="stats">Statistics</string>
     <string name="completed_tasks">Completed tasks</string>

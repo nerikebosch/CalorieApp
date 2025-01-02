@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.calorieapp.model.User
 import java.time.LocalDate
-import kotlin.Int
 
 @Composable
 fun GradientProgressIndicator(
@@ -114,8 +113,8 @@ fun GradientProgressIndicatorWater(
 
 @Composable
 fun CalorieProgressIndicator(
-    currentCalories: Int,
-    goalCalories: Int,
+    currentCalories: Float,
+    goalCalories: Float,
     modifier: Modifier = Modifier,
     gradientStart: Color,
     gradientEnd: Color,
@@ -166,7 +165,6 @@ fun HomeScreen(
     val uiState by viewModel.uiState
     val user by viewModel.user.collectAsState(initial = User())
 
-    //if (user.id.isEmpty()) {Text("EMpty")}
     Column {
         HomeScreenContent(
             user = user,
@@ -200,8 +198,6 @@ fun HomeScreenContent(
                 modifier = Modifier.align(Alignment.CenterVertically)) {
                 Icon(Icons.Filled.Menu, contentDescription = "Menu")
             }
-
-
         }
 
         Text(
@@ -212,7 +208,6 @@ fun HomeScreenContent(
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)
         )
-
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -261,9 +256,9 @@ fun HomeScreenContent(
                     )
                     Spacer(modifier = Modifier.height(15.dp))
 
-                    Row() {
+                    Row {
                         Spacer(modifier = Modifier.width(15.dp))
-                        Column() {
+                        Column {
                             Text(
                                 text = "Proteins",
                                 style = MaterialTheme.typography.bodyMedium
@@ -274,7 +269,7 @@ fun HomeScreenContent(
                             )
                         }
                         Spacer(modifier = Modifier.width(50.dp))
-                        Column() {
+                        Column {
 
                             Text(
                                 text = "Carbs",
@@ -286,7 +281,7 @@ fun HomeScreenContent(
                             )
                         }
                         Spacer(modifier = Modifier.width(50.dp))
-                        Column(){
+                        Column{
 
                             Text(
                                 text = "Fats",
@@ -298,7 +293,7 @@ fun HomeScreenContent(
                             )
                         }
                         Spacer(modifier = Modifier.width(50.dp))
-                        Column() {
+                        Column {
                             Text(
                                 text = "RDC",
                                 style = MaterialTheme.typography.bodyMedium
@@ -327,10 +322,10 @@ fun HomeScreenContent(
 @Composable
 fun HomeScreenPreview() {
     val uiState = HomeScreenUiState(
-        currentCalorie = 1200,
-        goalCalorie = 2500,
-        currentWeight = 78.0f,
-        goalWeight = 70.0f,
+        currentCalorie = 1200.0f,
+        goalCalorie = 2500.0f,
+        currentWeight = 58.0f,
+        goalWeight = 50.0f,
         currentWater = 1230.0f,
         goalWater = 2000.0f,
 

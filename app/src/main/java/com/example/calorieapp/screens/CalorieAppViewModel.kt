@@ -22,4 +22,6 @@ open class CalorieAppViewModel(private val logService: LogService) : ViewModel()
             },
             block = block
         )
+
+
 }

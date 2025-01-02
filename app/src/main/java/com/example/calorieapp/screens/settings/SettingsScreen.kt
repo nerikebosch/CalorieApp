@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -15,9 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.calorieapp.common.composable.*
 import com.example.calorieapp.common.ext.*
 import com.example.calorieapp.ui.theme.CalorieAppTheme
+import com.google.android.play.integrity.internal.f
 import com.example.calorieapp.R.string as AppText
 
 @ExperimentalMaterial3Api
@@ -29,6 +33,8 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
 
+    //val user by viewModel.user.collectAsStateWithLifecycle()
+
     Column(
         modifier = modifier.fillMaxWidth().fillMaxHeight().verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -37,11 +43,17 @@ fun SettingsScreen(
 
         Spacer(modifier = Modifier.spacer())
 
+        ChangeDataCard(
+            fullName = "",
+            email = ""
+        ) {
+            println("ChangeDataDebug: On user change clicked!!")
+            viewModel.onUserChangeClick(openScreen)
+        }
+
         SignOutCard { viewModel.onSignOutClick(restartApp) }
 
-        ChangeDataCard {
-            println("ChangeDataDebug: On user change clicked!!")
-            viewModel.onUserChangeClick(openScreen) }
+
     }
 }
 
@@ -77,13 +89,24 @@ private fun SignOutCard(signOut: () -> Unit) {
 
 @ExperimentalMaterial3Api
 @Composable
-fun ChangeDataCard(onUserChangeClick: () -> Unit) {
-    RegularCardEditor(
-        title = AppText.your_data,
-        icon = Icons.Filled.Person,
-        content = "",
+fun ChangeDataCard(
+    fullName: String,
+    email: String,
+    onUserChangeClick: () -> Unit) {
+//    RegularCardEditor(
+//        title = AppText.your_data,
+//        icon = Icons.Filled.ChevronRight,
+//        content = "",
+//        onEditClick = { onUserChangeClick() },
+//        modifier = Modifier.textCard()
+//    )
+
+    TextCardEditor(
+        label = fullName,
+        detail = email,
+        icon = Icons.Filled.ChevronRight,
         onEditClick = { onUserChangeClick() },
-        modifier = Modifier.card()
+        modifier = Modifier.textCard()
     )
 }
 
@@ -101,8 +124,13 @@ fun SettingsScreenPreview() {
 
             Spacer(modifier = Modifier.spacer())
 
+            ChangeDataCard(
+                fullName = "John Doe",
+                email = "john.c.breckinridge@altostrat.com",
+                onUserChangeClick = {}
+            )
             SignOutCard { }
-            ChangeDataCard { }
+
 
         }
     }

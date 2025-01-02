@@ -14,6 +14,7 @@ import com.example.calorieapp.model.UserProducts
 interface StorageService {
 
     val userData: Flow<List<UserData>>
+    val userProducts: Flow<List<UserProducts>>
 
     suspend fun updateUser(user: User)
     suspend fun save(userData: UserData)
@@ -26,8 +27,6 @@ interface StorageService {
     suspend fun getTask(task: String): String?
 
 
-    suspend fun saveBreakfast(userproducts : UserProducts)
-    suspend fun saveLunch(userproducts : UserProducts)
-    suspend fun saveDinner(userproducts : UserProducts)
-    suspend fun saveSnack(userproducts : UserProducts)
+    suspend fun getUserProduct(userProductId: String): UserProducts?
+    suspend fun saveUserProduct(userProduct: UserProducts): String
 }
