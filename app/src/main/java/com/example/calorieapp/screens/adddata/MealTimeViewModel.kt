@@ -17,8 +17,19 @@ class MealTimeViewModel @Inject constructor(
 
     val userData = storageService.userData
 
-    fun onBreakfastClick(openAndPopUp: (String, String) -> Unit) = openAndPopUp("AddDataScreen", "MealTimeScreen")
-    fun onLunchClick(openAndPopUp: (String, String) -> Unit) = openAndPopUp("AddDataScreen", "MealTimeScreen")
-    fun onDinnerClick(openAndPopUp: (String, String) -> Unit) = openAndPopUp("AddDataScreen", "MealTimeScreen")
-    fun onSnackClick(openAndPopUp: (String, String) -> Unit) = openAndPopUp("AddDataScreen", "MealTimeScreen")
+    fun onBreakfastClick(openAndPopUp: (String, String) -> Unit) {
+        openAndPopUp("AddDataScreen/Breakfast", "MealTimeScreen")
+    }
+
+    fun onLunchClick(openAndPopUp: (String, String) -> Unit) {
+        openAndPopUp("AddDataScreen/Lunch", "MealTimeScreen")
+    }
+
+    fun onDinnerClick(openAndPopUp: (String, String) -> Unit) {
+        openAndPopUp("AddDataScreen/Dinner", "MealTimeScreen")
+    }
+
+    fun onSnackClick(openAndPopUp: (String, String) -> Unit) {
+        openAndPopUp("AddDataScreen/Snack", "MealTimeScreen")
+    }
 }

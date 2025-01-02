@@ -155,12 +155,13 @@ fun NavGraphBuilder.calorieGraph(
         )
     }
 
-    composable(ADD_DATA_SCREEN) {
+    composable("$ADD_DATA_SCREEN/{mealType}") { backStackEntry ->
+        val mealType = backStackEntry.arguments?.getString("mealType") ?: "Breakfast"
         AddDataScreen(
             openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) },
-            sharedViewModel = sharedViewModel
+            sharedViewModel = sharedViewModel,
+            mealType = mealType
         )
-
     }
 
 }

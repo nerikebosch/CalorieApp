@@ -35,12 +35,14 @@ import com.example.calorieapp.R.string as AppText
 fun AddDataScreen(
     openAndPopUp: (String, String) -> Unit,
     sharedViewModel: SharedViewModel,
-    viewModel: AddDataViewModel = hiltViewModel()
+    viewModel: AddDataViewModel = hiltViewModel(),
+    mealType: String
 
 ){
     AddDataSelection(
+        mealType = mealType,
         onSaveClick = {selectedProducts ->
-            sharedViewModel.setUserProducts("Breakfast", selectedProducts)
+            sharedViewModel.setUserProducts(mealType, selectedProducts)
             viewModel.onSaveClick(openAndPopUp) }
     )
 }
@@ -48,6 +50,7 @@ fun AddDataScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddDataSelection(
+    mealType: String = "",
     onSaveClick: (List<Product>) -> Unit = {}
 ) {
     val textFieldState = rememberTextFieldState()

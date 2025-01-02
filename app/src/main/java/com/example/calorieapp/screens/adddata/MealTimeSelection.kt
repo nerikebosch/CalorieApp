@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -68,135 +70,105 @@ fun MealTimeSelection(
     onLunchClick: () -> Unit = {},
     onDinnerClick: () -> Unit = {},
     onSnackClick: () -> Unit = {}
-){
+) {
     val context = LocalContext.current
     val dateFormatter = SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault())
     val calendar = remember { mutableStateOf(Calendar.getInstance()) }
-
     val selectedDate = remember { mutableStateOf(dateFormatter.format(calendar.value.time)) }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            TopAppBar(
-                title = {
-                    TextButton(
-                        onClick = {
-                            // Open Date Picker
-                            val datePicker = MaterialDatePicker.Builder.datePicker()
-                                .setTitleText("Select Date")
-                                .setSelection(calendar.value.timeInMillis)
-                                .build()
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            item {
+                TopAppBar(
+                    title = {
+                        TextButton(
+                            onClick = {
+                                // Open Date Picker
+                                val datePicker = MaterialDatePicker.Builder.datePicker()
+                                    .setTitleText("Select Date")
+                                    .setSelection(calendar.value.timeInMillis)
+                                    .build()
 
-                            datePicker.addOnPositiveButtonClickListener { timestamp ->
-                                calendar.value.timeInMillis = timestamp
-                                selectedDate.value = dateFormatter.format(calendar.value.time)
-                            }
+                                datePicker.addOnPositiveButtonClickListener { timestamp ->
+                                    calendar.value.timeInMillis = timestamp
+                                    selectedDate.value = dateFormatter.format(calendar.value.time)
+                                }
 
-                            datePicker.show(
-                                (context as AppCompatActivity).supportFragmentManager,
-                                "datePicker"
+                                datePicker.show(
+                                    (context as AppCompatActivity).supportFragmentManager,
+                                    "datePicker"
+                                )
+                            },
+                            modifier = Modifier.padding(horizontal = 8.dp).fillMaxWidth()
+                        ) {
+                            Text(
+                                text = selectedDate.value,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.align(Alignment.CenterVertically)
                             )
-                        },
-                        modifier = Modifier.padding(horizontal = 8.dp).fillMaxWidth()
-                    ) {
-                        Text(
-                            text = selectedDate.value,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        )
-                    }
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        calendar.value.add(Calendar.DAY_OF_MONTH, -1)
-                        selectedDate.value = dateFormatter.format(calendar.value.time)
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_arrow_left),
-                            contentDescription = "Previous Date"
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = {
-                        calendar.value.add(Calendar.DAY_OF_MONTH, 1)
-                        selectedDate.value = dateFormatter.format(calendar.value.time)
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_arrow_right),
-                            contentDescription = "Next Date"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                        }
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            calendar.value.add(Calendar.DAY_OF_MONTH, -1)
+                            selectedDate.value = dateFormatter.format(calendar.value.time)
+                        }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_arrow_left),
+                                contentDescription = "Previous Date"
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = {
+                            calendar.value.add(Calendar.DAY_OF_MONTH, 1)
+                            selectedDate.value = dateFormatter.format(calendar.value.time)
+                        }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_arrow_right),
+                                contentDescription = "Next Date"
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary
+                    )
                 )
-            )
+            }
 
-            // Main Content for meals
+            // Add ElevatedCard for each meal time
+            items(listOf("Breakfast", "Lunch", "Dinner", "Snack")) { mealTime ->
+                ElevatedCardAddDataScreen(
+                    title = mealTime,
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        when (mealTime) {
+                            "Breakfast" -> onBreakfastClick()
+                            "Lunch" -> onLunchClick()
+                            "Dinner" -> onDinnerClick()
+                            "Snack" -> onSnackClick()
+                        }
+                    }
+                )
 
-            ElevatedCardAddDataScreen(
-                title = "Breakfast",
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { onBreakfastClick() }
-            )
+                FilledCardExample(
+                    title = "",
+                    modifier = Modifier.fillMaxWidth(),
+                    userProducts = userProducts[mealTime] ?: emptyList()
+                )
+            }
 
-            FilledCardExample(
-                title = "",
-                modifier = Modifier.fillMaxWidth(),
-                userProducts = userProducts["Breakfast"] ?: emptyList()
-            )
-
-            ElevatedCardAddDataScreen(
-                title = "Lunch",
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { onLunchClick() }
-            )
-
-            FilledCardExample(
-                title = "",
-                modifier = Modifier.fillMaxWidth(),
-                userProducts = userProducts["Lunch"] ?: emptyList()
-            )
-
-            ElevatedCardAddDataScreen(
-                title = "Dinner",
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { onDinnerClick() }
-            )
-
-            FilledCardExample(
-                title = "",
-                modifier = Modifier.fillMaxWidth(),
-                userProducts = userProducts["Dinner"] ?: emptyList()
-            )
-
-            ElevatedCardAddDataScreen(
-                title = "Snack",
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { onSnackClick() }
-            )
-
-            FilledCardExample(
-                title = "",
-                modifier = Modifier.fillMaxWidth(),
-                userProducts = userProducts["Snack"] ?: emptyList()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
-
-
     }
-
 }
+
 
 @Preview(showBackground = true)
 @Composable
