@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.calorieapp.R
+import com.example.calorieapp.model.Product
 
 @Composable
 fun ElevatedCardAddDataScreen(
@@ -87,6 +88,7 @@ fun ElevatedCardAddDataScreen(
 @Composable
 fun FilledCardExample(
     title : String,
+    userProducts: List<Product>,
     modifier: Modifier = Modifier) {
 
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -124,16 +126,20 @@ fun FilledCardExample(
 
         if (expanded) {
             Column {
-                ListItem(
-                    headlineContent = { Text("Item 1") },
-                    supportingContent = { Text("Description for Item 1") },
-                    leadingContent = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_arrow_down),
-                            contentDescription = null
-                        )
-                    }
-                )
+                userProducts.forEach { product ->
+                    ListItem(
+                        headlineContent = { product.productName?.let { Text(it) } },
+                        supportingContent = {
+                            Column {
+                                Text("Carbohydrates: ${product.nutrients?.carbohydrates ?: "N/A"} g")
+                                Text("Protein: ${product.nutrients?.protein ?: "N/A"} g")
+                                Text("Fat: ${product.nutrients?.fat ?: "N/A"} g")
+                                Text("Calories: ${product.nutrients?.calories ?: "N/A"} kcal")
+                            } },
+                    )
+
+                }
+
             }
         }
     }

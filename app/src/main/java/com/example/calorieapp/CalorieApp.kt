@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -43,6 +44,7 @@ fun CalorieApp() {
         Surface(color = MaterialTheme.colorScheme.background) {
             val appState = rememberAppState()
             val snackbarHostState = appState.snackbarHostState
+            val sharedViewModel: SharedViewModel = hiltViewModel()
 
             // Get current route to determine if we should show TabRow
             val currentRoute = appState.navController.currentBackStackEntryAsState().value?.destination?.route
@@ -82,7 +84,7 @@ fun CalorieApp() {
                     startDestination = SPLASH_SCREEN,
                     modifier = Modifier.padding(paddingValues)
                 ) {
-                    calorieGraph(appState)
+                    calorieGraph(appState, sharedViewModel)
                 }
             }
         }
@@ -110,7 +112,10 @@ fun resources(): Resources {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-fun NavGraphBuilder.calorieGraph(appState: CalorieAppState) {
+fun NavGraphBuilder.calorieGraph(
+    appState: CalorieAppState,
+    sharedViewModel: SharedViewModel
+    ) {
 
     composable(HOME_SCREEN) {
         HomeScreen(openScreen = { route -> appState.navigate(route) })
@@ -143,12 +148,18 @@ fun NavGraphBuilder.calorieGraph(appState: CalorieAppState) {
     }
 
     composable(MEAL_TIME_SCREEN) {
-        MealTimeScreen(openScreen = { route -> appState.navigate(route) },
-            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+        MealTimeScreen(
+            openScreen = { route -> appState.navigate(route) },
+            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) },
+            sharedViewModel = sharedViewModel
+        )
     }
 
     composable(ADD_DATA_SCREEN) {
-        AddDataScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+        AddDataScreen(
+            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) },
+            sharedViewModel = sharedViewModel
+        )
 
     }
 

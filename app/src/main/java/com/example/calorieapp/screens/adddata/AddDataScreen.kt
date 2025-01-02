@@ -1,7 +1,5 @@
 package com.example.calorieapp.screens.adddata
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,7 +10,6 @@ import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
@@ -22,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,7 +27,6 @@ import com.example.calorieapp.model.Nutrients
 import com.example.calorieapp.model.Product
 import com.example.calorieapp.api.RetrofitClient
 import com.example.calorieapp.common.composable.TextActionToolbar
-import com.example.calorieapp.screens.adddata.AddDataViewModel
 import kotlinx.coroutines.launch
 import com.example.calorieapp.R.string as AppText
 
@@ -39,18 +34,21 @@ import com.example.calorieapp.R.string as AppText
 @Composable
 fun AddDataScreen(
     openAndPopUp: (String, String) -> Unit,
+    sharedViewModel: SharedViewModel,
     viewModel: AddDataViewModel = hiltViewModel()
 
 ){
     AddDataSelection(
-        onSaveClick = { viewModel.onSaveClick(openAndPopUp) }
+        onSaveClick = {selectedProducts ->
+            sharedViewModel.setUserProducts("Breakfast", selectedProducts)
+            viewModel.onSaveClick(openAndPopUp) }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddDataSelection(
-    onSaveClick: () -> Unit = {}
+    onSaveClick: (List<Product>) -> Unit = {}
 ) {
     val textFieldState = rememberTextFieldState()
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -58,14 +56,17 @@ fun AddDataSelection(
 
     // API integration variables
     val api = RetrofitClient.api
+
     var suggestions by remember { mutableStateOf(listOf<Product>()) }
     var searchQuery by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) } // Loading state
     var errorMessage by remember { mutableStateOf<String?>(null) } // Error message state
     var selectedProduct by remember { mutableStateOf<Product?>(null) }
+    val products = remember { mutableStateListOf<Product>() }
+    val userProducts = remember { mutableStateListOf<List<Product>>() }
 
     // State to track checked items (if the checkbox is selected)
-    var checkedItems by remember { mutableStateOf(mutableListOf<String>()) }
+    val checkedItems by remember { mutableStateOf(mutableListOf<String>()) }
 
     Surface {
         Column(modifier = Modifier.fillMaxSize()){
@@ -74,8 +75,7 @@ fun AddDataSelection(
                 title = AppText.select_product,
                 text = "Save",
                 modifier = Modifier,
-                endAction = onSaveClick
-
+                endAction = {onSaveClick(products.toList())}
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -153,10 +153,9 @@ fun AddDataSelection(
                                         onCheckedChange = { isChecked ->
                                             // Add or remove the product from the checkedItems list based on its checked state
                                             if (isChecked) {
-                                                checkedItems.remove(productName)
-                                                checkedItems.add(0,productName)
+                                                products.add(product)
                                             } else {
-                                                checkedItems.remove(productName)
+                                                products.remove(product)
                                             }
                                         }
                                     )

@@ -1,5 +1,7 @@
 package com.example.calorieapp.screens.adddata
 
+import android.app.LauncherActivity
+import android.graphics.pdf.models.ListItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +19,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.calorieapp.R
+import com.example.calorieapp.model.Product
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -38,9 +44,13 @@ import java.util.Locale
 fun MealTimeScreen(
     openScreen: (String) -> Unit,
     openAndPopUp: (String, String) -> Unit,
+    sharedViewModel: SharedViewModel,
     viewModel: MealTimeViewModel = hiltViewModel()
 ) {
+    val userProducts by sharedViewModel.userProducts.collectAsState()
+
     MealTimeSelection(
+        userProducts = userProducts,
         onTabSelected = openScreen,
         onBreakfastClick = { viewModel.onBreakfastClick(openAndPopUp) },
         onLunchClick = { viewModel.onLunchClick(openAndPopUp) },
@@ -52,6 +62,7 @@ fun MealTimeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MealTimeSelection(
+    userProducts: Map<String, List<Product>> = emptyMap(),
     onTabSelected: (String) -> Unit = {},
     onBreakfastClick: () -> Unit = {},
     onLunchClick: () -> Unit = {},
@@ -139,6 +150,7 @@ fun MealTimeSelection(
             FilledCardExample(
                 title = "",
                 modifier = Modifier.fillMaxWidth(),
+                userProducts = userProducts["Breakfast"] ?: emptyList()
             )
 
             ElevatedCardAddDataScreen(
@@ -149,7 +161,8 @@ fun MealTimeSelection(
 
             FilledCardExample(
                 title = "",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                userProducts = userProducts["Lunch"] ?: emptyList()
             )
 
             ElevatedCardAddDataScreen(
@@ -160,7 +173,8 @@ fun MealTimeSelection(
 
             FilledCardExample(
                 title = "",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                userProducts = userProducts["Dinner"] ?: emptyList()
             )
 
             ElevatedCardAddDataScreen(
@@ -171,7 +185,8 @@ fun MealTimeSelection(
 
             FilledCardExample(
                 title = "",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                userProducts = userProducts["Snack"] ?: emptyList()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
