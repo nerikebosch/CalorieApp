@@ -3,23 +3,29 @@ package com.example.calorieapp.model
 import com.google.firebase.firestore.DocumentId
 
 
-enum class MealType {
+enum class MealName {
     Breakfast,
     Lunch,
     Dinner,
-    Snack
+    Snack;
+
+    companion object {
+        fun getByName(name: String): MealName {
+            return entries.find { it.name == name } ?: Breakfast
+        }
+    }
 }
 
 data class MealData(
-    val mealName: MealType,
+    val mealName: MealName,
     val products: List<Product> = emptyList()
 )
 
 data class UserProducts(
     @DocumentId val id: String = "",
-    val date: Long,
-    val breakfast: MealData = MealData(mealName = MealType.Breakfast),
-    val lunch: MealData = MealData(mealName = MealType.Lunch),
-    val dinner: MealData = MealData(mealName = MealType.Dinner),
-    val snacks: MealData = MealData(mealName = MealType.Snack)
+    val date: Long = 0,
+    val breakfast: MealData = MealData(mealName = MealName.Breakfast),
+    val lunch: MealData = MealData(mealName = MealName.Lunch),
+    val dinner: MealData = MealData(mealName = MealName.Dinner),
+    val snacks: MealData = MealData(mealName = MealName.Snack)
 )

@@ -16,7 +16,6 @@ class HomeScreenViewModel @Inject constructor(
     private val storageService: StorageService,
 ) : CalorieAppViewModel(logService) {
 
-
     val user = accountService.currentUser
 
     var uiState = mutableStateOf(HomeScreenUiState())

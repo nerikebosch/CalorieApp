@@ -31,6 +31,7 @@ fun CalorieAppTabRow(
                     text = { Text(title) },
                     selected = index == selectedIndex,
                     onClick = {
+                        println("TabRowDebug: Clicked tab $index")
                         // Map the tab index back to route
                         val route = when (index) {
                             0 -> HOME_SCREEN
@@ -40,6 +41,7 @@ fun CalorieAppTabRow(
                             else -> HOME_SCREEN
                         }
                         onTabSelected(route)
+
                     }
                 )
             }

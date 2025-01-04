@@ -152,7 +152,6 @@ fun NavGraphBuilder.calorieGraph(
         MealTimeScreen(
             openScreen = { route -> appState.navigate(route) },
             openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) },
-            sharedViewModel = sharedViewModel
         )
     }
 

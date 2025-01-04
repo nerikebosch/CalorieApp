@@ -33,6 +33,7 @@ class StorageServiceImpl @Inject constructor(
             }
         }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override val userProducts: Flow<List<UserProducts>>
         get() = auth.currentUser.flatMapLatest { user ->
             currentCollection(user.id, USER_PRODUCT_COLLECTION).snapshots().map { snapshot ->
@@ -77,8 +78,8 @@ class StorageServiceImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getUserProduct(userProducId: String): UserProducts? =
-        currentCollection(auth.currentUserId, USER_PRODUCT_COLLECTION).document(userProducId).get().await().toObject()
+    override suspend fun getUserProduct(userProductId: String): UserProducts? =
+        currentCollection(auth.currentUserId, USER_PRODUCT_COLLECTION).document(userProductId).get().await().toObject()
 
 
     override suspend fun saveUserProduct(userProduct: UserProducts): String =
@@ -86,6 +87,13 @@ class StorageServiceImpl @Inject constructor(
             currentCollection(auth.currentUserId, USER_PRODUCT_COLLECTION).add(userProduct).await().id
         }
 
+    override suspend fun getUserProductByDate(date: Long): UserProducts? =
+        currentCollection(auth.currentUserId, USER_PRODUCT_COLLECTION)
+            .whereEqualTo("date", date)
+            .get()
+            .await()
+            .toObjects<UserProducts>()
+            .firstOrNull()
 
     private fun currentCollection(uid: String, data: String): CollectionReference =
         firestore.collection(USER_COLLECTION).document(uid).collection(data)
