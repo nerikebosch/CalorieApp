@@ -36,6 +36,7 @@ import com.example.calorieapp.screens.settings.userchange.UserChangeScreen
 import com.example.calorieapp.screens.sign_up.SignUpScreen
 import com.example.calorieapp.screens.splash.SplashScreen
 import com.example.calorieapp.ui.theme.CalorieAppTheme
+import com.example.calorieapp.screens.recipe.RecipesScreen
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -161,6 +162,12 @@ fun NavGraphBuilder.calorieGraph(
             openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) },
             sharedViewModel = sharedViewModel,
             mealType = mealType
+        )
+    }
+
+    composable(RECIPES_SCREEN) {
+        RecipesScreen(
+            openScreen = { route -> appState.navigate(route) }
         )
     }
 

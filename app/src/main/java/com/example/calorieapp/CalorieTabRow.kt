@@ -18,7 +18,7 @@ fun CalorieAppTabRow(
     // Map the current route to tab index
     val selectedIndex = when (currentRoute) {
         HOME_SCREEN -> 0
-        HOME_SCREEN -> 1
+        RECIPES_SCREEN -> 1
         MEAL_TIME_SCREEN -> 2
         MEAL_TIME_SCREEN -> 3
         else -> 0
@@ -35,7 +35,7 @@ fun CalorieAppTabRow(
                         // Map the tab index back to route
                         val route = when (index) {
                             0 -> HOME_SCREEN
-                            1 -> HOME_SCREEN
+                            1 -> RECIPES_SCREEN
                             2 -> MEAL_TIME_SCREEN
                             3 -> MEAL_TIME_SCREEN
                             else -> HOME_SCREEN
