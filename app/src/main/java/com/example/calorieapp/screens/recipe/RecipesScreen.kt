@@ -1,6 +1,7 @@
 package com.example.calorieapp.screens.recipe
 
 import android.content.Context
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +13,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,44 +28,65 @@ import com.example.calorieapp.model.RecipeDetails
 
 @Composable
 fun RecipesScreen(
-    openScreen: (String) -> Unit,
+    openAndPopUp: (String, String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: RecipesViewModel = hiltViewModel()
 ){
     val recipes by viewModel.recipes.observeAsState(emptyList())
 
-    RecipeSelection(recipes = recipes)
+    RecipeSelection(
+        recipes = recipes,
+        onRecipeClick = { recipeName ->
+            viewModel.onRecipeClick(openAndPopUp, recipeName)
+        }
+    )
 }
+
 
 
 @Composable
 fun RecipeSelection(
-    recipes: List<RecipeDetails>
+    recipes: List<RecipeDetails>,
+    onRecipeClick: (String) -> Unit
 ) {
+    var selectedCategory by remember { mutableStateOf<String?>(null) }
+
+
     Surface(
         modifier = Modifier.fillMaxSize(),
     ) {
         LazyColumn {
             item {
                 // Filter chips for categories
-                Row {
-                    FilterChip(title = "Breakfast")
-                    Spacer(modifier = Modifier.width(15.dp))
-                    FilterChip(title = "Lunch")
-                    Spacer(modifier = Modifier.width(15.dp))
-                    FilterChip(title = "Dinner")
-                    Spacer(modifier = Modifier.width(15.dp))
-                    FilterChip(title = "Snacks")
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    val categories = listOf("Breakfast", "Lunch", "Dinner", "Snack")
+
+                    categories.forEach { category ->
+                        FilterChip(
+                            title = category,
+                            selectedCategory = selectedCategory,
+                            onCategorySelected = { selectedCategory = it }
+                        )
+                        Spacer(modifier = Modifier.width(15.dp))
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(15.dp))
             }
+            // Filter recipes based on selected category
+            val filteredRecipes = if (selectedCategory == null) recipes
+            else recipes.filter { it.category == selectedCategory }
 
             // Display recipes as ElevatedCardRecipeScreen
-            items(recipes) { recipe ->
+            items(filteredRecipes) { recipe ->
                 ElevatedCardRecipeScreen(
-                    title = recipe.name,  // Ensure property matches RecipeDetails data class
-                    img = recipe.imageUrl // Ensure property matches RecipeDetails data class
+                    title = recipe.name,
+                    img = recipe.imageUrl,
+                    onClick = {onRecipeClick(recipe.name)}
+
                 )
                 Spacer(modifier = Modifier.height(15.dp))
             }
@@ -73,20 +98,8 @@ fun RecipeSelection(
 @Preview(showBackground = true)
 @Composable
 fun RecipePreview() {
-    val dummyRecipes = getDummyRecipes() // Update this function if necessary
-
-    Surface(modifier = Modifier.fillMaxSize()) {
-        LazyColumn {
-            // Show dummy recipes
-            items(dummyRecipes) { recipe ->
-                ElevatedCardRecipeScreen(
-                    title = recipe.name,  // Access name directly from RecipeDetails
-                    img = recipe.imageUrl // Access imageUrl directly from RecipeDetails
-                )
-                Spacer(modifier = Modifier.height(15.dp))
-            }
-        }
-    }
+    RecipeSelection(recipes = getDummyRecipes(),
+        onRecipeClick = {})
 }
 
 fun getDummyRecipes(): List<RecipeDetails> {
@@ -125,7 +138,26 @@ fun getDummyRecipes(): List<RecipeDetails> {
                 "Repeat layers as desired.",
                 "Serve immediately."
             )
+        ),
+        RecipeDetails(
+            category = "Lunch",
+            name = "Greek Yogurt Parfait",
+            imageUrl = "https://www.eatingwell.com/thmb/QRX1MZetYhz1PfDCV--srer1Bts=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/250955-strawberry-yogurt-parfait-beauty-336980c8b011478b86d8b9450be09a32.jpg",
+            nutritionalValues = NutritionalValues(
+                calories = 180,
+                fat = 6,
+                protein = 12,
+                carbohydrates = 25
+            ),
+            ingredients = listOf("1 cup Greek yogurt", "1/2 cup berries", "1 tbsp honey", "1/4 cup granola"),
+            instructions = listOf(
+                "Layer Greek yogurt, berries, honey, and granola.",
+                "Repeat layers as desired.",
+                "Serve immediately."
+            )
         )
+        
+
         // Add more dummy recipes here as needed
     )
 }

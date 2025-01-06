@@ -41,7 +41,7 @@ fun ElevatedCardRecipeScreen(
     title: String, // Title of the card
     modifier: Modifier = Modifier, // Custom modifier for layout
     content: @Composable (() -> Unit)? = null, // Lambda that can accept other composable (like icons, images)
-    onClick: () -> Unit = {}, // Lambda to handle click event
+    onClick : () -> Unit = {}, // Lambda to handle click event
     img: String? = null
 ) {
 
@@ -49,6 +49,7 @@ fun ElevatedCardRecipeScreen(
 
 
     ElevatedCard(
+        onClick = onClick,
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
         ),
@@ -93,6 +94,7 @@ fun ElevatedCardRecipeScreen(
                 )
             }
 
+
             // Optional content: Show any composable passed into the content lambda
             content?.invoke() // If content is provided, display it here
         }
@@ -100,20 +102,64 @@ fun ElevatedCardRecipeScreen(
 }
 
 @Composable
-fun FilterChip(
-    modifier: Modifier = Modifier
-        .padding(8.dp),
-    title: String
-) {
-    var selected by remember { mutableStateOf(false) }
+fun ElevatedCardRecipeDetails(
+    title: String, // Title of the card
+    modifier: Modifier = Modifier, // Custom modifier for layout
+    content: @Composable (() -> Unit)? = null,
+){
+    ElevatedCard(
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 6.dp
+        ),
+        modifier = modifier
+            .size(width = 400.dp, height = 200.dp) // Adjust size as necessary
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp), // Padding inside the card
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
 
-    FilterChip(
-        onClick = { selected = !selected },
-        label = {
-            Text(title)
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .weight(1f), // Takes up remaining space
+                verticalArrangement = Arrangement.Center, // Centers text vertically
+                horizontalAlignment = Alignment.CenterHorizontally // Centers text horizontally
+            ) {
+                //Spacer(modifier = Modifier.height(8.dp))
+                // Title text at the top
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 8.dp) // Space between title and content
+
+                )
+                content?.invoke()
+            }
+        }
+    }
+}
+
+@Composable
+fun FilterChip(
+    title: String,
+    selectedCategory: String?,
+    onCategorySelected: (String?) -> Unit
+) {
+    val isSelected = title == selectedCategory
+
+    androidx.compose.material3.FilterChip(
+        onClick = {
+            onCategorySelected(if (isSelected) null else title)
         },
-        selected = selected,
-        leadingIcon = if (selected) {
+        label = { Text(title) },
+        selected = isSelected,
+        leadingIcon = if (isSelected) {
             {
                 Icon(
                     imageVector = Icons.Filled.Done,
@@ -123,6 +169,7 @@ fun FilterChip(
             }
         } else {
             null
-        },
+        }
     )
 }
+

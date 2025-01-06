@@ -31,6 +31,7 @@ import com.example.calorieapp.screens.adddata.*
 
 import com.example.calorieapp.screens.homescreen.HomeScreen
 import com.example.calorieapp.screens.login.LoginScreen
+import com.example.calorieapp.screens.recipe.RecipeDetailsScreen
 import com.example.calorieapp.screens.settings.SettingsScreen
 import com.example.calorieapp.screens.settings.userchange.UserChangeScreen
 import com.example.calorieapp.screens.sign_up.SignUpScreen
@@ -167,8 +168,15 @@ fun NavGraphBuilder.calorieGraph(
 
     composable(RECIPES_SCREEN) {
         RecipesScreen(
-            openScreen = { route -> appState.navigate(route) }
+            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
         )
     }
 
-}
+    composable("$RECIPE_DETAILS_SCREEN/{recipeName}") { backStackEntry ->
+        val recipeName = backStackEntry.arguments?.getString("recipeName") ?: "DefaultRecipe"
+        RecipeDetailsScreen(
+            recipeName = recipeName,
+            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
+        )
+    }}
+

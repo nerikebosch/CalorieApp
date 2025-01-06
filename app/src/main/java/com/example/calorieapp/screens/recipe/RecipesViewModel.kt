@@ -11,6 +11,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import android.content.Context
 import android.util.Log
+import com.example.calorieapp.RECIPES_SCREEN
+import com.example.calorieapp.RECIPE_DETAILS_SCREEN
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 @HiltViewModel
@@ -38,7 +40,7 @@ class RecipesViewModel @Inject constructor(
     }
 
     // Handle recipe click event
-    fun onRecipeClick(openAndPopUp: (String, String) -> Unit) {
-        openAndPopUp("RecipeScreen", "RecipesScreen")
+    fun onRecipeClick(openAndPopUp: (String, String) -> Unit, recipeName: String) {
+        openAndPopUp("$RECIPE_DETAILS_SCREEN/$recipeName", RECIPES_SCREEN)
     }
 }

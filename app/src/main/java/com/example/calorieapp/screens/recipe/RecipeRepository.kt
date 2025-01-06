@@ -14,4 +14,8 @@ class RecipeRepository @Inject constructor(
         // Ensure that getRecipesFromJson is updated to return List<RecipeDetails>
         return getRecipesFromJson(context)
     }
+
+    fun getRecipeByName(recipeName: String): RecipeDetails? {
+        return getRecipesFromJson(context).find { it.name == recipeName }
+    }
 }
