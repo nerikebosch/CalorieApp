@@ -27,9 +27,9 @@ class SettingsViewModel @Inject constructor(
 
     init {
         // Collect user data when ViewModel is initialized
-        viewModelScope.launch {
-            println("SettingScreenDebug: Is user authenticated? ${accountService.hasUser}")
-            println("SettingScreenDebug: Current user ID: ${accountService.currentUserId}")
+        launchCatching {
+            println("SettingsVMDebug user authenticated? ${accountService.hasUser}")
+            println("SettingsVMDebug: Current user ID: ${accountService.currentUserId}")
 
             accountService.currentUser.collect { fetchedUser ->
                 _user.value = fetchedUser

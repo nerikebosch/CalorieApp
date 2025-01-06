@@ -29,6 +29,7 @@ interface StorageService {
 
     suspend fun getUserProduct(userProductId: String): UserProducts?
     suspend fun saveUserProduct(userProduct: UserProducts): String
-    suspend fun getUserProductByDate(date: Long): UserProducts?
+    suspend fun updateUserProduct(userProduct: UserProducts)
+    suspend fun getUserProductByDate(date: String): UserProducts?
 
 }

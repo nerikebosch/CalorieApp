@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName
 
 data class Product(
     @SerializedName("product_name")
-    val productName: String?,
+    val productName: String? = null,
 
     @SerializedName("nutriments")
-    val nutrients: Nutrients?
+    val nutrients: Nutrients? = null
 )
 
 data class OpenFoodFactsResponse(

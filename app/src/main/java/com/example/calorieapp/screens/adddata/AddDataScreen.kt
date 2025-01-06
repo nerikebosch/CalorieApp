@@ -17,16 +17,17 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.traversalIndex
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.calorieapp.CalorieAppState
 import com.example.calorieapp.model.Nutrients
 import com.example.calorieapp.model.Product
 import com.example.calorieapp.api.RetrofitClient
 import com.example.calorieapp.common.composable.TextActionToolbar
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import com.example.calorieapp.R.string as AppText
 
@@ -34,180 +35,240 @@ import com.example.calorieapp.R.string as AppText
 @Composable
 fun AddDataScreen(
     openAndPopUp: (String, String) -> Unit,
-    sharedViewModel: SharedViewModel,
     viewModel: AddDataViewModel = hiltViewModel(),
-    mealType: String
+    mealName: String,
+    date: String,
+) {
+    // State collection
+    val uiState = AddDataUiState(
+        selectedProducts = viewModel.selectedProducts.collectAsState().value,
+        suggestions = viewModel.suggestions.collectAsState().value,
+        isLoading = viewModel.isLoading.collectAsState().value,
+        errorMessage = viewModel.errorMessage.collectAsState().value
+    )
 
-){
-    AddDataSelection(
-        mealType = mealType,
-        onSaveClick = {selectedProducts ->
-            sharedViewModel.setUserProducts(mealType, selectedProducts)
-            viewModel.onSaveClick(openAndPopUp) }
+    LaunchedEffect(Unit) {
+        viewModel.loadSelectedProducts(mealName, date)
+    }
+
+    AddDataContent(
+        uiState = uiState,
+        mealName = mealName,
+        onProductSelected = { product, isSelected ->
+            if (isSelected) viewModel.addProduct(product) else viewModel.removeProduct(product)
+        },
+        onSaveClick = {
+            viewModel.onSaveClick(
+                mealName = mealName,
+                date = date,
+                openAndPopUp = openAndPopUp
+            )
+        },
+        onSearchProducts = { query ->
+            handleProductSearch(query, viewModel)
+        }
     )
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddDataSelection(
-    mealType: String = "",
-    onSaveClick: (List<Product>) -> Unit = {}
+private fun AddDataContent(
+    uiState: AddDataUiState,
+    mealName: String,
+    onProductSelected: (Product, Boolean) -> Unit,
+    onSaveClick: () -> Unit,
+    onSearchProducts: (String) -> Unit
 ) {
-    val textFieldState = rememberTextFieldState()
-    var expanded by rememberSaveable { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
-
-    // API integration variables
-    val api = RetrofitClient.api
-
-    var suggestions by remember { mutableStateOf(listOf<Product>()) }
-    var searchQuery by remember { mutableStateOf("") }
-    var loading by remember { mutableStateOf(false) } // Loading state
-    var errorMessage by remember { mutableStateOf<String?>(null) } // Error message state
-    var selectedProduct by remember { mutableStateOf<Product?>(null) }
-    val products = remember { mutableStateListOf<Product>() }
-    val userProducts = remember { mutableStateListOf<List<Product>>() }
-
-    // State to track checked items (if the checkbox is selected)
-    val checkedItems by remember { mutableStateOf(mutableListOf<String>()) }
-
-    Surface {
-        Column(modifier = Modifier.fillMaxSize()){
-
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
             TextActionToolbar(
                 title = AppText.select_product,
                 text = "Save",
                 modifier = Modifier,
-                endAction = {onSaveClick(products.toList())}
+                endAction = onSaveClick
             )
-
             Spacer(modifier = Modifier.height(16.dp))
 
-            SearchBar(
-                modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
-                inputField = {
-                    SearchBarDefaults.InputField(
-                        query = searchQuery,
-                        onQueryChange = { query ->
-                            searchQuery = query
-                            errorMessage = null // Clear error message on new query
-                            if (query.isNotEmpty()) {
-                                coroutineScope.launch {
-                                    loading = true // Start loading
-                                    try {
-                                        val response = api.searchProducts(searchTerms = query)
-                                        suggestions = response.products
-                                        if (response.products.isEmpty()) {
-                                            errorMessage = "No products found."
-                                        }
-                                    } catch (e: Exception) {
-                                        suggestions = emptyList() // Clear suggestions
-                                        errorMessage = "An error occurred. Please try again."
-                                    } finally {
-                                        loading = false // Stop loading
-                                    }
-                                }
-                            } else {
-                                suggestions = emptyList() // Clear suggestions if search query is empty
-                            }
-                        },
-                        onSearch = { expanded = false },
-                        expanded = expanded,
-                        onExpandedChange = { expanded = it },
-                        placeholder = { Text("Search for food products...") },
-                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                        trailingIcon = {
-                            if (textFieldState.text.isNotEmpty()) {
-                                IconButton(onClick = {
-                                    textFieldState.setTextAndPlaceCursorAtEnd("")
-                                    suggestions = emptyList() // Clear suggestions
-                                }) {
-                                    Icon(Icons.Default.Close, contentDescription = null)
-                                }
-                            }
-                        },
-                    )
-                },
-                expanded = expanded,
-                onExpandedChange = { expanded = it },
-            ) {
-                // Suggestions list based on API response
-                Column(Modifier.verticalScroll(rememberScrollState())) {
-                    if (loading) {
-                        // Show a loading indicator while fetching data
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-                    } else if (errorMessage != null) {
-                        // Show error message if any
-                        Text(
-                            text = errorMessage ?: "",
-                            color = Color.Red,
-                            modifier = Modifier.align(Alignment.CenterHorizontally).padding(16.dp)
-                        )
-                    } else {
-                        suggestions.forEach { product ->
-                            val productName = product.productName ?: "Unknown Product"
-                            val isChecked = checkedItems.contains(productName) // Check if the item is selected
-
-                            ListItem(
-                                headlineContent = { Text(productName) },
-                                leadingContent = {
-                                    Checkbox(
-                                        checked = isChecked,
-                                        onCheckedChange = { isChecked ->
-                                            // Add or remove the product from the checkedItems list based on its checked state
-                                            if (isChecked) {
-                                                products.add(product)
-                                            } else {
-                                                products.remove(product)
-                                            }
-                                        }
-                                    )
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 4.dp)
-                                    .clickable {
-                                        // Set the selected product when clicked
-                                        selectedProduct = product
-                                    }
-
-                            )
-                        }
-                    }
-                }
-            }
-
-            // Static content below the search bar
-            LazyColumn(
-                contentPadding = PaddingValues(
-                    start = 16.dp,
-                    top = 72.dp,
-                    end = 16.dp,
-                    bottom = 16.dp
-                ),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.semantics { traversalIndex = 1f },
-            ) {
-                items(suggestions) { product ->
-                    // Extract the product name or show a fallback if it's null
-                    val productName = product.productName ?: "Unknown Product"
-
-                    // Display each product as a list item
-                    ListItem(
-                        headlineContent = { Text(productName) },
-                        leadingContent = { Icon(Icons.Default.Star, contentDescription = null) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 4.dp)
-                    )
-                }
-            }
-
-
+            SearchSection(
+                suggestions = uiState.suggestions,
+                selectedProducts = uiState.selectedProducts,
+                isLoading = uiState.isLoading,
+                errorMessage = uiState.errorMessage,
+                onProductSelected = onProductSelected,
+                onSearchProducts = onSearchProducts
+            )
         }
     }
 }
 
+@ExperimentalMaterial3Api
+@Composable
+private fun SearchSection(
+    suggestions: List<Product>,
+    selectedProducts: List<Product>,
+    isLoading: Boolean,
+    errorMessage: String?,
+    onProductSelected: (Product, Boolean) -> Unit,
+    onSearchProducts: (String) -> Unit
+) {
+    var searchQuery by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
+
+    SearchBar(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        inputField = {
+            SearchBarDefaults.InputField(
+                query = searchQuery,
+                onQueryChange = { query ->
+                    searchQuery = query
+                    if (query.isNotEmpty()) onSearchProducts(query)
+                },
+                onSearch = { expanded = false },
+                expanded = expanded,
+                onExpandedChange = { expanded = it },
+                placeholder = { Text("Search for food products...") },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                trailingIcon = if (searchQuery.isNotEmpty()) {
+                     { IconButton(onClick = {
+                        searchQuery = ""
+                        onSearchProducts("")
+                        }) {
+                       Icon(Icons.Default.Close, contentDescription = null)
+                        }
+                    }
+                } else null
+            )
+        },
+        expanded = expanded,
+        onExpandedChange = { expanded = it },
+    ) {
+        SearchResults(
+            suggestions = suggestions,
+            selectedProducts = selectedProducts,
+            isLoading = isLoading,
+            errorMessage = errorMessage,
+            onProductSelected = onProductSelected
+        )
+    }
+}
+
+@Composable
+private fun SearchResults(
+    suggestions: List<Product>,
+    selectedProducts: List<Product>,
+    isLoading: Boolean,
+    errorMessage: String?,
+    onProductSelected: (Product, Boolean) -> Unit
+) {
+    Column(Modifier.verticalScroll(rememberScrollState())) {
+        when {
+            isLoading -> LoadingIndicator()
+            errorMessage != null -> ErrorMessage(errorMessage)
+            else -> SuggestionsList(
+                suggestions = suggestions,
+                selectedProducts = selectedProducts,
+                onProductSelected = onProductSelected
+            )
+        }
+    }
+}
+
+@Composable
+private fun LoadingIndicator() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+private fun ErrorMessage(message: String) {
+    Text(
+        text = message,
+        color = MaterialTheme.colorScheme.error,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        textAlign = TextAlign.Center
+    )
+}
+
+@Composable
+private fun SuggestionsList(
+    suggestions: List<Product>,
+    selectedProducts: List<Product>,
+    onProductSelected: (Product, Boolean) -> Unit
+) {
+    suggestions.forEach { product ->
+        val isSelected = selectedProducts.contains(product)
+        ListItem(
+            headlineContent = {
+                Text(product.productName ?: "Unknown Product")
+            },
+            leadingContent = {
+                Checkbox(
+                    checked = isSelected,
+                    onCheckedChange = { checked ->
+                        onProductSelected(product, checked)
+                    }
+                )
+            }
+        )
+    }
+}
+
+@Composable
+private fun SelectedProductsList(selectedProducts: List<Product>) {
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(selectedProducts) { product ->
+            ListItem(
+                headlineContent = {
+                    Text(product.productName ?: "Unknown Product")
+                },
+                supportingContent = {
+                    product.nutrients?.let { NutritionalInfo(it) }
+                }
+            )
+        }
+    }
+}
+
+private fun handleProductSearch(
+    query: String,
+    viewModel: AddDataViewModel,
+) {
+    viewModel.setLoading(true)
+    viewModel.setError(null)
+
+    viewModel.viewModelScope.launch {
+        try {
+            val response = RetrofitClient.api.searchProducts(searchTerms = query)
+            viewModel.updateSuggestions(response.products)
+            if (response.products.isEmpty()) {
+                viewModel.setError("No products found.")
+            }
+        } catch (e: Exception) {
+            viewModel.updateSuggestions(emptyList())
+            viewModel.setError("An error occurred. Please try again.")
+        } finally {
+            viewModel.setLoading(false)
+        }
+    }
+}
 
 @Composable
 fun NutritionalInfo(nutrients: Nutrients?) {
@@ -227,6 +288,6 @@ fun NutritionalInfo(nutrients: Nutrients?) {
 @Preview(showBackground = true)
 @Composable
 fun AddDataPreview() {
-    AddDataSelection()
+
 }
 

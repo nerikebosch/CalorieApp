@@ -84,10 +84,17 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun saveUserProduct(userProduct: UserProducts): String =
         trace(SAVE_USER_PRODUCT) {
+            println("Debug: Saving new userProduct: $userProduct")
             currentCollection(auth.currentUserId, USER_PRODUCT_COLLECTION).add(userProduct).await().id
         }
 
-    override suspend fun getUserProductByDate(date: Long): UserProducts? =
+    override suspend fun updateUserProduct(userProduct: UserProducts): Unit =
+        trace(UPDATE_USER_PRODUCT) {
+            println("Debug: Updating for userProduct: $userProduct")
+            currentCollection(auth.currentUserId, USER_PRODUCT_COLLECTION).document(userProduct.id).set(userProduct).await()
+        }
+
+    override suspend fun getUserProductByDate(date: String): UserProducts? =
         currentCollection(auth.currentUserId, USER_PRODUCT_COLLECTION)
             .whereEqualTo("date", date)
             .get()
@@ -104,7 +111,7 @@ class StorageServiceImpl @Inject constructor(
         private const val USER_DATA_COLLECTION = "userData"
         private const val USER_PRODUCT_COLLECTION = "userProducts"
         private const val SAVE_USER_PRODUCT = "saveUserProducts"
-
+        private const val UPDATE_USER_PRODUCT = "updateUserProducts"
     }
 
 }

@@ -26,6 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.calorieapp.common.snackbar.SnackbarManager
+import com.example.calorieapp.model.MealName
 import com.example.calorieapp.screens.adddata.SharedViewModel
 import com.example.calorieapp.screens.adddata.*
 
@@ -47,7 +48,6 @@ fun CalorieApp() {
         Surface(color = MaterialTheme.colorScheme.background) {
             val appState = rememberAppState()
             val snackbarHostState = appState.snackbarHostState
-            val sharedViewModel: SharedViewModel = hiltViewModel()
 
             // Get current route to determine if we should show TabRow
             val currentRoute = appState.navController.currentBackStackEntryAsState().value?.destination?.route
@@ -87,7 +87,7 @@ fun CalorieApp() {
                     startDestination = SPLASH_SCREEN,
                     modifier = Modifier.padding(paddingValues)
                 ) {
-                    calorieGraph(appState, sharedViewModel)
+                    calorieGraph(appState)
                 }
             }
         }
@@ -117,7 +117,6 @@ fun resources(): Resources {
 @OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.calorieGraph(
     appState: CalorieAppState,
-    sharedViewModel: SharedViewModel
     ) {
 
     composable(HOME_SCREEN) {
@@ -157,12 +156,14 @@ fun NavGraphBuilder.calorieGraph(
         )
     }
 
-    composable("$ADD_DATA_SCREEN/{mealType}") { backStackEntry ->
-        val mealType = backStackEntry.arguments?.getString("mealType") ?: "Breakfast"
+    composable("$ADD_DATA_SCREEN/{mealType}/{date}") { backStackEntry ->
+        val mealName = backStackEntry.arguments?.getString("mealType") ?: MealName.Breakfast.name
+        val date = backStackEntry.arguments?.getString("date") ?: formatDateToString(System.currentTimeMillis())
+
         AddDataScreen(
             openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) },
-            sharedViewModel = sharedViewModel,
-            mealType = mealType
+            mealName = mealName,
+            date = date
         )
     }
 

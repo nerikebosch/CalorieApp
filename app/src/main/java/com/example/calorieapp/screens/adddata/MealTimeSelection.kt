@@ -1,5 +1,6 @@
 package com.example.calorieapp.screens.adddata
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.DatePickerDefaults.dateFormatter
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.calorieapp.R
 import com.example.calorieapp.model.MealData
@@ -53,20 +56,28 @@ fun MealTimeScreen(
     viewModel: MealTimeViewModel = hiltViewModel()
 ) {
     var selectedDate by remember { mutableLongStateOf(Calendar.getInstance().timeInMillis) }
-    val userProducts by viewModel.userProducts.collectAsState(initial = UserProducts())
 
-    println("MealTimeScreenDebug: UserProducts: $userProducts")
+    // Collect as UserProducts? instead of List<UserProducts>
+    val userProducts by viewModel.userProducts.collectAsStateWithLifecycle(initialValue = null)
 
-    LaunchedEffect(selectedDate) {
-        println("MealTimeScreenDebug: LaunchedEffect called with date: $selectedDate")
-        viewModel.loadUserProductsForDate(selectedDate)
+
+    val dateFormatter = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
+    val formattedDate = remember(selectedDate) { dateFormatter.format(Date(selectedDate)) }
+
+    println("MealTimeScreenDebug: Formatted Date: $formattedDate")
+    println("MealTimeScreenDebug: UserProducts initial: $userProducts")
+
+
+    LaunchedEffect(formattedDate) {
+        viewModel.loadUserProductsForDate(formattedDate)
+        println("MealTimeScreenDebug: LaunchedEffect called with date: $formattedDate")
     }
-
 
     MealTimeSelection(
         selectedDate = selectedDate,
         onDateSelected = { newDate ->
             selectedDate = newDate
+            viewModel.setSelectedDate(newDate)
         },
         userProducts = userProducts,
         onBreakfastClick = { viewModel.onBreakfastClick(openAndPopUp) },
@@ -114,14 +125,6 @@ fun MealTimeSelection(
                            }
                        }
                    )
-//                val products = userProducts?.let {
-//                    when (mealName) {
-//                        MealName.Breakfast -> it.breakfast.products
-//                        MealName.Lunch -> it.lunch.products
-//                        MealName.Dinner -> it.dinner.products
-//                        MealName.Snack -> it.snacks.products
-//                    }
-//                } ?: emptyList()
 
                 val products = when (mealName) {
                     MealName.Breakfast -> userProducts?.breakfast?.products
@@ -211,6 +214,7 @@ fun DateSelector(
     )
 }
 
+@SuppressLint("SuspiciousIndentation")
 @Preview(showBackground = true)
 @Composable
 fun MealTimeScreenPreview() {
@@ -258,11 +262,11 @@ fun MealTimeScreenPreview() {
     )
 
     val sampleUserProducts = UserProducts(
-        date = System.currentTimeMillis(),
+        date = formatDateToString(System.currentTimeMillis()),
         breakfast = MealData(MealName.Breakfast, sampleProductList.subList(2,4)),
         lunch = MealData(MealName.Lunch, sampleProductList), // Example with fewer products
-        dinner = MealData(MealName.Dinner),
-        snacks = MealData(MealName.Snack)
+        dinner = MealData(MealName.Dinner, sampleProductList.subList(3,5)),
+        snacks = MealData(MealName.Snack, sampleProductList.subList(5,6))
     )
 
 

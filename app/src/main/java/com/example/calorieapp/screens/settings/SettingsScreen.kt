@@ -33,7 +33,8 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
 
-    //val user by viewModel.user.collectAsStateWithLifecycle()
+    val user by viewModel.user.collectAsStateWithLifecycle()
+    println("SettingsScreenDebug: Screen loaded, user: $user")
 
     Column(
         modifier = modifier.fillMaxWidth().fillMaxHeight().verticalScroll(rememberScrollState()),
@@ -44,8 +45,8 @@ fun SettingsScreen(
         Spacer(modifier = Modifier.spacer())
 
         ChangeDataCard(
-            fullName = "",
-            email = ""
+            fullName = user.name + " " + user.surname,
+            email = user.email
         ) {
             println("ChangeDataDebug: On user change clicked!!")
             viewModel.onUserChangeClick(openScreen)

@@ -15,7 +15,7 @@ import javax.inject.Inject
 import com.example.calorieapp.R.string as AppText
 
 @HiltViewModel
-class UserChangeViewModel @Inject constructor(
+class   UserChangeViewModel @Inject constructor(
     private val accountService: AccountService,
     private val storageService: StorageService,
     logService: LogService,
@@ -30,7 +30,7 @@ class UserChangeViewModel @Inject constructor(
 
     init {
         // Collect user data when ViewModel is initialized
-        viewModelScope.launch {
+        launchCatching {
             println("ChangeScreenDebug: Is user authenticated? ${accountService.hasUser}")
             println("ChangeScreenDebug: Current user ID: ${accountService.currentUserId}")
 
