@@ -1,5 +1,6 @@
 package com.example.calorieapp.auth
 
+import android.R.attr.data
 import android.content.Context
 import android.util.Log
 import androidx.credentials.CredentialManager
@@ -81,6 +82,8 @@ class GoogleSignInManager(
      * @param googleIdToken The Google ID Token obtained from credentials.
      */
     private suspend fun authenticateWithFirebase(googleIdToken: String) {
+        //val googleCredential = oneTapClient.getSignInCredentialFromIntent(data)
+        //val idToken = googleCredential.googleIdToken
         try {
             val firebaseCredential = GoogleAuthProvider.getCredential(googleIdToken, null)
             auth.signInWithCredential(firebaseCredential).await() // Coroutine-safe await

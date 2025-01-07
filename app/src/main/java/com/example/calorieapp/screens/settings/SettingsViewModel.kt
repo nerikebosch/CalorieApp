@@ -46,4 +46,8 @@ class SettingsViewModel @Inject constructor(
 
     fun onUserChangeClick(openScreen: (String) -> Unit) = openScreen(USER_CHANGE_SCREEN)
 
+    fun onDataChangeClick(openScreen: (String) -> Unit) {
+        /* TODO */
+    }
+
 }

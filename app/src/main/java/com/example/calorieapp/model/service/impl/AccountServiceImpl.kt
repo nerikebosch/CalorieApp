@@ -77,7 +77,19 @@ class AccountServiceImpl @Inject constructor(
 
     override suspend fun signInWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential).await()
+        val authResult = auth.signInWithCredential(credential).await()
+
+        authResult.user?.let { firebaseUser ->
+            val fullName = firebaseUser.displayName?.trim()?.split("\\s+".toRegex(), limit = 2) ?: listOf()
+            val user = User(
+                id = firebaseUser.uid,
+                name = fullName.getOrNull(0) ?: "",
+                surname = fullName.getOrNull(1) ?: "",
+                email = firebaseUser.email ?: "",
+                registeredUser = true
+            )
+            linkAccount(user)
+        }
     }
 
 

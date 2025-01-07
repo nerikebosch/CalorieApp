@@ -52,7 +52,7 @@ class LoginViewModel @Inject constructor(
 
         launchCatching {
             accountService.authenticate(email, password)
-            openAndPopUp(HOME_SCREEN, LOGIN_SCREEN)
+            openAndPopUp(SPLASH_SCREEN, LOGIN_SCREEN)
             //openAndPopUp(SETTINGS_SCREEN, LOGIN_SCREEN)
         }
     }
@@ -77,6 +77,7 @@ class LoginViewModel @Inject constructor(
                 //scope = viewModelScope,
                 onSuccess = {
                     // Navigate to screen after successful Google Sign-In
+
                     openAndPopUp(SPLASH_SCREEN, LOGIN_SCREEN)
                 },
                 onError = { exception ->

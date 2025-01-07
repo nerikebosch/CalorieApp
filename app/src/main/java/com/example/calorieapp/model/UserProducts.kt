@@ -9,15 +9,10 @@ enum class MealName {
     Dinner,
     Snack;
 
-    companion object {
-        fun getByName(name: String): MealName {
-            return entries.find { it.name == name } ?: Breakfast
-        }
-
         fun getMealData(mealName: MealName, products: List<Product>): MealData {
             return MealData(mealName = mealName, products = products)
         }
-    }
+
 }
 
 data class MealData(

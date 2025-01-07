@@ -45,13 +45,16 @@ fun SettingsScreen(
         Spacer(modifier = Modifier.spacer())
 
         ChangeDataCard(
-            fullName = user.name + " " + user.surname,
-            email = user.email
-        ) {
-            println("ChangeDataDebug: On user change clicked!!")
-            viewModel.onUserChangeClick(openScreen)
-        }
+            label = user.name + " " + user.surname,
+            detail = user.email
+        ) { viewModel.onUserChangeClick(openScreen) }
 
+        ChangeDataCard(
+            label = stringResource(AppText.your_data),
+            detail = "",
+        ) { viewModel.onDataChangeClick(openScreen) }
+
+        Spacer(modifier = Modifier.spacer())
         SignOutCard { viewModel.onSignOutClick(restartApp) }
 
 
@@ -91,22 +94,14 @@ private fun SignOutCard(signOut: () -> Unit) {
 @ExperimentalMaterial3Api
 @Composable
 fun ChangeDataCard(
-    fullName: String,
-    email: String,
-    onUserChangeClick: () -> Unit) {
-//    RegularCardEditor(
-//        title = AppText.your_data,
-//        icon = Icons.Filled.ChevronRight,
-//        content = "",
-//        onEditClick = { onUserChangeClick() },
-//        modifier = Modifier.textCard()
-//    )
-
+    label: String,
+    detail: String,
+    onClick: () -> Unit) {
     TextCardEditor(
-        label = fullName,
-        detail = email,
+        label = label,
+        detail = detail,
         icon = Icons.Filled.ChevronRight,
-        onEditClick = { onUserChangeClick() },
+        onEditClick = { onClick() },
         modifier = Modifier.textCard()
     )
 }
@@ -126,9 +121,14 @@ fun SettingsScreenPreview() {
             Spacer(modifier = Modifier.spacer())
 
             ChangeDataCard(
-                fullName = "John Doe",
-                email = "john.c.breckinridge@altostrat.com",
-                onUserChangeClick = {}
+                label = "John Doe",
+                detail = "john.c.breckinridge@altostrat.com",
+                onClick = {}
+            )
+            ChangeDataCard(
+                label = stringResource(AppText.your_data),
+                detail = "",
+                onClick = {}
             )
             SignOutCard { }
 

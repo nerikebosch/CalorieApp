@@ -27,7 +27,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.calorieapp.common.snackbar.SnackbarManager
 import com.example.calorieapp.model.MealName
-import com.example.calorieapp.screens.adddata.SharedViewModel
 import com.example.calorieapp.screens.adddata.*
 
 import com.example.calorieapp.screens.homescreen.HomeScreen
