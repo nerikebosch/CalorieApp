@@ -92,7 +92,7 @@ fun LoginScreenContent(
         Column(Modifier.fillMaxSize()) {
             // Show app name and logo
             TopSection()
-            Spacer(modifier = Modifier.height(26.dp))
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -101,11 +101,11 @@ fun LoginScreenContent(
                 Column(modifier = Modifier.padding(16.dp)) {
                     EmailField(uiState.email, onEmailChange, Modifier.fieldModifier())
 
-                    Spacer(modifier = Modifier.height(15.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
 
                     PasswordTextField(uiState.password, onPasswordChange, Modifier.fieldModifier())
 
-                    Spacer(modifier = Modifier.height(15.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
 
                     //Forgot password section
                     Row(
@@ -168,7 +168,7 @@ fun LoginScreenContent(
                 Box(modifier = Modifier
                     .fillMaxHeight(fraction = 0.8f)
                     .fillMaxWidth(),
-                    contentAlignment = Alignment.BottomCenter
+                    contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = buildAnnotatedString {

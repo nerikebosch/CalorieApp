@@ -1,13 +1,12 @@
 package com.example.calorieapp.screens.settings
 
 
+import android.R.attr.fontFamily
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,11 +15,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.calorieapp.common.composable.*
 import com.example.calorieapp.common.ext.*
 import com.example.calorieapp.ui.theme.CalorieAppTheme
+import com.example.calorieapp.ui.theme.Roboto
 import com.google.android.play.integrity.internal.f
 import com.example.calorieapp.R.string as AppText
 
@@ -41,8 +42,12 @@ fun SettingsScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         BasicToolbar(AppText.settings)
-
-        Spacer(modifier = Modifier.spacer())
+        Text(
+            text = "Your Profile",
+            modifier = Modifier.padding(16.dp, 8.dp).align(Alignment.Start),
+            style = MaterialTheme.typography.headlineMedium,
+            fontFamily = Roboto
+        )
 
         ChangeDataCard(
             label = user.name + " " + user.surname,
@@ -117,8 +122,12 @@ fun SettingsScreenPreview() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             BasicToolbar(AppText.settings)
-
-            Spacer(modifier = Modifier.spacer())
+            Text(
+                text = "Your Profile",
+                modifier = Modifier.padding(16.dp, 8.dp).align(Alignment.Start),
+                style = MaterialTheme.typography.headlineMedium,
+                fontFamily = Roboto
+            )
 
             ChangeDataCard(
                 label = "John Doe",
@@ -130,6 +139,7 @@ fun SettingsScreenPreview() {
                 detail = "",
                 onClick = {}
             )
+            Spacer(modifier = Modifier.spacer())
             SignOutCard { }
 
 

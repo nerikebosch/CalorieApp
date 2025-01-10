@@ -11,7 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -81,14 +85,17 @@ fun UserChangeScreenContent(
             value = user.name,
             onValueChange = onNameChange ,
             label = "Your name",
-            modifier = Modifier.textCard()
+            modifier = Modifier.textCard(),
+            trailing = { Icon(Icons.Filled.Person, contentDescription = "Menu") }
         )
         LabelTextField(
             value = user.surname,
             onValueChange = onSurnameChange,
             label = "Your surname",
-            modifier = Modifier.textCard()
+            modifier = Modifier.textCard(),
+            trailing = { Icon(Icons.Filled.Person, contentDescription = "Menu") }
         )
+
         Spacer(modifier = Modifier.spacer())
 
     }

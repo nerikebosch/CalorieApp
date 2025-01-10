@@ -121,7 +121,8 @@ fun CalorieAppTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> darkScheme
+        //darkTheme -> darkScheme
+        darkTheme -> lightScheme
         else -> lightScheme
     }
     val view = LocalView.current
