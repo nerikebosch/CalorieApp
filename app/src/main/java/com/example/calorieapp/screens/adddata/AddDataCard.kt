@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -23,14 +24,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.calorieapp.R
+import com.example.calorieapp.R.string as AppText
+import com.example.calorieapp.common.composable.DialogCancelButton
+import com.example.calorieapp.common.composable.DialogConfirmButton
 import com.example.calorieapp.model.Product
 
 @Composable
@@ -77,8 +83,6 @@ fun ElevatedCardAddDataScreen(
                 )
             }
 
-
-
             // Optional content: Show any composable passed into the content lambda
             content?.invoke() // If content is provided, display it here
         }
@@ -91,9 +95,12 @@ fun FilledCardExample(
     title : String,
     userProducts: List<Product>,
     onDeleteProduct: (Product) -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
 
     var expanded by rememberSaveable { mutableStateOf(false) }
+    var showWarningDialog by remember { mutableStateOf(false) }
+    var productToDelete by remember { mutableStateOf<Product?>(null) }
 
     Card(
         colors = CardDefaults.cardColors(
@@ -140,7 +147,10 @@ fun FilledCardExample(
                             } },
                         trailingContent = {
                             IconButton(
-                                onClick = { onDeleteProduct(product) },
+                                onClick = {
+                                    productToDelete = product
+                                    showWarningDialog = true
+                                },
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                             ){
                                 Icon(
@@ -150,10 +160,23 @@ fun FilledCardExample(
                             }
                         }
                     )
-
                 }
-
             }
+        }
+
+        if (showWarningDialog && productToDelete != null) {
+            AlertDialog(
+                title = { Text(stringResource(AppText.delete_product_title)) },
+                text = { Text(stringResource(AppText.delete_product_description)) },
+                dismissButton = { DialogCancelButton(AppText.cancel) { showWarningDialog = false } },
+                confirmButton = {
+                    DialogConfirmButton(AppText.delete) {
+                        onDeleteProduct(productToDelete!!)
+                        showWarningDialog = false
+                    }
+                },
+                onDismissRequest = { showWarningDialog = false }
+            )
         }
     }
 }

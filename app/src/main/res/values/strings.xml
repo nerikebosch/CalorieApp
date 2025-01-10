@@ -55,7 +55,10 @@
     <!-- Dialogs -->
     <string name="sign_out_title">Sign out?</string>
     <string name="sign_out_description">You will have to sign in again to see your data.</string>
-
+    <string name="delete_product_title">Delete product?</string>
+    <string name="delete_product_description">Are you sure you want to delete this product?</string>
+    <string name="delete_all_product_description">Are you sure you want to delete all products?</string>
+    <string name="delete">Delete</string>
     <!-- FCM -->
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="request_notification_permission">Request permission</string>

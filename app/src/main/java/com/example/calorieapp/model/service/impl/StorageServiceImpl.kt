@@ -102,6 +102,10 @@ class StorageServiceImpl @Inject constructor(
             .toObjects<UserProducts>()
             .firstOrNull()
 
+    override suspend fun deleteUserProduct(userProductId: String) {
+        currentCollection(auth.currentUserId, USER_PRODUCT_COLLECTION).document(userProductId).delete().await()
+    }
+
     private fun currentCollection(uid: String, data: String): CollectionReference =
         firestore.collection(USER_COLLECTION).document(uid).collection(data)
 

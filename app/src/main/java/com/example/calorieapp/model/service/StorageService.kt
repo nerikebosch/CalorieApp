@@ -31,5 +31,5 @@ interface StorageService {
     suspend fun saveUserProduct(userProduct: UserProducts): String
     suspend fun updateUserProduct(userProduct: UserProducts)
     suspend fun getUserProductByDate(date: String): UserProducts?
-
+    suspend fun deleteUserProduct(userProductId: String)
 }

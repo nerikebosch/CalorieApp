@@ -72,8 +72,8 @@ class MealTimeViewModel @Inject constructor(
     }
 
     fun onDeleteProduct(mealName: MealName, product: Product) {
-        viewModelScope.launch {
-            val currentProducts = _userProducts.value ?: return@launch
+        launchCatching {
+            val currentProducts = _userProducts.value ?: return@launchCatching
 
             // Remove product from the correct meal category
             val updatedMealData = when (mealName) {
@@ -99,24 +99,24 @@ class MealTimeViewModel @Inject constructor(
             )
 
             _userProducts.value = updatedUserProducts
-
+            storageService.updateUserProduct(updatedUserProducts)
         }
     }
 
     fun onDeleteAllProducts() {
-        viewModelScope.launch {
-            val currentProducts = _userProducts.value ?: return@launch
-            val updatedUserProducts = currentProducts.copy(
-                breakfast = currentProducts.breakfast.copy(products = emptyList()),
-                lunch = currentProducts.lunch.copy(products = emptyList()),
-                dinner = currentProducts.dinner.copy(products = emptyList()),
-                snacks = currentProducts.snacks.copy(products = emptyList())
-            )
-            _userProducts.value = updatedUserProducts
-
+        launchCatching {
+            val currentProducts = _userProducts.value
+            if (currentProducts != null) {
+                try {
+                    storageService.deleteUserProduct(currentProducts.id)
+                    _userProducts.value = null  // Clear the local state after successful deletion
+                } catch (e: Exception) {
+                    // Handle any potential errors
+                    throw e  // This will be caught by launchCatching
+                }
+            }
         }
     }
-
 
 }
 

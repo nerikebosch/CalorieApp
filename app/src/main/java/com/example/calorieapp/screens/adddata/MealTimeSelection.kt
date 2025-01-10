@@ -3,7 +3,6 @@ package com.example.calorieapp.screens.adddata
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.DatePickerDefaults.dateFormatter
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,32 +23,34 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.calorieapp.R
+import com.example.calorieapp.common.composable.DialogCancelButton
+import com.example.calorieapp.common.composable.DialogConfirmButton
 import com.example.calorieapp.model.MealData
 import com.example.calorieapp.model.MealName
 import com.example.calorieapp.model.Nutrients
 import com.example.calorieapp.model.Product
 import com.example.calorieapp.model.UserProducts
-import com.google.android.material.datepicker.DateSelector
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 import java.util.Date
+import java.util.Locale
+import com.example.calorieapp.R.string as AppText
 
 
 @Composable
@@ -66,6 +67,8 @@ fun MealTimeScreen(
 
     val dateFormatter = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
     val formattedDate = remember(selectedDate) { dateFormatter.format(Date(selectedDate)) }
+
+    var showDeleteAllDialog by remember { mutableStateOf(false) }
 
     println("MealTimeScreenDebug: Formatted Date: $formattedDate")
     println("MealTimeScreenDebug: UserProducts initial: $userProducts")
@@ -91,9 +94,25 @@ fun MealTimeScreen(
             viewModel.onDeleteProduct(mealName, product)
         },
         onDeleteAllProducts = {
-            viewModel.onDeleteAllProducts()
+           // viewModel.onDeleteAllProducts()
+            showDeleteAllDialog = true
         }
     )
+    if (showDeleteAllDialog) {
+        AlertDialog(
+            title = { Text(stringResource(AppText.delete_product_title)) },
+            text = { Text(stringResource(AppText.delete_all_product_description)) },
+            dismissButton = { DialogCancelButton(AppText.cancel) { showDeleteAllDialog = false } },
+            confirmButton = {
+                DialogConfirmButton(AppText.delete) {
+                    viewModel.onDeleteAllProducts()
+                    showDeleteAllDialog = false
+                }
+            },
+            onDismissRequest = { showDeleteAllDialog = false }
+        )
+
+    }
 }
 
 
@@ -114,6 +133,7 @@ fun MealTimeSelection(
     val formattedDate = remember(selectedDate) { dateFormatter.format(Date(selectedDate)) }
 
     Surface(modifier = Modifier.fillMaxSize()) {
+
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             item {
                 DateSelector(
@@ -123,6 +143,7 @@ fun MealTimeSelection(
                     onDeleteAllProducts = onDeleteAllProducts
                 )
             }
+
 
             items(MealName.entries.toTypedArray()) { mealName ->
                    ElevatedCardAddDataScreen(
@@ -156,6 +177,9 @@ fun MealTimeSelection(
         }
     }
 }
+
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
