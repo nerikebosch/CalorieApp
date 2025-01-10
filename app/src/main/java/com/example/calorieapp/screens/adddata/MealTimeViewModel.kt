@@ -2,6 +2,8 @@ package com.example.calorieapp.screens.adddata
 
 import androidx.lifecycle.viewModelScope
 import com.example.calorieapp.MEAL_TIME_SCREEN
+import com.example.calorieapp.model.MealName
+import com.example.calorieapp.model.Product
 import com.example.calorieapp.model.User
 import com.example.calorieapp.model.UserProducts
 import com.example.calorieapp.model.service.AccountService
@@ -66,6 +68,39 @@ class MealTimeViewModel @Inject constructor(
 
     fun onSnackClick(openAndPopUp: (String, String) -> Unit) {
         openAndPopUp("AddDataScreen/Snack/${_selectedDate.value}", MEAL_TIME_SCREEN)
+    }
+
+    fun onDeleteProduct(mealName: MealName, product: Product) {
+        viewModelScope.launch {
+            val currentProducts = _userProducts.value ?: return@launch
+
+            // Remove product from the correct meal category
+            val updatedMealData = when (mealName) {
+                MealName.Breakfast -> currentProducts.breakfast.copy(
+                    products = currentProducts.breakfast.products.filterNot { it == product }
+                )
+                MealName.Lunch -> currentProducts.lunch.copy(
+                    products = currentProducts.lunch.products.filterNot { it == product }
+                )
+                MealName.Dinner -> currentProducts.dinner.copy(
+                    products = currentProducts.dinner.products.filterNot { it == product }
+                )
+                MealName.Snack -> currentProducts.snacks.copy(
+                    products = currentProducts.snacks.products.filterNot { it == product }
+                )
+            }
+
+            val updatedUserProducts = currentProducts.copy(
+                breakfast = if (mealName == MealName.Breakfast) updatedMealData else currentProducts.breakfast,
+                lunch = if (mealName == MealName.Lunch) updatedMealData else currentProducts.lunch,
+                dinner = if (mealName == MealName.Dinner) updatedMealData else currentProducts.dinner,
+                snacks = if (mealName == MealName.Snack) updatedMealData else currentProducts.snacks
+            )
+
+            _userProducts.value = updatedUserProducts
+
+
+        }
     }
 
 

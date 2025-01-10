@@ -77,4 +77,7 @@
 
     <!-- Add data screen -->
     <string name="select_product">Select Products</string>
+
+    <!-- Recipe Details Screen -->
+    <string name="select_recipe">Select Recipe</string>"
 </resources>

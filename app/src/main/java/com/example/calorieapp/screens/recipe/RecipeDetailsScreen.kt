@@ -1,7 +1,10 @@
 package com.example.calorieapp.screens.recipe
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -12,7 +15,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.calorieapp.R as AppText
+import com.example.calorieapp.common.composable.TextActionToolbar
 import com.example.calorieapp.model.NutritionalValues
 import com.example.calorieapp.model.RecipeDetails
 
@@ -36,30 +42,50 @@ fun RecipeDetailsScreen(
 
 @Composable
 fun RecipeDetailsSelection(
-    recipe: RecipeDetails
+    recipe: RecipeDetails,
+    modifier: Modifier = Modifier
 ){
     Surface(
         modifier = Modifier.fillMaxSize()
     ){
-        LazyColumn {
-            item {
-                ElevatedCardRecipeScreen(
-                    title = recipe.name,
-                    img = recipe.imageUrl
-                )
-            }
-            item {
-                NutritionalInfoCard(recipe.nutritionalValues)
-            }
-            item {
-                IngredientsCard(recipe.ingredients)
-            }
-            item {
-                InstructionsCard(recipe.instructions)
+
+        Column {
+            TextActionToolbar(
+                title = AppText.string.select_recipe,
+                text = "Save",
+                modifier = Modifier,
+                endAction = {  }
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            LazyColumn {
+
+                item {
+                    ElevatedCardRecipeScreen(
+                        title = recipe.name,
+                        img = recipe.imageUrl
+                    )
+                }
+
+
+                item {
+                    Spacer(modifier = Modifier.height(15.dp))
+                    NutritionalInfoCard(recipe.nutritionalValues)
+                }
+                item {
+                    Spacer(modifier = Modifier.height(15.dp))
+                    IngredientsCard(recipe.ingredients)
+                }
+                item {
+                    Spacer(modifier = Modifier.height(15.dp))
+                    InstructionsCard(recipe.instructions)
+                }
             }
         }
     }
 }
+
 
 @Composable
 fun NutritionalInfoCard(nutritionalValues: NutritionalValues) {
@@ -67,9 +93,13 @@ fun NutritionalInfoCard(nutritionalValues: NutritionalValues) {
         title = "Nutritional Information",
         content = {
             Column {
+                Spacer(modifier = Modifier.height(8.dp))
                 Text("Calories: ${nutritionalValues.calories}")
+                Spacer(modifier = Modifier.height(8.dp))
                 Text("Fat: ${nutritionalValues.fat}g")
+                Spacer(modifier = Modifier.height(8.dp))
                 Text("Protein: ${nutritionalValues.protein}g")
+                Spacer(modifier = Modifier.height(8.dp))
                 Text("Carbohydrates: ${nutritionalValues.carbohydrates}g")
             }
         }
@@ -84,7 +114,9 @@ fun IngredientsCard(ingredients: List<String>) {
         content = {
             Column {
                 ingredients.forEach { ingredient ->
+                    Spacer(modifier = Modifier.height(8.dp))
                     Text("• $ingredient")
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
         }
@@ -99,7 +131,9 @@ fun InstructionsCard(instructions: List<String>) {
         content = {
             Column {
                 instructions.forEachIndexed { index, step ->
+                    Spacer(modifier = Modifier.height(8.dp))
                     Text("${index + 1}. $step")
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
         }

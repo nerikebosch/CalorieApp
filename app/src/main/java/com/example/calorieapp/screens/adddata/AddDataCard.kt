@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Card
@@ -89,6 +90,7 @@ fun ElevatedCardAddDataScreen(
 fun FilledCardExample(
     title : String,
     userProducts: List<Product>,
+    onDeleteProduct: (Product) -> Unit,
     modifier: Modifier = Modifier) {
 
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -136,6 +138,17 @@ fun FilledCardExample(
                                 Text("Fat: ${product.nutrients?.fat ?: "N/A"} g")
                                 Text("Calories: ${product.nutrients?.calories ?: "N/A"} kcal")
                             } },
+                        trailingContent = {
+                            IconButton(
+                                onClick = { onDeleteProduct(product) },
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            ){
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Delete"
+                                )
+                            }
+                        }
                     )
 
                 }

@@ -83,7 +83,10 @@ fun MealTimeScreen(
         onBreakfastClick = { viewModel.onBreakfastClick(openAndPopUp) },
         onLunchClick = { viewModel.onLunchClick(openAndPopUp) },
         onDinnerClick = { viewModel.onDinnerClick(openAndPopUp) },
-        onSnackClick = { viewModel.onSnackClick(openAndPopUp) }
+        onSnackClick = { viewModel.onSnackClick(openAndPopUp) },
+        onDeleteProduct = { mealName, product ->
+            viewModel.onDeleteProduct(mealName, product)
+        }
     )
 }
 
@@ -97,7 +100,8 @@ fun MealTimeSelection(
     onBreakfastClick: () -> Unit,
     onLunchClick: () -> Unit,
     onDinnerClick: () -> Unit,
-    onSnackClick: () -> Unit
+    onSnackClick: () -> Unit,
+    onDeleteProduct: (MealName, Product) -> Unit
 ) {
     val dateFormatter = remember { SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault()) } // Include year
     val formattedDate = remember(selectedDate) { dateFormatter.format(Date(selectedDate)) }
@@ -136,7 +140,8 @@ fun MealTimeSelection(
                     FilledCardExample(
                         title = mealName.name,
                         modifier = Modifier.padding(top = 8.dp),
-                        userProducts = products
+                        userProducts = products,
+                        onDeleteProduct = { product -> onDeleteProduct(mealName, product) }
                     )
             }
             item { Spacer(modifier = Modifier.height(16.dp)) }
@@ -212,6 +217,8 @@ fun DateSelector(
             titleContentColor = MaterialTheme.colorScheme.onPrimary
         )
     )
+
+
 }
 
 @SuppressLint("SuspiciousIndentation")
@@ -277,7 +284,8 @@ fun MealTimeScreenPreview() {
             onBreakfastClick = {},
             onLunchClick = {},
             onDinnerClick = {},
-            onSnackClick = {}
+            onSnackClick = {},
+            onDeleteProduct = { _, _ -> }
         )
 
 }
