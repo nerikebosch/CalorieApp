@@ -2,6 +2,9 @@ package com.example.calorieapp.screens.adddata
 
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -86,6 +89,9 @@ fun MealTimeScreen(
         onSnackClick = { viewModel.onSnackClick(openAndPopUp) },
         onDeleteProduct = { mealName, product ->
             viewModel.onDeleteProduct(mealName, product)
+        },
+        onDeleteAllProducts = {
+            viewModel.onDeleteAllProducts()
         }
     )
 }
@@ -101,7 +107,8 @@ fun MealTimeSelection(
     onLunchClick: () -> Unit,
     onDinnerClick: () -> Unit,
     onSnackClick: () -> Unit,
-    onDeleteProduct: (MealName, Product) -> Unit
+    onDeleteProduct: (MealName, Product) -> Unit,
+    onDeleteAllProducts: () -> Unit
 ) {
     val dateFormatter = remember { SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault()) } // Include year
     val formattedDate = remember(selectedDate) { dateFormatter.format(Date(selectedDate)) }
@@ -112,7 +119,8 @@ fun MealTimeSelection(
                 DateSelector(
                     selectedDate = selectedDate,
                     formattedDate = formattedDate,
-                    onDateSelected = onDateSelected
+                    onDateSelected = onDateSelected,
+                    onDeleteAllProducts = onDeleteAllProducts
                 )
             }
 
@@ -154,7 +162,8 @@ fun MealTimeSelection(
 fun DateSelector(
     selectedDate: Long,
     formattedDate: String,
-    onDateSelected: (Long) -> Unit
+    onDateSelected: (Long) -> Unit,
+    onDeleteAllProducts: () -> Unit
 ) {
     val context = LocalContext.current
     val calendar = remember { Calendar.getInstance() }
@@ -218,6 +227,23 @@ fun DateSelector(
         )
     )
 
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(5.dp)
+            .height(50.dp),
+        horizontalArrangement = Arrangement.End  // Aligns to the right
+    ) {
+        TextButton(
+            onClick = { onDeleteAllProducts() }
+        ) {
+            Text(
+                text = "Clear All",
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary // Use primary color for visibility
+            )
+        }
+    }
 
 }
 
@@ -285,7 +311,8 @@ fun MealTimeScreenPreview() {
             onLunchClick = {},
             onDinnerClick = {},
             onSnackClick = {},
-            onDeleteProduct = { _, _ -> }
+            onDeleteProduct = { _, _ -> },
+            onDeleteAllProducts = {}
         )
 
 }

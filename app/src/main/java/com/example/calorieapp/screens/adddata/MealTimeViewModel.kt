@@ -2,6 +2,7 @@ package com.example.calorieapp.screens.adddata
 
 import androidx.lifecycle.viewModelScope
 import com.example.calorieapp.MEAL_TIME_SCREEN
+import com.example.calorieapp.model.MealData
 import com.example.calorieapp.model.MealName
 import com.example.calorieapp.model.Product
 import com.example.calorieapp.model.User
@@ -99,6 +100,19 @@ class MealTimeViewModel @Inject constructor(
 
             _userProducts.value = updatedUserProducts
 
+        }
+    }
+
+    fun onDeleteAllProducts() {
+        viewModelScope.launch {
+            val currentProducts = _userProducts.value ?: return@launch
+            val updatedUserProducts = currentProducts.copy(
+                breakfast = currentProducts.breakfast.copy(products = emptyList()),
+                lunch = currentProducts.lunch.copy(products = emptyList()),
+                dinner = currentProducts.dinner.copy(products = emptyList()),
+                snacks = currentProducts.snacks.copy(products = emptyList())
+            )
+            _userProducts.value = updatedUserProducts
 
         }
     }
