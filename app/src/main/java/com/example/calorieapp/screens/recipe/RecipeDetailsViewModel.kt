@@ -8,6 +8,7 @@ import com.example.calorieapp.model.RecipeDetails
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LogService
 import com.example.calorieapp.model.service.StorageService
+import com.example.calorieapp.screens.CalorieAppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,13 +23,13 @@ class RecipeDetailsViewModel @Inject constructor(
     logService: LogService,
     private val accountService: AccountService,
     storageService: StorageService,
-) : ViewModel() {
+) : CalorieAppViewModel(logService) {
 
     private val _selectedRecipe = MutableStateFlow<RecipeDetails?>(null)
     val selectedRecipe: StateFlow<RecipeDetails?> get() = _selectedRecipe
 
     fun loadRecipe(recipeName: String) {
-        viewModelScope.launch {
+        launchCatching {
             val recipe = recipeRepository.getRecipeByName(recipeName)
             _selectedRecipe.value = recipe
         }

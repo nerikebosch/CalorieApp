@@ -3,10 +3,12 @@ package com.example.calorieapp.model.service.module
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.ConfigurationService
 import com.example.calorieapp.model.service.LogService
+import com.example.calorieapp.model.service.NutritionService
 import com.example.calorieapp.model.service.StorageService
 import com.example.calorieapp.model.service.impl.AccountServiceImpl
 import com.example.calorieapp.model.service.impl.ConfigurationServiceImpl
 import com.example.calorieapp.model.service.impl.LogServiceImpl
+import com.example.calorieapp.model.service.impl.NutritionServiceImpl
 import com.example.calorieapp.model.service.impl.StorageServiceImpl
 import dagger.Binds
 import dagger.Module
@@ -24,4 +26,7 @@ abstract class ServiceModule {
 
     @Binds
     abstract fun provideConfigurationService(impl: ConfigurationServiceImpl): ConfigurationService
+
+    @Binds
+    abstract fun provideNutritionService(impl: NutritionServiceImpl): NutritionService
 }

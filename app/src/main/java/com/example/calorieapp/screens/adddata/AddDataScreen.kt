@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -28,7 +26,10 @@ import com.example.calorieapp.model.Product
 import com.example.calorieapp.api.RetrofitClient
 import com.example.calorieapp.common.composable.TextActionToolbar
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 import com.example.calorieapp.R.string as AppText
 
 
@@ -40,12 +41,7 @@ fun AddDataScreen(
     date: String,
 ) {
     // State collection
-    val uiState = AddDataUiState(
-        selectedProducts = viewModel.selectedProducts.collectAsState().value,
-        suggestions = viewModel.suggestions.collectAsState().value,
-        isLoading = viewModel.isLoading.collectAsState().value,
-        errorMessage = viewModel.errorMessage.collectAsState().value
-    )
+    val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadSelectedProducts(mealName, date)
@@ -64,9 +60,7 @@ fun AddDataScreen(
                 openAndPopUp = openAndPopUp
             )
         },
-        onSearchProducts = { query ->
-            handleProductSearch(query, viewModel)
-        }
+        onSearchQueryChange = viewModel::updateSearchQuery
     )
 }
 
@@ -78,7 +72,7 @@ private fun AddDataContent(
     mealName: String,
     onProductSelected: (Product, Boolean) -> Unit,
     onSaveClick: () -> Unit,
-    onSearchProducts: (String) -> Unit
+    onSearchQueryChange: (String) -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -94,12 +88,9 @@ private fun AddDataContent(
             Spacer(modifier = Modifier.height(16.dp))
 
             SearchSection(
-                suggestions = uiState.suggestions,
-                selectedProducts = uiState.selectedProducts,
-                isLoading = uiState.isLoading,
-                errorMessage = uiState.errorMessage,
+                uiState = uiState,
                 onProductSelected = onProductSelected,
-                onSearchProducts = onSearchProducts
+                onSearchQueryChange = onSearchQueryChange
             )
         }
     }
@@ -108,14 +99,11 @@ private fun AddDataContent(
 @ExperimentalMaterial3Api
 @Composable
 private fun SearchSection(
-    suggestions: List<Product>,
-    selectedProducts: List<Product>,
-    isLoading: Boolean,
-    errorMessage: String?,
+    uiState: AddDataUiState,
     onProductSelected: (Product, Boolean) -> Unit,
-    onSearchProducts: (String) -> Unit
+    onSearchQueryChange: (String) -> Unit
 ) {
-    var searchQuery by remember { mutableStateOf("") }
+
     var expanded by remember { mutableStateOf(false) }
 
     SearchBar(
@@ -124,22 +112,20 @@ private fun SearchSection(
             .padding(horizontal = 16.dp),
         inputField = {
             SearchBarDefaults.InputField(
-                query = searchQuery,
+                query = uiState.searchQuery,
                 onQueryChange = { query ->
-                    searchQuery = query
-                    if (query.isNotEmpty()) onSearchProducts(query)
+                    onSearchQueryChange(query)
+                    //if (query.isNotEmpty()) onSearchProducts(query)
                 },
                 onSearch = { expanded = false },
                 expanded = expanded,
                 onExpandedChange = { expanded = it },
                 placeholder = { Text("Search for food products...") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                trailingIcon = if (searchQuery.isNotEmpty()) {
-                     { IconButton(onClick = {
-                        searchQuery = ""
-                        onSearchProducts("")
-                        }) {
-                       Icon(Icons.Default.Close, contentDescription = null)
+                trailingIcon = if (uiState.searchQuery.isNotEmpty()) {
+                     {
+                         IconButton(onClick = { onSearchQueryChange("") }) {
+                         Icon(Icons.Default.Close, contentDescription = null)
                         }
                     }
                 } else null
@@ -149,10 +135,7 @@ private fun SearchSection(
         onExpandedChange = { expanded = it },
     ) {
         SearchResults(
-            suggestions = suggestions,
-            selectedProducts = selectedProducts,
-            isLoading = isLoading,
-            errorMessage = errorMessage,
+            uiState = uiState,
             onProductSelected = onProductSelected
         )
     }
@@ -160,19 +143,16 @@ private fun SearchSection(
 
 @Composable
 private fun SearchResults(
-    suggestions: List<Product>,
-    selectedProducts: List<Product>,
-    isLoading: Boolean,
-    errorMessage: String?,
+    uiState: AddDataUiState,
     onProductSelected: (Product, Boolean) -> Unit
 ) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
         when {
-            isLoading -> LoadingIndicator()
-            errorMessage != null -> ErrorMessage(errorMessage)
+            uiState.isLoading -> LoadingIndicator()
+            uiState.errorMessage != null -> ErrorMessage(uiState.errorMessage)
             else -> SuggestionsList(
-                suggestions = suggestions,
-                selectedProducts = selectedProducts,
+                suggestions = uiState.suggestions,
+                selectedProducts = uiState.selectedProducts,
                 onProductSelected = onProductSelected
             )
         }
@@ -247,28 +227,8 @@ private fun SelectedProductsList(selectedProducts: List<Product>) {
     }
 }
 
-private fun handleProductSearch(
-    query: String,
-    viewModel: AddDataViewModel,
-) {
-    viewModel.setLoading(true)
-    viewModel.setError(null)
 
-    viewModel.viewModelScope.launch {
-        try {
-            val response = RetrofitClient.api.searchProducts(searchTerms = query)
-            viewModel.updateSuggestions(response.products)
-            if (response.products.isEmpty()) {
-                viewModel.setError("No products found.")
-            }
-        } catch (e: Exception) {
-            viewModel.updateSuggestions(emptyList())
-            viewModel.setError("An error occurred. Please try again.")
-        } finally {
-            viewModel.setLoading(false)
-        }
-    }
-}
+
 
 @Composable
 fun NutritionalInfo(nutrients: Nutrients?) {

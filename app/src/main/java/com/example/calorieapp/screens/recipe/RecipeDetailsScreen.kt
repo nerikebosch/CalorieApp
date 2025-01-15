@@ -27,7 +27,7 @@ fun RecipeDetailsScreen(
     recipeName: String, // Receive recipe name
     openAndPopUp: (String, String) -> Unit,
     viewModel: RecipeDetailsViewModel = hiltViewModel() // Inject ViewModel
-    ) {
+) {
     LaunchedEffect(recipeName) {
         viewModel.loadRecipe(recipeName) // Fetch recipe details
     }
@@ -38,7 +38,7 @@ fun RecipeDetailsScreen(
     selectedRecipe?.let { recipe ->
         RecipeDetailsSelection(recipe = recipe)
     }
-    }
+}
 
 @Composable
 fun RecipeDetailsSelection(

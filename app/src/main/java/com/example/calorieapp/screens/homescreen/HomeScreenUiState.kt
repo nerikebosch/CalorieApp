@@ -1,18 +1,18 @@
 package com.example.calorieapp.screens.homescreen
 
 data class HomeScreenUiState(
-    val currentCalorie: Float = 0.0f,
-    val goalCalorie: Float = 0.0f,
-    val currentWeight: Float = 0.0f,
-    val goalWeight : Float = 0.0f,
-    val currentWater: Float = 0.0f,
-    val goalWater : Float = 0.0f,
+    val currentCalorie: Double = 0.0,
+    val goalCalorie: Double = 0.0,
+    val currentWeight: Double = 0.0,
+    val goalWeight : Double = 0.0,
+    val currentWater: Double = 0.0,
+    val goalWater : Double = 0.0,
 
     // Data for meal card
     val mealTitle: String = "",
-    val mealCalories: Int = 0,
-    val mealProteins: Int = 0,
-    val mealCarbs: Int = 0,
-    val mealFats: Int = 0,
-    val mealRDC: Int = 0,
+    val mealCalories: Double = 0.0,
+    val mealProteins: Double = 0.0,
+    val mealCarbs: Double = 0.0,
+    val mealFats: Double = 0.0,
+    val mealRDC: Double = 0.0,
 )

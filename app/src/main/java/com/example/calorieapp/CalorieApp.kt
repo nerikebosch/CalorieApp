@@ -178,5 +178,6 @@ fun NavGraphBuilder.calorieGraph(
             recipeName = recipeName,
             openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
         )
-    }}
+    }
+}
 

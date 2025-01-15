@@ -1,6 +1,8 @@
 package com.example.calorieapp.screens.adddata
 
 import android.util.Log.e
+import androidx.lifecycle.viewModelScope
+import com.example.calorieapp.api.RetrofitClient
 import com.example.calorieapp.model.MealData
 import com.example.calorieapp.model.MealName
 import com.example.calorieapp.model.Product
@@ -10,10 +12,16 @@ import com.example.calorieapp.model.service.LogService
 import com.example.calorieapp.model.service.StorageService
 import com.example.calorieapp.screens.CalorieAppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
+
 
 @HiltViewModel
 class AddDataViewModel @Inject constructor(
@@ -22,25 +30,63 @@ class AddDataViewModel @Inject constructor(
     private val storageService: StorageService,
 ) : CalorieAppViewModel(logService) {
 
-    private val _selectedProducts = MutableStateFlow<List<Product>>(emptyList())
-    val selectedProducts: StateFlow<List<Product>> = _selectedProducts.asStateFlow()
+    private val _uiState = MutableStateFlow(AddDataUiState())
+    val uiState: StateFlow<AddDataUiState> = _uiState.asStateFlow()
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+    private var searchJob: Job? = null
 
-    private val _suggestions = MutableStateFlow<List<Product>>(emptyList())
-    val suggestions: StateFlow<List<Product>> = _suggestions.asStateFlow()
+    fun updateSearchQuery(query: String) {
+        _uiState.value = _uiState.value.copy(searchQuery = query)
+        searchJob?.cancel()
 
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+        if (query.length >= 2) {
+            searchJob = viewModelScope.launch {
+                delay(300) // Debounce
+                searchProducts(query)
+            }
+        } else if (query.isEmpty()) {
+            clearSearchResults()
+        }
+    }
 
-    fun updateSelectedProducts(products: List<Product>) {
-        _selectedProducts.value = products
+    private fun clearSearchResults() {
+        _uiState.value = _uiState.value.copy(
+            suggestions = emptyList(),
+            isLoading = false,
+            errorMessage = null
+        )
+    }
+
+    private suspend fun searchProducts(query: String) {
+        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+
+        try {
+            val response = RetrofitClient.api.searchProducts(searchTerms = query)
+            val filteredProducts = response.products.filter {
+                !it.productName.isNullOrBlank() && it.nutrients != null
+            }
+
+            _uiState.value = _uiState.value.copy(
+                suggestions = filteredProducts,
+                isLoading = false,
+                errorMessage = if (filteredProducts.isEmpty()) "No products found for '$query'" else null
+            )
+        } catch (e: Exception) {
+            val errorMessage = when (e) {
+                is IOException -> "Network error. Please check your connection."
+                is HttpException -> "Server error. Please try again later."
+                else -> "An unexpected error occurred: ${e.message}"
+            }
+            _uiState.value = _uiState.value.copy(
+                isLoading = false,
+                errorMessage = errorMessage
+            )
+        }
     }
 
     fun loadSelectedProducts(mealName: String, date: String) {
         launchCatching {
-            _isLoading.value = true
+            _uiState.value = _uiState.value.copy(isLoading = true)
             try {
                 val userProducts = storageService.getUserProductByDate(date)
                 val products = when (mealName.lowercase()) {
@@ -51,43 +97,40 @@ class AddDataViewModel @Inject constructor(
                     else -> null
                 } ?: emptyList()
 
-                _selectedProducts.value = products
+                _uiState.value = _uiState.value.copy(
+                    selectedProducts = products,
+                    isLoading = false
+                )
             } catch (e: Exception) {
                 println("Debug: Error loading selected products $e")
-                _errorMessage.value = "Failed to load products: ${e.message}"
-                _selectedProducts.value = emptyList()
-            } finally {
-                _isLoading.value = false
+                _uiState.value = _uiState.value.copy(
+                    errorMessage = "Failed to load products: ${e.message}",
+                    selectedProducts = emptyList(),
+                    isLoading = false
+                )
             }
         }
     }
 
     fun addProduct(product: Product) {
-        println("AddDataVMDebug: addProduct called with product: $product")
-        _selectedProducts.value = _selectedProducts.value + product
+        val currentProducts = _uiState.value.selectedProducts
+        _uiState.value = _uiState.value.copy(
+            selectedProducts = currentProducts + product
+        )
     }
 
     fun removeProduct(product: Product) {
-        _selectedProducts.value = _selectedProducts.value - product
-    }
-
-    fun updateSuggestions(newSuggestions: List<Product>) {
-        _suggestions.value = newSuggestions
-    }
-
-    fun setError(message: String?) {
-        _errorMessage.value = message
-    }
-
-    fun setLoading(loading: Boolean) {
-        _isLoading.value = loading
+        val currentProducts = _uiState.value.selectedProducts
+        _uiState.value = _uiState.value.copy(
+            selectedProducts = currentProducts - product
+        )
     }
 
     suspend fun saveProductsToMeal(mealName: String, date: String) {
+        _uiState.value = _uiState.value.copy(isLoading = true)
         try {
             println("AddDataVMDebug: mealType: $mealName")
             println("AddDataVMDebug: date: $date")
-            _isLoading.value = true
 
             // Get existing UserProducts for the date or create new one
             var userProducts = storageService.getUserProductByDate(date) ?: UserProducts(date = date)
@@ -95,16 +138,16 @@ class AddDataViewModel @Inject constructor(
             // Update the appropriate meal based on mealType
             userProducts = when (mealName.lowercase()) {
                 "breakfast" -> userProducts.copy(
-                    breakfast = MealData(MealName.Breakfast, _selectedProducts.value)
+                    breakfast = MealData(MealName.Breakfast, _uiState.value.selectedProducts)
                 )
                 "lunch" -> userProducts.copy(
-                    lunch = MealData(MealName.Lunch, _selectedProducts.value)
+                    lunch = MealData(MealName.Lunch, _uiState.value.selectedProducts)
                 )
                 "dinner" -> userProducts.copy(
-                    dinner = MealData(MealName.Dinner, _selectedProducts.value)
+                    dinner = MealData(MealName.Dinner, _uiState.value.selectedProducts)
                 )
                 "snack" -> userProducts.copy(
-                    snacks = MealData(MealName.Snack, _selectedProducts.value)
+                    snacks = MealData(MealName.Snack, _uiState.value.selectedProducts)
                 )
                 else -> userProducts
             }
@@ -115,10 +158,11 @@ class AddDataViewModel @Inject constructor(
                 storageService.updateUserProduct(userProducts)
             }
         } catch (e: Exception) {
-            _errorMessage.value = "Failed to save products: ${e.message}"
+            _uiState.value = _uiState.value.copy(
+                errorMessage = "Failed to save products: ${e.message}",
+                isLoading = false
+            )
             throw e
-        } finally {
-            _isLoading.value = false
         }
     }
 

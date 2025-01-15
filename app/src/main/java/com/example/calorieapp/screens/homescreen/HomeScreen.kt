@@ -36,7 +36,7 @@ import java.time.LocalDate
 
 @Composable
 fun GradientProgressIndicator(
-    progress: Float,
+    progress: Double,
     modifier: Modifier = Modifier,
     gradientStart: Color,
     gradientEnd: Color,
@@ -55,7 +55,7 @@ fun GradientProgressIndicator(
         )
 
         // Draw the gradient progress arc
-        val sweepAngle = progress * 360f
+        val sweepAngle = ( progress * 360.0f ).toFloat()
         val brush = Brush.linearGradient(
             colors = listOf(gradientStart, gradientEnd),
             start = Offset.Zero,
@@ -74,7 +74,7 @@ fun GradientProgressIndicator(
 
 @Composable
 fun GradientProgressIndicatorWater(
-    progress: Float,
+    progress: Double,
     modifier: Modifier = Modifier,
     gradientStart: Color,
     gradientEnd: Color,
@@ -93,7 +93,7 @@ fun GradientProgressIndicatorWater(
         )
 
         // Draw the gradient progress arc
-        val sweepAngle = progress * 360f
+        val sweepAngle = (progress * 360f).toFloat()
         val brush = Brush.linearGradient(
             colors = listOf(gradientStart, gradientEnd),
             start = Offset.Zero,
@@ -113,8 +113,8 @@ fun GradientProgressIndicatorWater(
 
 @Composable
 fun CalorieProgressIndicator(
-    currentCalories: Float,
-    goalCalories: Float,
+    currentCalories: Double,
+    goalCalories: Double,
     modifier: Modifier = Modifier,
     gradientStart: Color,
     gradientEnd: Color,
@@ -122,7 +122,7 @@ fun CalorieProgressIndicator(
     strokeWidth: Dp
 ) {
     // Calculate progress as a ratio of current to goal
-    val progress = (currentCalories.toFloat() / goalCalories).coerceIn(0f, 1f)
+    val progress = (currentCalories.toDouble() / goalCalories)
 
     GradientProgressIndicator(
         progress = progress,
@@ -136,8 +136,8 @@ fun CalorieProgressIndicator(
 
 @Composable
 fun WaterProgressIndicator(
-    currentIntake: Float,
-    goalIntake: Float,
+    currentIntake: Double,
+    goalIntake: Double,
     modifier: Modifier = Modifier,
     gradientStart: Color,
     gradientEnd: Color,
@@ -145,7 +145,7 @@ fun WaterProgressIndicator(
     strokeWidth: Dp
 ) {
     // Calculate progress as a ratio of current to goal
-    val progress = (currentIntake.toFloat() / goalIntake).coerceIn(0f, 1f)
+    val progress = (currentIntake / goalIntake)
 
     GradientProgressIndicatorWater(
         progress = progress,
@@ -162,7 +162,7 @@ fun HomeScreen(
     openScreen: (String) -> Unit,
     viewModel: HomeScreenViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState
+    val uiState by viewModel.uiState.collectAsState()
     val user by viewModel.user.collectAsState(initial = User())
 
     Column {
@@ -244,7 +244,7 @@ fun HomeScreenContent(
 
         ElevatedCardHomeScreen(
             modifier = Modifier.fillMaxWidth(),
-            title = "Breakfast"
+            title = uiState.mealTitle
         ) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -322,19 +322,19 @@ fun HomeScreenContent(
 @Composable
 fun HomeScreenPreview() {
     val uiState = HomeScreenUiState(
-        currentCalorie = 1200.0f,
-        goalCalorie = 2500.0f,
-        currentWeight = 58.0f,
-        goalWeight = 50.0f,
-        currentWater = 1230.0f,
-        goalWater = 2000.0f,
+        currentCalorie = 1200.0,
+        goalCalorie = 2500.0,
+        currentWeight = 58.0,
+        goalWeight = 50.0,
+        currentWater = 1230.0,
+        goalWater = 2000.0,
 
         mealTitle = "Breakfast",
-        mealCalories = 1234,
-        mealProteins = 60,
-        mealCarbs = 100,
-        mealFats = 20,
-        mealRDC = 20,
+        mealCalories = 1234.0,
+        mealProteins = 60.0,
+        mealCarbs = 100.0,
+        mealFats = 20.0,
+        mealRDC = 20.0,
     )
     val user = User(
         email = "nerike.b@gmail.com",

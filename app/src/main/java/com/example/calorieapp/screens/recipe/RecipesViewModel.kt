@@ -13,6 +13,7 @@ import android.content.Context
 import android.util.Log
 import com.example.calorieapp.RECIPES_SCREEN
 import com.example.calorieapp.RECIPE_DETAILS_SCREEN
+import com.example.calorieapp.screens.CalorieAppViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 @HiltViewModel
@@ -22,7 +23,7 @@ class RecipesViewModel @Inject constructor(
     logService: LogService,
     private val accountService: AccountService,
     storageService: StorageService,
-) : ViewModel() {
+) : CalorieAppViewModel(logService) {
 
     // Use LiveData to hold a list of RecipeDetails
     private val _recipes = MutableLiveData<List<RecipeDetails>>()
