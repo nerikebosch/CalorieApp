@@ -51,7 +51,6 @@ fun RecipeSelection(
 ) {
     var selectedCategory by remember { mutableStateOf<String?>(null) }
 
-
     Surface(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -85,8 +84,7 @@ fun RecipeSelection(
                 ElevatedCardRecipeScreen(
                     title = recipe.name,
                     img = recipe.imageUrl,
-                    onClick = {onRecipeClick(recipe.name)}
-
+                    onClick = { onRecipeClick(recipe.name) }
                 )
                 Spacer(modifier = Modifier.height(15.dp))
             }
@@ -109,10 +107,10 @@ fun getDummyRecipes(): List<RecipeDetails> {
             name = "Avocado Toast",
             imageUrl = "https://www.eatingwell.com/thmb/PM3UlLhM0VbE6dcq9ZFwCnMyWHI=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/EatingWell-April-Avocado-Toast-Directions-04-5b5b86524a3d4b35ac4c57863f6095dc.jpg",
             nutritionalValues = NutritionalValues(
-                calories = 250,
-                fat = 14,
-                protein = 10,
-                carbohydrates = 22
+                calories = 250.0,
+                fat = 14.0,
+                protein = 10.0,
+                carbohydrates = 22.0
             ),
             ingredients = listOf("1 slice whole-grain bread", "1/2 avocado", "1 egg", "Salt and pepper to taste"),
             instructions = listOf(
@@ -127,10 +125,10 @@ fun getDummyRecipes(): List<RecipeDetails> {
             name = "Greek Yogurt Parfait",
             imageUrl = "https://www.eatingwell.com/thmb/QRX1MZetYhz1PfDCV--srer1Bts=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/250955-strawberry-yogurt-parfait-beauty-336980c8b011478b86d8b9450be09a32.jpg",
             nutritionalValues = NutritionalValues(
-                calories = 180,
-                fat = 6,
-                protein = 12,
-                carbohydrates = 25
+                calories = 180.0,
+                fat = 6.0,
+                protein = 12.0,
+                carbohydrates = 25.0
             ),
             ingredients = listOf("1 cup Greek yogurt", "1/2 cup berries", "1 tbsp honey", "1/4 cup granola"),
             instructions = listOf(
@@ -144,10 +142,10 @@ fun getDummyRecipes(): List<RecipeDetails> {
             name = "Greek Yogurt Parfait",
             imageUrl = "https://www.eatingwell.com/thmb/QRX1MZetYhz1PfDCV--srer1Bts=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/250955-strawberry-yogurt-parfait-beauty-336980c8b011478b86d8b9450be09a32.jpg",
             nutritionalValues = NutritionalValues(
-                calories = 180,
-                fat = 6,
-                protein = 12,
-                carbohydrates = 25
+                calories = 180.0,
+                fat = 6.0,
+                protein = 12.0,
+                carbohydrates = 25.0
             ),
             ingredients = listOf("1 cup Greek yogurt", "1/2 cup berries", "1 tbsp honey", "1/4 cup granola"),
             instructions = listOf(

@@ -26,3 +26,4 @@ data class Nutrients(
     @SerializedName("energy-kcal_100g")
     val calories: Double? = null
 )
+
