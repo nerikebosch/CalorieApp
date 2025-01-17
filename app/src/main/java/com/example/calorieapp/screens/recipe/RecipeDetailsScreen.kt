@@ -44,7 +44,7 @@ import com.example.calorieapp.R.string as AppText
 @Composable
 fun RecipeDetailsScreen(
     recipeName: String, // Receive recipe name
-    openAndPopUp: (String, String) -> Unit,
+    popUpScreen: () -> Unit,
     viewModel: RecipeDetailsViewModel = hiltViewModel() // Inject ViewModel
 ) {
     var showDialog by remember { mutableStateOf(false) }

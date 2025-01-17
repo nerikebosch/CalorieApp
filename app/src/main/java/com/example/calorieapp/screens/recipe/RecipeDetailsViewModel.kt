@@ -1,6 +1,8 @@
 package com.example.calorieapp.screens.recipe
 
 import android.content.Context
+import com.example.calorieapp.R.string as AppText
+import com.example.calorieapp.common.snackbar.SnackbarManager
 import com.example.calorieapp.model.MealName
 import com.example.calorieapp.model.RecipeDetails
 import com.example.calorieapp.model.UserProducts
@@ -75,6 +77,8 @@ class RecipeDetailsViewModel @Inject constructor(
             } else {
                 storageService.updateUserProduct(userProducts)
             }
+            SnackbarManager.showMessage(AppText.added_meal)
         }
     }
+
 }

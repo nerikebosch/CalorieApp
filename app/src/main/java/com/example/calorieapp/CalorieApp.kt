@@ -75,7 +75,7 @@ fun CalorieApp() {
                         ) {
                             CalorieAppTabRow(
                                 currentRoute = currentRoute ?: HOME_SCREEN,
-                                onTabSelected = { route -> appState.navigate(route) }
+                                openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
                             )
                         }
                     }
@@ -176,7 +176,7 @@ fun NavGraphBuilder.calorieGraph(
         val recipeName = backStackEntry.arguments?.getString("recipeName") ?: "DefaultRecipe"
         RecipeDetailsScreen(
             recipeName = recipeName,
-            openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
+            popUpScreen = { appState.popUp() }
         )
     }
 }

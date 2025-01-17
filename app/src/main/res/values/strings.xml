@@ -24,18 +24,7 @@
     <string name="password_error">Password does not meet the requirement. Please use a stronger password.</string>
     <string name="password_match_error">Passwords does not match.</string>
     <string name="all_fields_required">All fields are required.</string>">
-    <!-- TasksScreen -->
-    <string name="tasks">Tasks</string>
 
-    <!-- EditTaskScreen -->
-    <string name="edit_task">Edit your task</string>
-    <string name="title">Title</string>
-    <string name="description">Description</string>
-    <string name="url">URL</string>
-    <string name="date">Date</string>
-    <string name="time">Time</string>
-    <string name="flag">Flag</string>
-    <string name="priority">Priority</string>
 
     <!-- SettingsScreen -->
     <string name="settings">Settings</string>
@@ -45,6 +34,7 @@
     <string name="empty_surname_error">Surname cannot be empty</string>
     <string name="personal_details">Personal details</string>
     <string name="profile">Profile</string>
+    <string name="change_saved">Your changes have been saved</string>
 
     <!-- StatsScreen -->
     <string name="stats">Statistics</string>
@@ -86,4 +76,5 @@
 
     <!-- Recipe Details Screen -->
     <string name="select_recipe">Select Recipe</string>"
+    <string name="added_meal">Added to your meal successfully</string>
 </resources>

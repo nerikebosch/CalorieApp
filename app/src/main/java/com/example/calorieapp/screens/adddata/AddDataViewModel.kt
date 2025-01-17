@@ -3,6 +3,7 @@ package com.example.calorieapp.screens.adddata
 import android.util.Log.e
 import androidx.lifecycle.viewModelScope
 import com.example.calorieapp.api.RetrofitClient
+import com.example.calorieapp.common.snackbar.SnackbarManager
 import com.example.calorieapp.model.MealData
 import com.example.calorieapp.model.MealName
 import com.example.calorieapp.model.Product
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
-
+import com.example.calorieapp.R.string as AppText
 
 @HiltViewModel
 class AddDataViewModel @Inject constructor(
@@ -171,6 +172,7 @@ class AddDataViewModel @Inject constructor(
             saveProductsToMeal(mealName, date)
             println("AddDataVMDebug: Save products to $mealName for $date")
             openAndPopUp("MealTimeScreen", "AddDataScreen")
+            SnackbarManager.showMessage(AppText.added_meal)
         }
     }
 }

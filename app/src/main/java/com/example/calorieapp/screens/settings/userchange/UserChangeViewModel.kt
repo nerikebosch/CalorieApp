@@ -69,6 +69,7 @@ class   UserChangeViewModel @Inject constructor(
         launchCatching {
             accountService.linkAccount(_user.value)
             popUpScreen()
+            SnackbarManager.showMessage(AppText.change_saved)
         }
 
     }
