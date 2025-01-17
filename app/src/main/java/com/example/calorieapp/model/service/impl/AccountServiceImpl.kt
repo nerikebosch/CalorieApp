@@ -73,6 +73,7 @@ class AccountServiceImpl @Inject constructor(
 
     override suspend fun signOut() {
         auth.signOut()
+        firestore.clearPersistence()
     }
 
     override suspend fun signInWithGoogle(idToken: String) {

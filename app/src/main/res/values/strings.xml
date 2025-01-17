@@ -77,4 +77,5 @@
     <!-- Recipe Details Screen -->
     <string name="select_recipe">Select Recipe</string>"
     <string name="added_meal">Added to your meal successfully</string>
+    <string name="meal_changed">Your meal has been changed!</string>
 </resources>

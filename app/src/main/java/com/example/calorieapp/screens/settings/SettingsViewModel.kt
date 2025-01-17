@@ -40,6 +40,7 @@ class SettingsViewModel @Inject constructor(
     fun onSignOutClick(restartApp: (String) -> Unit) {
         launchCatching {
             accountService.signOut()
+            println("SettingsVMDebug: User signed out, navigating to $SPLASH_SCREEN")
             restartApp(SPLASH_SCREEN)
         }
     }

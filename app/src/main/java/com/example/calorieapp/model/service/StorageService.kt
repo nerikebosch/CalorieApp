@@ -13,7 +13,7 @@ import com.example.calorieapp.model.UserProducts
 */
 interface StorageService {
 
-    val userData: Flow<List<UserData>>
+    //val userData: Flow<List<UserData>>
     val userProducts: Flow<List<UserProducts>>
 
     suspend fun updateUser(user: User)

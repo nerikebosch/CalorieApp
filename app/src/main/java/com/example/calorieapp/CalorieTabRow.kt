@@ -41,7 +41,10 @@ fun CalorieAppTabRow(
                         println("TabRowDebug: Clicked tab $index")
                         // Map the tab index back to route
                         val route = tabRoutes[index]
-                        openAndPopUp(route, tabRoutes[lastValidTabIndex])
+                        println("TabRowDebug: Navigating to $route from $currentRoute")
+                        if (route != currentRoute) {
+                            openAndPopUp(route, tabRoutes[lastValidTabIndex])
+                        }
                     }
                 )
             }

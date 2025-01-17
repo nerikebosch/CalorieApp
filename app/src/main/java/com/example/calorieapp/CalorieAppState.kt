@@ -44,9 +44,17 @@ class CalorieAppState(
     }
 
     fun clearAndNavigate(route: String) {
-        navController.navigate(route) {
-            launchSingleTop = true
-            popUpTo(0) { inclusive = true }
+        try {
+
+            navController.navigate(route) {
+                println("NavDebug: Navigating to $route after popBack")
+                launchSingleTop = true
+                popUpTo(0) { inclusive = true }
+            }
+            println("NavDebug: Navigation completed successfully")
+        } catch (e: Exception) {
+            println("NavDebug: Navigation failed with error: ${e.message}")
+            e.printStackTrace()
         }
     }
 }

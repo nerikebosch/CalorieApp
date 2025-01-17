@@ -60,7 +60,6 @@ class HomeScreenViewModel @Inject constructor(
 
     val options = mutableStateOf<List<String>>(listOf())
 
-    val userData = storageService.userData
 
     fun onSettingsClick(openScreen: (String) -> Unit) = openScreen(SETTINGS_SCREEN)
 

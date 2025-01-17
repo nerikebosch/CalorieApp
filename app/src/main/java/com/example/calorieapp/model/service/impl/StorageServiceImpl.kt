@@ -14,6 +14,7 @@ import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -25,21 +26,27 @@ class StorageServiceImpl @Inject constructor(
 ) : StorageService {
 
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override val userData: Flow<List<UserData>>
-        get() = auth.currentUser.flatMapLatest { user ->
-            currentCollection(user.id, USER_DATA_COLLECTION).snapshots().map { snapshot ->
-                snapshot.toObjects<UserData>() // Use KTX toObjects()
-            }
-        }
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    override val userData: Flow<List<UserData>>
+//        get() = auth.currentUser.flatMapLatest { user ->
+//            currentCollection(user.id, USER_DATA_COLLECTION).snapshots().map { snapshot ->
+//                snapshot.toObjects<UserData>() // Use KTX toObjects()
+//            }
+//        }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val userProducts: Flow<List<UserProducts>>
         get() = auth.currentUser.flatMapLatest { user ->
-            currentCollection(user.id, USER_PRODUCT_COLLECTION).snapshots().map { snapshot ->
-                snapshot.toObjects<UserProducts>() // Use KTX toObjects()
+            if (user.id.isBlank()) {
+                flowOf(emptyList())
+            } else {
+                currentCollection(user.id, USER_PRODUCT_COLLECTION).snapshots().map { snapshot ->
+                    snapshot.toObjects<UserProducts>() // Use KTX toObjects()
+                }
             }
         }
+
+
 
     override suspend fun updateUser(user: User) {
         TODO("Not yet implemented")
