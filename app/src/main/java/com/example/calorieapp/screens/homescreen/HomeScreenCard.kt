@@ -123,9 +123,11 @@ fun ElevatedCardCalorieTracker(
         gradientStart: Color = MaterialTheme.colorScheme.primary,
         gradientEnd: Color = MaterialTheme.colorScheme.secondary,
         trackColor: Color = White,
-        strokeWidth: Dp = 8.dp
+        strokeWidth: Dp = 8.dp,
+        onClick: () -> Unit = {}
     ) {
         ElevatedCard(
+            onClick = onClick,
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
             modifier = modifier.size(width = 180.dp, height = 200.dp)
         ) {

@@ -70,6 +70,7 @@
     <string name="web_client_id" translatable="false">501150034108-c1b0su0oha3l6bqs0jbgkib8iqfouc7c.apps.googleusercontent.com</string>
 
 
+    <string name="add_amount">Add amount</string>
 
     <!-- Add data screen -->
     <string name="select_product">Select Products</string>

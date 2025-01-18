@@ -33,6 +33,7 @@ playServicesAuth = "21.3.0"
 googleServices = "4.4.2"
 retrofit = "2.9.0"
 runtimeLivedata = "1.7.6"
+ycharts = "2.1.0"
 
 
 [libraries]
@@ -81,6 +82,7 @@ material-icons-extended = { module = "androidx.compose.material:material-icons-e
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
+ycharts = { module = "co.yml:ycharts", version.ref = "ycharts" }
 
 
 [plugins]

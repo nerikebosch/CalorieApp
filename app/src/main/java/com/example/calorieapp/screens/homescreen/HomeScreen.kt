@@ -13,13 +13,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -27,12 +36,19 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.calorieapp.R
+import com.example.calorieapp.common.composable.DialogCancelButton
+import com.example.calorieapp.common.composable.DialogConfirmButton
+import com.example.calorieapp.model.MealName
 import com.example.calorieapp.model.User
+import com.example.calorieapp.screens.recipe.MealSelectionDialog
 import java.time.LocalDate
+import kotlin.math.roundToInt
 
 @Composable
 fun GradientProgressIndicator(
@@ -165,12 +181,24 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsState()
     val user by viewModel.user.collectAsState(initial = User())
 
+
+    var showDialog by remember { mutableStateOf(false) }
+
     Column {
         HomeScreenContent(
             user = user,
             uiState = uiState,
             onSettingsClick = { viewModel.onSettingsClick(openScreen) },
+            onOpenDialog = { showDialog = true }
         )
+
+            ItemAddDialog(
+                showDialog = showDialog,
+                onDismiss = { showDialog = false },
+                onSave = { /*TODO*/ }
+            )
+
+
     }
 }
 
@@ -179,6 +207,7 @@ fun HomeScreenContent(
     user: User,
     uiState: HomeScreenUiState,
     onSettingsClick: () -> Unit,
+    onOpenDialog: () -> Unit
 ) {
     val date = LocalDate.now()
 
@@ -227,7 +256,8 @@ fun HomeScreenContent(
                 currentIntake = uiState.currentWeight, // Replace with actual data
                 goalIntake = uiState.goalWeight,  // Replace with actual data
                 unit = "kg",
-                modifier = Modifier.size(width = 170.dp, height = 200.dp)
+                modifier = Modifier.size(width = 170.dp, height = 200.dp),
+                onClick = { onOpenDialog() }
             )
             //Spacer(modifier = Modifier.width(10.dp))
 
@@ -236,7 +266,8 @@ fun HomeScreenContent(
                 currentIntake = uiState.currentWater, // Replace with actual data
                 goalIntake = uiState.goalWater,  // Replace with actual data
                 unit = "ml",
-                modifier = Modifier.size(width = 180.dp, height = 200.dp)
+                modifier = Modifier.size(width = 180.dp, height = 200.dp),
+                onClick = { onOpenDialog() }
             )
         }
 
@@ -314,6 +345,56 @@ fun HomeScreenContent(
     }
 }
 
+@Composable
+fun ItemAddDialog(
+    dialogData: String = "",
+    uiState: HomeScreenUiState = HomeScreenUiState(),
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    onSave: (Int) -> Unit
+) {
+    if (showDialog) {
+
+        var sliderPosition by remember { mutableFloatStateOf(0f) }
+        AlertDialog(
+            onDismissRequest = { onDismiss() },
+            title = {
+                Text(stringResource(R.string.add_amount))
+            },
+            text = {
+                Column {
+                    Slider(
+                        value = sliderPosition,
+                        onValueChange = { newValue ->
+                            // Snap to the nearest step
+                            sliderPosition = (newValue / 10).roundToInt() * 10f
+                        },
+                        colors = SliderDefaults.colors(
+                            thumbColor = MaterialTheme.colorScheme.secondary,
+                            activeTrackColor = MaterialTheme.colorScheme.secondary,
+                            inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+                        ),
+                        steps = 200,
+                        valueRange = 0f..2000f
+                    )
+                    Text(text = sliderPosition.toInt().toString())
+                }
+            },
+            confirmButton = {
+                DialogConfirmButton(R.string.confirm) {
+                    onSave(sliderPosition.toInt()) // Convert to List<String>
+                    onDismiss()
+                }
+            },
+            dismissButton = {
+                DialogCancelButton(R.string.cancel) { onDismiss() }
+            }
+        )
+    }
+
+
+}
+
 
 
 
@@ -345,7 +426,8 @@ fun HomeScreenPreview() {
     HomeScreenContent(
         user = user,
         uiState = uiState,
-        onSettingsClick = { }
+        onSettingsClick = { },
+        onOpenDialog = { }
     )
 
 }

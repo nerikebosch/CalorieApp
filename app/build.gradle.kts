@@ -123,7 +123,7 @@ dependencies {
     implementation(libs.converter.gson)
 
     implementation(libs.coil.kt.coil.compose)
-
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
 
     testImplementation(libs.junit)
@@ -133,6 +133,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 }
