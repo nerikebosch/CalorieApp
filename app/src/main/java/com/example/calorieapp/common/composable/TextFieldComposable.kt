@@ -1,5 +1,7 @@
 package com.example.calorieapp.common.composable
 
+import android.R.attr.text
+import android.R.attr.textStyle
 import androidx.annotation.StringRes
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
@@ -389,6 +391,73 @@ fun LabelTextField(
 
 }
 
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LabelNumberTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    label: String,
+    trailing: @Composable (() -> Unit)? = null,
+) {
+    val uiColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.primary
+
+    OutlinedTextField(
+        value = value,
+        onValueChange  = { newValue ->
+            // Optional: Add validation to ensure only valid numbers are entered
+            if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d*$"))) {
+                onValueChange(newValue)
+            }
+        },
+        label = {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = uiColor,
+                fontSize = 14.sp
+            )
+        },
+        trailingIcon = {
+            // Check if trailing composable is provided
+            trailing?.invoke()
+        },
+        modifier = modifier
+            .fillMaxWidth()
+            .height(64.dp),
+        colors = TextFieldDefaults.colors(
+            // Text colors
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+            disabledTextColor = Color.Gray,
+
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            disabledContainerColor = Color.White,
+
+            // Border/Indicator colors
+            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+
+            // Label colors
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = uiColor.copy(alpha = 0.8f),
+
+            // Cursor color
+            cursorColor = MaterialTheme.colorScheme.primary
+        ),
+        shape = RoundedCornerShape(10.dp),
+        textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+
+        // Keyboard options for text
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password
+        )
+    )
+
+}
 
 @Composable
 fun PasswordVisibilityToggleIcon(

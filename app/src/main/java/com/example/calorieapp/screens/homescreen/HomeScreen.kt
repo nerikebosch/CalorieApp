@@ -382,7 +382,7 @@ fun ItemAddDialog(
             },
             confirmButton = {
                 DialogConfirmButton(R.string.confirm) {
-                    onSave(sliderPosition.toInt()) // Convert to List<String>
+                    onSave(sliderPosition.toInt())
                     onDismiss()
                 }
             },

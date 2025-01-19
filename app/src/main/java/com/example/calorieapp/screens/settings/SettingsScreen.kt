@@ -55,9 +55,9 @@ fun SettingsScreen(
         ) { viewModel.onUserChangeClick(openScreen) }
 
         ChangeDataCard(
-            label = stringResource(AppText.your_data),
+            label = stringResource(AppText.goal_change),
             detail = "",
-        ) { viewModel.onDataChangeClick(openScreen) }
+        ) { viewModel.onGoalChangeClick(openScreen) }
 
         Spacer(modifier = Modifier.spacer())
         SignOutCard { viewModel.onSignOutClick(restartApp) }
@@ -135,7 +135,7 @@ fun SettingsScreenPreview() {
                 onClick = {}
             )
             ChangeDataCard(
-                label = stringResource(AppText.your_data),
+                label = stringResource(AppText.goal_change),
                 detail = "",
                 onClick = {}
             )

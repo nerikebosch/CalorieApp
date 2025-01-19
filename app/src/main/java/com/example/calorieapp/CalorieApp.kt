@@ -38,6 +38,7 @@ import com.example.calorieapp.screens.sign_up.SignUpScreen
 import com.example.calorieapp.screens.splash.SplashScreen
 import com.example.calorieapp.ui.theme.CalorieAppTheme
 import com.example.calorieapp.screens.recipe.RecipesScreen
+import com.example.calorieapp.screens.settings.goalchange.GoalChangeScreen
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -118,6 +119,10 @@ fun NavGraphBuilder.calorieGraph(
     appState: CalorieAppState,
     ) {
 
+    composable(SPLASH_SCREEN) {
+        SplashScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+    }
+
     composable(HOME_SCREEN) {
         HomeScreen(openScreen = { route -> appState.navigate(route) })
     }
@@ -144,8 +149,10 @@ fun NavGraphBuilder.calorieGraph(
         )
     }
 
-    composable(SPLASH_SCREEN) {
-        SplashScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+    composable(GOAL_CHANGE_SCREEN) {
+        GoalChangeScreen(
+            popUpScreen = { appState.popUp() }
+        )
     }
 
     composable(MEAL_TIME_SCREEN) {

@@ -35,6 +35,9 @@
     <string name="personal_details">Personal details</string>
     <string name="profile">Profile</string>
     <string name="change_saved">Your changes have been saved</string>
+    <string name="goal_change">Change your goal</string>
+    <string name="goal_error">Your goal should not be empty</string>
+
 
     <!-- StatsScreen -->
     <string name="stats">Statistics</string>

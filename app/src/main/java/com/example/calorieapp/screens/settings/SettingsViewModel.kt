@@ -2,6 +2,7 @@ package com.example.calorieapp.screens.settings
 
 
 import androidx.lifecycle.viewModelScope
+import com.example.calorieapp.GOAL_CHANGE_SCREEN
 import com.example.calorieapp.SPLASH_SCREEN
 import com.example.calorieapp.USER_CHANGE_SCREEN
 import com.example.calorieapp.model.User
@@ -47,8 +48,6 @@ class SettingsViewModel @Inject constructor(
 
     fun onUserChangeClick(openScreen: (String) -> Unit) = openScreen(USER_CHANGE_SCREEN)
 
-    fun onDataChangeClick(openScreen: (String) -> Unit) {
-        /* TODO */
-    }
+    fun onGoalChangeClick(openScreen: (String) -> Unit) = openScreen(GOAL_CHANGE_SCREEN)
 
 }

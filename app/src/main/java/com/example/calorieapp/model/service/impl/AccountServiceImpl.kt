@@ -98,5 +98,4 @@ class AccountServiceImpl @Inject constructor(
         private const val LINK_ACCOUNT_TRACE = "linkAccount"
     }
 
-
 }
