@@ -1,6 +1,7 @@
 package com.example.calorieapp.model.service
 
 import com.example.calorieapp.model.User
+import com.example.calorieapp.model.UserActivity
 import com.example.calorieapp.model.UserData
 import kotlinx.coroutines.flow.Flow
 import com.example.calorieapp.model.UserProducts
@@ -15,6 +16,7 @@ interface StorageService {
 
     //val userData: Flow<List<UserData>>
     val userProducts: Flow<List<UserProducts>>
+    val userActivity: Flow<List<UserActivity>>
 
     suspend fun updateUser(user: User)
     suspend fun save(userData: UserData)
@@ -24,7 +26,6 @@ interface StorageService {
     suspend fun saveWeight(weight: Double)
     suspend fun getCalories(calories: Double): Double?
     suspend fun saveCalories(calories: Double)
-    suspend fun getTask(task: String): String?
 
 
     suspend fun getUserProduct(userProductId: String): UserProducts?
@@ -32,4 +33,10 @@ interface StorageService {
     suspend fun updateUserProduct(userProduct: UserProducts)
     suspend fun getUserProductByDate(date: String): UserProducts?
     suspend fun deleteUserProduct(userProductId: String)
+
+    suspend fun getUserActivity(userActivityId: String): UserActivity?
+    suspend fun getUserActivityByDate(date: String): UserActivity?
+
+    suspend fun updateUserActivity(userActivity: UserActivity)
+    suspend fun saveUserActivity(userActivity: UserActivity): String
 }

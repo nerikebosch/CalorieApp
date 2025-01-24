@@ -1,5 +1,6 @@
 package com.example.calorieapp.common.composable
 
+import android.R.attr.label
 import android.R.attr.text
 import android.R.attr.textStyle
 import androidx.annotation.StringRes
@@ -406,12 +407,7 @@ fun LabelNumberTextField(
 
     OutlinedTextField(
         value = value,
-        onValueChange  = { newValue ->
-            // Optional: Add validation to ensure only valid numbers are entered
-            if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d*$"))) {
-                onValueChange(newValue)
-            }
-        },
+        onValueChange = onValueChange,
         label = {
             Text(
                 text = label,
@@ -453,7 +449,7 @@ fun LabelNumberTextField(
 
         // Keyboard options for text
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Password
+            keyboardType = KeyboardType.Number
         )
     )
 

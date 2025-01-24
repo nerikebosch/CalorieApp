@@ -15,6 +15,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import java.text.DecimalFormat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.calorieapp.common.composable.LabelNumberTextField
@@ -47,24 +49,33 @@ fun GoalChangeScreen(
 
     GoalChangeScreenContent(
         onDoneClick = { viewModel.onDoneClick(popUpScreen) },
-        user = user,
-        onGoalWaterChange = viewModel::onGoalWaterChange,
-        onGoalWeightChange = viewModel::onGoalWeightChange,
-        onGoalCalorieChange = viewModel::onGoalCalorieChange
+        user = user
     )
 
 }
 
 @Composable
 fun GoalChangeScreenContent(
+    onUserChange: (User) -> Unit = {},
     onDoneClick: () -> Unit = {},
     user: User,
-    onGoalWaterChange: (String) -> Unit = {},
-    onGoalWeightChange: (String) -> Unit = {},
-    onGoalCalorieChange: (String) -> Unit = {},
 ) {
+    var goalWeight by remember(user.id) { mutableStateOf(user.goalWeight) }
+    var goalWater by remember(user.id)  { mutableStateOf(user.goalWater) }
+    var goalCalorie by remember(user.id)  { mutableStateOf(user.goalCalorie) }
+    val decimalFormat = remember { DecimalFormat("#.##") }
+
+    LaunchedEffect(user) {
+            goalWeight = user.goalWeight
+            goalWater = user.goalWater
+            goalCalorie = user.goalCalorie
+    }
+
     Column(
-        modifier = Modifier.fillMaxWidth().fillMaxHeight().verticalScroll(rememberScrollState()),
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -78,24 +89,39 @@ fun GoalChangeScreenContent(
         Spacer(modifier = Modifier.spacer())
 
         LabelNumberTextField(
-            value = user.goalWeight.toString(),
-            onValueChange = onGoalWeightChange,
+            value = if (goalWeight == 0.0) "" else {
+                val formatted = decimalFormat.format(goalWeight)
+                if (formatted.endsWith(".00")) formatted.substringBefore(".00")
+                else if (formatted.endsWith(".0")) formatted.substringBefore(".0")
+                else formatted
+            },
+            onValueChange = { newValue -> goalWeight = newValue.toDoubleOrNull() ?: 0.0 },
             label = "Change your goal weight",
             modifier = Modifier.textCard(),
             trailing = { Text(text = "kg") }
         )
         Spacer(modifier = Modifier.spacer())
         LabelNumberTextField(
-            value = user.goalWater.toString(),
-            onValueChange = onGoalWaterChange,
+            value = if (goalWater == 0.0) "" else {
+                val formatted = decimalFormat.format(goalWater)
+                if (formatted.endsWith(".00")) formatted.substringBefore(".00")
+                else if (formatted.endsWith(".0")) formatted.substringBefore(".0")
+                else formatted
+            },
+            onValueChange = { newValue -> goalWater = newValue.toDoubleOrNull() ?: 0.0 },
             label = "Change your daily goal water",
             modifier = Modifier.textCard(),
             trailing = { Text(text = "ml") }
         )
         Spacer(modifier = Modifier.spacer())
         LabelNumberTextField(
-            value = user.goalCalorie.toString(),
-            onValueChange = onGoalCalorieChange,
+            value = if (goalCalorie == 0.0) "" else {
+                val formatted = decimalFormat.format(goalCalorie)
+                if (formatted.endsWith(".00")) formatted.substringBefore(".00")
+                else if (formatted.endsWith(".0")) formatted.substringBefore(".0")
+                else formatted
+            },
+            onValueChange = { newValue -> goalCalorie = newValue.toDoubleOrNull() ?: 0.0 },
             label = "Change your daily goal calorie",
             modifier = Modifier.textCard(),
             trailing = { Text(text = "kcal") }
@@ -111,15 +137,12 @@ fun GoalChangeScreenContent(
 fun GoalChangeScreenPreview() {
     CalorieAppTheme {
         var previewUser by remember { mutableStateOf(User(
-            goalWater = 2000.0, goalWeight = 60.0, goalCalorie = 2000.0
+            goalWater = 0.0, goalWeight = 60.0, goalCalorie = 2000.0
         )) }
 
         GoalChangeScreenContent(
             onDoneClick = {},
             user = previewUser,
-            onGoalWaterChange = { previewUser = previewUser.copy(goalWater = it.toDouble()) },
-            onGoalWeightChange = { previewUser = previewUser.copy(goalWeight = it.toDouble()) },
-            onGoalCalorieChange = { previewUser = previewUser.copy(goalCalorie = it.toDouble()) }
         )
     }
 }

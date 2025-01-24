@@ -7,13 +7,13 @@ import com.example.calorieapp.model.service.impl.MealNutrientTotals
 
 interface NutritionService {
 
-    fun getTotalCalories(userProducts: UserProducts): Double
-    fun getTotalProtein(userProducts: UserProducts): Double
-    fun getTotalCarbs(userProducts: UserProducts): Double
-    fun getTotalFat(userProducts: UserProducts): Double
-    fun getMealCalories(mealData: MealData): Double
-    fun getTotalCaloriesForDate(userProducts: List<UserProducts>, date: String): Double
-    fun getMealDataByType(userProducts: UserProducts, mealName: MealName): MealNutrientTotals
-    fun getMealNutrients(mealData: MealData): Triple<Double, Double, Double>
+    suspend fun getTotalCalories(userProducts: UserProducts): Double
+    suspend fun getTotalProtein(userProducts: UserProducts): Double
+    suspend fun getTotalCarbs(userProducts: UserProducts): Double
+    suspend fun getTotalFat(userProducts: UserProducts): Double
+    suspend fun getMealCalories(mealData: MealData): Double
+    suspend fun getTotalCaloriesForDate(userProducts: List<UserProducts>, date: String): Double
+    suspend fun getMealDataByType(userProducts: UserProducts, mealName: MealName): MealNutrientTotals
+    suspend fun getMealNutrients(mealData: MealData): Triple<Double, Double, Double>
 
 }

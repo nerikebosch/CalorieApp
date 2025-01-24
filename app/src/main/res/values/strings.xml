@@ -37,7 +37,8 @@
     <string name="change_saved">Your changes have been saved</string>
     <string name="goal_change">Change your goal</string>
     <string name="goal_error">Your goal should not be empty</string>
-
+    <string name="your_location">Your location</string>
+    <string name="your_activity">Your Activity</string>
 
     <!-- StatsScreen -->
     <string name="stats">Statistics</string>

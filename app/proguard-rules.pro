@@ -19,7 +19,30 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class com.example.calorieapp.** { *; }
+# Google Play Services
 -keep class com.google.android.gms.** { *; }
--keep class com.google.api.client.** { *; }
--keepattributes Signature
+-keep interface com.google.android.gms.** { *; }
 -dontwarn com.google.android.gms.**
+
+# Firebase Authentication
+-keep class com.google.firebase.** { *; }
+-keep class com.firebaseui.** { *; }
+-keepattributes Signature
+-keepattributes *Annotation*
+
+# Google Auth Library
+-keep class com.google.api.client.** { *; }
+-keepattributes Signature,RuntimeVisibleAnnotations,AnnotationDefault
+
+# Prevent obfuscation of critical classes
+-keepnames class com.google.android.gms.common.internal.safeparcel.SafeParcelable {
+    *;
+}
+
+-keepnames @com.google.android.gms.common.annotation.KeepName class *
+
+-keepclassmembernames class * {
+    @com.google.android.gms.common.annotation.KeepName *;
+}

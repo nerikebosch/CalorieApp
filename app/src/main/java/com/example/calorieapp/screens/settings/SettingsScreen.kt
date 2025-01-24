@@ -59,6 +59,15 @@ fun SettingsScreen(
             detail = "",
         ) { viewModel.onGoalChangeClick(openScreen) }
 
+//        ChangeDataCard(
+//            label = stringResource(AppText.your_location),
+//            detail = "",
+//        ) { viewModel.onOpenMapScreenClick(openScreen) }
+
+        ChangeDataCard(
+            label = stringResource(AppText.your_activity),
+            detail = "See how many steps you walked today",
+        ) { viewModel.onOpenActivityClick(openScreen)}
         Spacer(modifier = Modifier.spacer())
         SignOutCard { viewModel.onSignOutClick(restartApp) }
 

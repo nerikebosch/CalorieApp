@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.calorieapp.R
 import com.example.calorieapp.common.composable.DialogCancelButton
 import com.example.calorieapp.common.composable.DialogConfirmButton
@@ -179,7 +180,7 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val user by viewModel.user.collectAsState(initial = User())
+    val user by viewModel.user.collectAsStateWithLifecycle()
 
 
     var showDialog by remember { mutableStateOf(false) }
@@ -243,7 +244,7 @@ fun HomeScreenContent(
         ElevatedCardCalorieTracker(
             title = "Today's Calories",
             currentCalories = uiState.currentCalorie, // Replace with actual data
-            goalCalories = uiState.goalCalorie,  // Replace with actual data
+            goalCalories = user.goalCalorie,  // Replace with actual data
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -254,7 +255,7 @@ fun HomeScreenContent(
             ElevatedCardWaterTracker(
                 title = "Weight Balance",
                 currentIntake = uiState.currentWeight, // Replace with actual data
-                goalIntake = uiState.goalWeight,  // Replace with actual data
+                goalIntake = user.goalWeight,  // Replace with actual data
                 unit = "kg",
                 modifier = Modifier.size(width = 170.dp, height = 200.dp),
                 onClick = { onOpenDialog() }
@@ -264,7 +265,7 @@ fun HomeScreenContent(
             ElevatedCardWaterTracker(
                 title = "Water Balance",
                 currentIntake = uiState.currentWater, // Replace with actual data
-                goalIntake = uiState.goalWater,  // Replace with actual data
+                goalIntake = user.goalWater,  // Replace with actual data
                 unit = "ml",
                 modifier = Modifier.size(width = 180.dp, height = 200.dp),
                 onClick = { onOpenDialog() }
@@ -404,11 +405,8 @@ fun ItemAddDialog(
 fun HomeScreenPreview() {
     val uiState = HomeScreenUiState(
         currentCalorie = 1200.0,
-        goalCalorie = 2500.0,
         currentWeight = 58.0,
-        goalWeight = 50.0,
         currentWater = 1230.0,
-        goalWater = 2000.0,
 
         mealTitle = "Breakfast",
         mealCalories = 1234.0,
@@ -421,7 +419,11 @@ fun HomeScreenPreview() {
         email = "nerike.b@gmail.com",
         name = "Nerike",
         surname = "Bosch",
-        registeredUser = true
+        registeredUser = true,
+
+        goalWeight = 50.0,
+        goalWater = 2000.0,
+        goalCalorie = 2000.0
     )
     HomeScreenContent(
         user = user,

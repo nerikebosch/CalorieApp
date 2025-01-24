@@ -37,22 +37,8 @@ class GoalChangeViewModel @Inject constructor(
         }
     }
 
-    fun onGoalWaterChange(newValue: String) {
-        newValue.toDoubleOrNull()?.let {
-            _user.value = _user.value.copy(goalWater = it)
-        }
-    }
-
-    fun onGoalWeightChange(newValue: String) {
-        newValue.toDoubleOrNull()?.let {
-            _user.value = _user.value.copy(goalWeight = it)
-        }
-    }
-
-    fun onGoalCalorieChange(newValue: String) {
-        newValue.toDoubleOrNull()?.let {
-            _user.value = _user.value.copy(goalCalorie = it)
-        }
+    fun onUserChange(update: User) {
+        _user.value = update
     }
 
     fun onDoneClick(popUpScreen: () -> Unit) {

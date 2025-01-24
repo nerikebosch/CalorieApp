@@ -27,6 +27,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.calorieapp.common.snackbar.SnackbarManager
 import com.example.calorieapp.model.MealName
+import com.example.calorieapp.screens.activity_stats.ActivityScreen
 import com.example.calorieapp.screens.adddata.*
 
 import com.example.calorieapp.screens.homescreen.HomeScreen
@@ -151,6 +152,13 @@ fun NavGraphBuilder.calorieGraph(
 
     composable(GOAL_CHANGE_SCREEN) {
         GoalChangeScreen(
+            popUpScreen = { appState.popUp() }
+        )
+    }
+
+
+    composable(ACTIVITY_SCREEN) {
+        ActivityScreen(
             popUpScreen = { appState.popUp() }
         )
     }

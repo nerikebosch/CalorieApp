@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -81,6 +82,7 @@ fun UserChangeScreenContent(
             )
         }
         Spacer(modifier = Modifier.spacer())
+        Text(text = "Your name", style = MaterialTheme.typography.labelMedium)
         LabelTextField(
             value = user.name,
             onValueChange = onNameChange ,
@@ -88,6 +90,7 @@ fun UserChangeScreenContent(
             modifier = Modifier.textCard(),
             trailing = { Icon(Icons.Filled.Person, contentDescription = "Menu") }
         )
+        Text(text = "Your surname", style = MaterialTheme.typography.labelMedium)
         LabelTextField(
             value = user.surname,
             onValueChange = onSurnameChange,

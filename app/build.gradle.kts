@@ -26,15 +26,6 @@ android {
         multiDexEnabled = true
     }
 
-//    signingConfigs {
-//        create("debug") {
-//            storeFile = rootProject.file("debug.keystore")
-//            storePassword = "android"
-//            keyAlias = "androiddebugkey"
-//            keyPassword = "android"
-//        }
-//    }
-
     buildTypes {
         debug {
             signingConfig = signingConfigs.getByName("debug")
@@ -125,6 +116,9 @@ dependencies {
     implementation(libs.coil.kt.coil.compose)
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    implementation ("io.github.ehsannarmani:compose-charts:0.1.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

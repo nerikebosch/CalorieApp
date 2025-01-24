@@ -15,13 +15,13 @@ class NutritionServiceImpl @Inject constructor(
     private val auth: AccountService,
 ) : NutritionService {
 
-    override fun getTotalCalories(userProducts: UserProducts): Double {
+    override suspend fun getTotalCalories(userProducts: UserProducts): Double {
         return listOf(userProducts.breakfast, userProducts.lunch,
             userProducts.dinner, userProducts.snacks)
             .sumOf { getMealCalories(it) }
     }
 
-    override fun getTotalProtein(userProducts: UserProducts): Double {
+    override suspend fun getTotalProtein(userProducts: UserProducts): Double {
         return listOf(userProducts.breakfast, userProducts.lunch,
             userProducts.dinner, userProducts.snacks)
             .flatMap { it.products }
@@ -30,7 +30,7 @@ class NutritionServiceImpl @Inject constructor(
             }
     }
 
-    override fun getTotalCarbs(userProducts: UserProducts): Double {
+    override suspend fun getTotalCarbs(userProducts: UserProducts): Double {
         return listOf(userProducts.breakfast, userProducts.lunch,
             userProducts.dinner, userProducts.snacks)
             .flatMap { it.products }
@@ -39,7 +39,7 @@ class NutritionServiceImpl @Inject constructor(
             }
     }
 
-    override fun getTotalFat(userProducts: UserProducts): Double {
+    override suspend fun getTotalFat(userProducts: UserProducts): Double {
         return listOf(userProducts.breakfast, userProducts.lunch,
             userProducts.dinner, userProducts.snacks)
             .flatMap { it.products }
@@ -48,20 +48,20 @@ class NutritionServiceImpl @Inject constructor(
             }
     }
 
-    override fun getMealCalories(mealData: MealData): Double {
+    override suspend fun getMealCalories(mealData: MealData): Double {
         return mealData.products.sumOf { product ->
             product.nutrients?.calories ?: 0.0
         }
     }
 
-    override fun getTotalCaloriesForDate(userProducts: List<UserProducts>, date: String): Double {
+    override suspend fun getTotalCaloriesForDate(userProducts: List<UserProducts>, date: String): Double {
         return userProducts
             .find { it.date == date }
             ?.let { getTotalCalories(it) }
             ?: 0.0
     }
 
-    override fun getMealDataByType(userProducts: UserProducts, mealName: MealName): MealNutrientTotals {
+    override suspend fun getMealDataByType(userProducts: UserProducts, mealName: MealName): MealNutrientTotals {
         val mealData = when (mealName) {
             MealName.Breakfast -> userProducts.breakfast
             MealName.Lunch -> userProducts.lunch
@@ -77,7 +77,7 @@ class NutritionServiceImpl @Inject constructor(
         )
     }
 
-    override fun getMealNutrients(mealData: MealData): Triple<Double, Double, Double> {
+    override suspend fun getMealNutrients(mealData: MealData): Triple<Double, Double, Double> {
         val proteins = mealData.products.sumOf { it.nutrients?.protein ?: 0.0 }
         val carbs = mealData.products.sumOf { it.nutrients?.carbohydrates ?: 0.0 }
         val fats = mealData.products.sumOf { it.nutrients?.fat ?: 0.0 }

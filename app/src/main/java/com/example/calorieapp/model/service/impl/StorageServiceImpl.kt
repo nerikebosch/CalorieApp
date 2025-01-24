@@ -1,6 +1,7 @@
 package com.example.calorieapp.model.service.impl
 
 import com.example.calorieapp.model.User
+import com.example.calorieapp.model.UserActivity
 import com.example.calorieapp.model.UserData
 import com.example.calorieapp.model.UserProducts
 import com.example.calorieapp.model.service.AccountService
@@ -46,6 +47,17 @@ class StorageServiceImpl @Inject constructor(
             }
         }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val userActivity: Flow<List<UserActivity>>
+        get() = auth.currentUser.flatMapLatest { user ->
+            if (user.id.isBlank()) {
+                flowOf(emptyList())
+            } else {
+                currentCollection(user.id, USER_ACTIVITY_COLLECTION).snapshots().map { snapshot ->
+                    snapshot.toObjects<UserActivity>() // Use KTX toObjects()
+                }
+            }
+        }
 
 
     override suspend fun updateUser(user: User) {
@@ -81,10 +93,6 @@ class StorageServiceImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTask(task: String): String? {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getUserProduct(userProductId: String): UserProducts? =
         currentCollection(auth.currentUserId, USER_PRODUCT_COLLECTION).document(userProductId).get().await().toObject()
 
@@ -113,6 +121,31 @@ class StorageServiceImpl @Inject constructor(
         currentCollection(auth.currentUserId, USER_PRODUCT_COLLECTION).document(userProductId).delete().await()
     }
 
+    override suspend fun getUserActivity(userActivityId: String): UserActivity? =
+        currentCollection(auth.currentUserId, USER_ACTIVITY_COLLECTION).document(userActivityId).get().await().toObject()
+
+    override suspend fun getUserActivityByDate(date: String): UserActivity? =
+        currentCollection(auth.currentUserId, USER_ACTIVITY_COLLECTION)
+            .whereEqualTo("date", date)
+            .get()
+            .await()
+            .toObjects<UserActivity>()
+            .firstOrNull()
+
+    override suspend fun updateUserActivity(userActivity: UserActivity): Unit =
+        trace(UPDATE_USER_ACTIVITY) {
+            println("Debug: Updating for userActivity: $userActivity")
+            currentCollection(auth.currentUserId, USER_ACTIVITY_COLLECTION).document(userActivity.id).set(userActivity).await()
+        }
+
+
+    override suspend fun  saveUserActivity(userActivity: UserActivity): String =
+        trace(SAVE_USER_ACTIVITY) {
+            println("Debug: Saving new userActivity: $userActivity")
+            currentCollection(auth.currentUserId, USER_ACTIVITY_COLLECTION).add(userActivity).await().id
+        }
+
+
     private fun currentCollection(uid: String, data: String): CollectionReference =
         firestore.collection(USER_COLLECTION).document(uid).collection(data)
 
@@ -123,6 +156,11 @@ class StorageServiceImpl @Inject constructor(
         private const val USER_PRODUCT_COLLECTION = "userProducts"
         private const val SAVE_USER_PRODUCT = "saveUserProducts"
         private const val UPDATE_USER_PRODUCT = "updateUserProducts"
+
+        private const val USER_ACTIVITY_COLLECTION = "userActivity"
+        private const val SAVE_USER_ACTIVITY = "saveUserActivity"
+        private const val UPDATE_USER_ACTIVITY = "updateUserActivity"
+
     }
 
 }

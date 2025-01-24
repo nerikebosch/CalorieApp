@@ -1,9 +1,8 @@
 package com.example.calorieapp.screens.homescreen
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.viewModelScope
 import com.example.calorieapp.SETTINGS_SCREEN
 import com.example.calorieapp.model.MealName
+import com.example.calorieapp.model.User
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LogService
 import com.example.calorieapp.model.service.NutritionService
@@ -28,37 +27,42 @@ class HomeScreenViewModel @Inject constructor(
     private val nutritionService: NutritionService
 ) : CalorieAppViewModel(logService) {
 
-    val user = accountService.currentUser
+    private val _user = MutableStateFlow(User())
+    val user = _user.asStateFlow()
 
     private val _uiState = MutableStateFlow(HomeScreenUiState())
     val uiState: StateFlow<HomeScreenUiState> = _uiState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-            val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-            val currentMealName = getCurrentMealName(currentHour)
+        launchCatching {
+            accountService.currentUser.collect { fetchedUser ->
+                _user.value = fetchedUser
 
-            storageService.userProducts.collect { products ->
-                val currentCalorie = nutritionService.getTotalCaloriesForDate(products, today)
-                val todayProducts = products.find { it.date == today }
+                println("HomeVMDebug: User fetched: ${_user.value}")
+                val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+                val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+                val currentMealName = getCurrentMealName(currentHour)
 
-                todayProducts?.let { userProducts ->
-                    val mealNutrients = nutritionService.getMealDataByType(userProducts, currentMealName)
-                    _uiState.value = HomeScreenUiState(
-                        currentCalorie = currentCalorie,
-                        mealTitle = currentMealName.name,
-                        mealCalories = mealNutrients.totalCalories,
-                        mealProteins = mealNutrients.totalProtein,
-                        mealCarbs = mealNutrients.totalCarbohydrates,
-                        mealFats = mealNutrients.totalFat
-                    )
+                storageService.userProducts.collect { products ->
+                    val currentCalorie = nutritionService.getTotalCaloriesForDate(products, today)
+                    val todayProducts = products.find { it.date == today }
+                    println("HomeVMDebug: Today's products: $todayProducts")
+                    todayProducts?.let { userProducts ->
+                        val mealNutrients =
+                            nutritionService.getMealDataByType(userProducts, currentMealName)
+                        _uiState.value = HomeScreenUiState(
+                            currentCalorie = currentCalorie,
+                            mealTitle = currentMealName.name,
+                            mealCalories = mealNutrients.totalCalories,
+                            mealProteins = mealNutrients.totalProtein,
+                            mealCarbs = mealNutrients.totalCarbohydrates,
+                            mealFats = mealNutrients.totalFat
+                        )
+                    }
                 }
             }
         }
     }
-
-    val options = mutableStateOf<List<String>>(listOf())
 
 
     fun onSettingsClick(openScreen: (String) -> Unit) = openScreen(SETTINGS_SCREEN)
