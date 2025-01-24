@@ -12,6 +12,7 @@ import com.google.firebase.firestore.snapshots
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -52,7 +53,7 @@ class AccountServiceImpl @Inject constructor(
 
             auth.addAuthStateListener(listener)
             awaitClose { auth.removeAuthStateListener(listener) }
-        }
+        }.distinctUntilChanged()
 
 
     override suspend fun authenticate(email: String, password: String) {

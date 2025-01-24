@@ -35,6 +35,7 @@ fun SettingsScreen(
 ) {
 
     val user by viewModel.user.collectAsStateWithLifecycle()
+    LaunchedEffect(true) { viewModel.onUserLoad() }
     println("SettingsScreenDebug: Screen loaded, user: $user")
 
     Column(
@@ -59,10 +60,6 @@ fun SettingsScreen(
             detail = "",
         ) { viewModel.onGoalChangeClick(openScreen) }
 
-//        ChangeDataCard(
-//            label = stringResource(AppText.your_location),
-//            detail = "",
-//        ) { viewModel.onOpenMapScreenClick(openScreen) }
 
         ChangeDataCard(
             label = stringResource(AppText.your_activity),

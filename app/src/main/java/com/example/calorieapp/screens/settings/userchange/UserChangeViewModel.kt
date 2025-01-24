@@ -24,19 +24,14 @@ class UserChangeViewModel @Inject constructor(
     private val _user = MutableStateFlow(User())
     val user = _user.asStateFlow()
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading = _isLoading.asStateFlow()
 
     init {
         // Collect user data when ViewModel is initialized
         launchCatching {
             println("ChangeScreenDebug: Is user authenticated? ${accountService.hasUser}")
             println("ChangeScreenDebug: Current user ID: ${accountService.currentUserId}")
-
-            _isLoading.value = true
             accountService.currentUser.collect { fetchedUser ->
                 _user.value = fetchedUser
-                _isLoading.value = false
             }
         }
     }

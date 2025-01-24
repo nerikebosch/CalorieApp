@@ -23,6 +23,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.calorieapp.R
 import com.example.calorieapp.common.composable.DialogCancelButton
 import com.example.calorieapp.common.composable.DialogConfirmButton
@@ -182,7 +184,7 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsState()
     val user by viewModel.user.collectAsStateWithLifecycle()
 
-
+    LaunchedEffect(true) { viewModel.onUserLoad() }
     var showDialog by remember { mutableStateOf(false) }
 
     Column {

@@ -32,6 +32,14 @@ class HomeScreenViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeScreenUiState())
     val uiState: StateFlow<HomeScreenUiState> = _uiState.asStateFlow()
 
+    fun onUserLoad() {
+        launchCatching {
+            accountService.currentUser.collect { fetchedUser ->
+                _user.value = fetchedUser
+            }
+        }
+    }
+
     init {
         launchCatching {
             accountService.currentUser.collect { fetchedUser ->
