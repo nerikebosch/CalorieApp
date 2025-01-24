@@ -17,7 +17,7 @@ fun CalorieAppTabRow(
     currentRoute: String,
     openAndPopUp: (String, String) -> Unit
 ) {
-    val tabRoutes = listOf(HOME_SCREEN, RECIPES_SCREEN, MEAL_TIME_SCREEN, MEAL_TIME_SCREEN)
+    val tabRoutes = listOf(HOME_SCREEN, RECIPES_SCREEN, MEAL_TIME_SCREEN, STATS_SCREEN)
     val titles = listOf("Home", "Recipes", "Add data", "Statistics")
 
     var lastValidTabIndex by remember { mutableStateOf(0) }

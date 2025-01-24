@@ -39,6 +39,7 @@ import com.example.calorieapp.screens.splash.SplashScreen
 import com.example.calorieapp.ui.theme.CalorieAppTheme
 import com.example.calorieapp.screens.recipe.RecipesScreen
 import com.example.calorieapp.screens.settings.goalchange.GoalChangeScreen
+import com.example.calorieapp.screens.statistics.StatsScreen
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -184,6 +185,12 @@ fun NavGraphBuilder.calorieGraph(
         RecipeDetailsScreen(
             recipeName = recipeName,
             popUpScreen = { appState.popUp() }
+        )
+    }
+
+    composable(STATS_SCREEN) {
+        StatsScreen(
+            openScreen = { route -> appState.navigate(route) }
         )
     }
 }
