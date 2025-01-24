@@ -51,7 +51,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     packaging {
         resources {
@@ -65,6 +65,7 @@ android {
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.play.services.fitness)
     androidTestImplementation(platform(libs.androidx.compose.bom))
 
     implementation(libs.androidx.core.ktx)
@@ -106,12 +107,16 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
 
+
+    //implementation(libs.compose.chart)
+
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.play.services)
 
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+    implementation(libs.ycharts)
 
     implementation(libs.coil.kt.coil.compose)
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
@@ -119,6 +124,12 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
     implementation ("io.github.ehsannarmani:compose-charts:0.1.0")
+
+
+
+    implementation("io.github.ehsannarmani:compose-charts:0.1.0")
+
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
