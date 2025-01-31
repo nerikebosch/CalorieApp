@@ -250,12 +250,12 @@ fun MoreAboutYouContent(
                 }
             }
 
-            Spacer(modifier = Modifier.height(200.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(70.dp),
+                    .height(50.dp),
                 onClick = { onContinueClick()},
                 shape = MaterialTheme.shapes.medium
             ) {

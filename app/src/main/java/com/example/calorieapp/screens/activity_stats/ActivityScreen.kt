@@ -37,6 +37,13 @@ fun ActivityScreen(
                 "Calories: ${String.format("%.2f", activityState.caloriesBurned)} kcal",
                 style = MaterialTheme.typography.bodyLarge
             )
+
+            Button(onClick = {
+                // Manually trigger a refresh of activity data
+                viewModel.refreshActivity()
+            }) {
+                Text("Refresh Activity")
+            }
         }
     }
 

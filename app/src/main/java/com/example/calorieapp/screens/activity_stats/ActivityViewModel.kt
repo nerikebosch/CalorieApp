@@ -20,13 +20,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import javax.inject.Inject
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import com.example.calorieapp.R.string as AppText
+
+
 @HiltViewModel
 class ActivityViewModel @Inject constructor(
     private val locationService: LocationService,
@@ -51,13 +48,16 @@ class ActivityViewModel @Inject constructor(
     private fun loadTodayActivity() {
         launchCatching {
             val today = LocalDate.now().format(LocationServiceImpl.FIREBASE_DATE_FORMATTER)
-            val activity = storageService.getUserActivityByDate(today)
-                ?: UserActivity(date = today)
+            val activity = storageService.getUserActivityByDate(today) ?: UserActivity(date = today)
+            println("ActivityDebug: Loaded activity: $activity")
             _activityState.value = activity
 
             if (activity.id.isEmpty()) {
-                storageService.saveUserActivity(activity)
+                println("ActivityDebug: Saving new activity: $activity")
+                val newId = storageService.saveUserActivity(activity)
+                println("ActivityDebug: new activity ID: $newId")
             } else {
+                println("ActivityDebug: Updating EXISTS activity: $activity")
                 storageService.updateUserActivity(activity)
             }
         }

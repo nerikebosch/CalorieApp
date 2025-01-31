@@ -27,8 +27,9 @@
 -dontwarn com.google.android.gms.**
 
 # Firebase Authentication
--keep class com.google.firebase.** { *; }
--keep class com.firebaseui.** { *; }
+-keep public class com.google.firebase.** { *; }
+-keep class com.google.android.gms.internal.** { *; }
+-keepclasseswithmembers class com.google.firebase.FirebaseException
 -keepattributes Signature
 -keepattributes *Annotation*
 

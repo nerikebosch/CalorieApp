@@ -1,5 +1,6 @@
 package com.example.calorieapp.model.service.impl
 
+import androidx.compose.foundation.interaction.PressInteraction
 import com.example.calorieapp.model.User
 import com.example.calorieapp.model.UserActivity
 import com.example.calorieapp.model.UserData
@@ -134,14 +135,13 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun updateUserActivity(userActivity: UserActivity): Unit =
         trace(UPDATE_USER_ACTIVITY) {
-            println("Debug: Updating for userActivity: $userActivity")
+
             currentCollection(auth.currentUserId, USER_ACTIVITY_COLLECTION).document(userActivity.id).set(userActivity).await()
         }
 
-
     override suspend fun  saveUserActivity(userActivity: UserActivity): String =
         trace(SAVE_USER_ACTIVITY) {
-            println("Debug: Saving new userActivity: $userActivity")
+            println("storageDebug: SAVING userActivity: $userActivity")
             currentCollection(auth.currentUserId, USER_ACTIVITY_COLLECTION).add(userActivity).await().id
         }
 

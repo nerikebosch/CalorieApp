@@ -7,7 +7,7 @@ import java.time.LocalDate
 
 data class UserActivity(
     @DocumentId val id: String = "",
-    val date: String = LocalDate.now().format(LocationServiceImpl.FIREBASE_DATE_FORMATTER), // Store as YYYY-MM-DD in Firebase
+    val date: String = "", // Store as YYYY-MM-DD in Firebase
     val steps: Int = 0,
     val distanceInMeters: Double = 0.0,
     val caloriesBurned: Double = 0.0,
