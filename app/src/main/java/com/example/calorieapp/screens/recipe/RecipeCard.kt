@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.CardDefaults
@@ -112,12 +113,13 @@ fun ElevatedCardRecipeDetails(
             defaultElevation = 6.dp
         ),
         modifier = modifier
-            .size(width = 400.dp, height = 200.dp) // Adjust size as necessary
+            .wrapContentHeight() // Adjust size as necessary
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp), // Padding inside the card
+                .padding(8.dp) // Padding inside the card
+                .wrapContentHeight(),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
 
@@ -125,7 +127,8 @@ fun ElevatedCardRecipeDetails(
 
             Column(
                 modifier = Modifier
-                    .weight(1f), // Takes up remaining space
+                    .weight(1f) // Takes up remaining space
+                    .wrapContentHeight(),
                 verticalArrangement = Arrangement.Center, // Centers text vertically
                 horizontalAlignment = Alignment.CenterHorizontally // Centers text horizontally
             ) {
