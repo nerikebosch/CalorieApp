@@ -20,18 +20,13 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class com.example.calorieapp.** { *; }
-# Google Play Services
--keep class com.google.android.gms.** { *; }
--keep interface com.google.android.gms.** { *; }
--dontwarn com.google.android.gms.**
 
-# Firebase Authentication
--keep public class com.google.firebase.** { *; }
--keep class com.google.android.gms.internal.** { *; }
 -keepclasseswithmembers class com.google.firebase.FirebaseException
 -keepattributes Signature
 -keepattributes *Annotation*
+-keep class com.google.android.gms.** { *; }
+-keep class com.google.firebase.** { *; }
+-dontwarn com.google.android.gms.**
 
 # Google Auth Library
 -keep class com.google.api.client.** { *; }

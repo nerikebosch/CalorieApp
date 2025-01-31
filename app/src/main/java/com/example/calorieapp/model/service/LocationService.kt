@@ -1,12 +1,15 @@
 package com.example.calorieapp.model.service
 
+import kotlinx.coroutines.flow.StateFlow
+
 interface LocationService {
-    fun initializeTracking()
+    val trackingState: StateFlow<Boolean>
+    suspend fun initializeTracking()
     // Check and request permissions
-    fun checkAndRequestPermissions(): Boolean
+    suspend fun checkAndRequestPermissions(): Boolean
     // Continuous tracking method
-    fun startContinuousTracking()
+    suspend fun startContinuousTracking()
 
-
+    fun cleanup()
 }
 

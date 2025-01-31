@@ -1,27 +1,17 @@
 package com.example.calorieapp.screens.activity_stats
 
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.calorieapp.model.UserActivity
-import com.example.calorieapp.model.ActivityStats
 import com.example.calorieapp.model.service.LocationService
 import com.example.calorieapp.model.service.LogService
 import com.example.calorieapp.model.service.StorageService
 import com.example.calorieapp.model.service.impl.LocationServiceImpl
 import com.example.calorieapp.screens.CalorieAppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import javax.inject.Inject
 import java.time.LocalDate
+import javax.inject.Inject
 
 
 @HiltViewModel
@@ -43,6 +33,22 @@ class ActivityViewModel @Inject constructor(
         // Load today's activity when ViewModel is initialized
         println("ActivityDebug: ActivityViewModel init")
         loadTodayActivity()
+        launchCatching {
+            storageService.userActivity.collect { activities ->
+                val today = LocalDate.now().format(LocationServiceImpl.FIREBASE_DATE_FORMATTER)
+                _activityState.value = activities.find { it.date == today } ?: UserActivity(date = today)
+
+            }
+        }
+
+    }
+
+    fun startObservingTrackingState() {
+        launchCatching {
+            locationService.trackingState.collect { isTracking ->
+                _isTracking.value = isTracking
+            }
+        }
     }
 
     private fun loadTodayActivity() {
@@ -72,6 +78,6 @@ class ActivityViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         // Cleanup resources when ViewModel is destroyed
-        (locationService as? LocationServiceImpl)?.cleanup()
+        locationService.cleanup()
     }
 }

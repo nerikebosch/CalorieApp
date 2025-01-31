@@ -108,8 +108,6 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
 
 
-    //implementation(libs.compose.chart)
-
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.play.services)
@@ -122,15 +120,10 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("com.google.android.gms:play-services-base:18.5.0")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
 
-    implementation ("io.github.ehsannarmani:compose-charts:0.1.0")
-
-
-
-    implementation("io.github.ehsannarmani:compose-charts:0.1.0")
     implementation(libs.accompanist.permissions)
-    implementation("androidx.core:core-ktx:1.15.0")
-
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

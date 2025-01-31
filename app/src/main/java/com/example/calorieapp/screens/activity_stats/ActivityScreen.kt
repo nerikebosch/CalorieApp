@@ -41,6 +41,7 @@ fun ActivityScreen(
             Button(onClick = {
                 // Manually trigger a refresh of activity data
                 viewModel.refreshActivity()
+                viewModel.startObservingTrackingState()
             }) {
                 Text("Refresh Activity")
             }
