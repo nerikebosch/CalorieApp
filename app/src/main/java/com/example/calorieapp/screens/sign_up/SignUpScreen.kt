@@ -46,6 +46,12 @@ import com.example.calorieapp.ui.theme.Roboto
 import com.example.calorieapp.R.string as AppText
 
 
+/**
+ * Composable function for the Sign-Up screen.
+ *
+ * @param openAndPopUp Function to navigate between screens.
+ * @param viewModel ViewModel responsible for handling Sign-Up logic.
+ */
 @Composable
 fun SignUpScreen(
     openAndPopUp: (String, String) -> Unit,
@@ -65,6 +71,17 @@ fun SignUpScreen(
 
 }
 
+/**
+ * Composable function that represents the content of the Sign-Up screen.
+ *
+ * @param uiState The current UI state containing user input.
+ * @param onNameChange Callback when the name input changes.
+ * @param onSurnameChange Callback when the surname input changes.
+ * @param onEmailChange Callback when the email input changes.
+ * @param onPasswordChange Callback when the password input changes.
+ * @param onSignUpClick Callback when the Sign-Up button is clicked.
+ * @param onLoginScreenClick Callback when navigating to the Login screen.
+ */
 @Composable
 fun SignUpScreenContent(
     uiState: SignUpUiState,
@@ -76,7 +93,7 @@ fun SignUpScreenContent(
     onLoginScreenClick: () -> Unit,
 ) {
     var errorMessage by remember { mutableStateOf<String?>(null) }
-    var isLoading by remember { mutableStateOf(false) }
+    val isLoading by remember { mutableStateOf(false) }
 
     val fieldModifier = Modifier.fieldModifier()
 
@@ -198,6 +215,9 @@ fun SignUpScreenContent(
 }
 
 
+/**
+ * Composable function that represents the top section of the Sign-Up screen, including the logo and app name.
+ */
 @Composable
 fun SignUpTopSection() {
     val uiColor = MaterialTheme.colorScheme.primary
