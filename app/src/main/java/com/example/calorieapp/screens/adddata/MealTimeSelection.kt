@@ -53,6 +53,13 @@ import java.util.Locale
 import com.example.calorieapp.R.string as AppText
 
 
+/**
+ * Composable function for displaying the Meal Time screen.
+ *
+ * @param openScreen Function to navigate to another screen.
+ * @param openAndPopUp Function to navigate and remove the current screen from the back stack.
+ * @param viewModel ViewModel that manages the Meal Time screen logic.
+ */
 @Composable
 fun MealTimeScreen(
     openScreen: (String) -> Unit,
@@ -116,7 +123,19 @@ fun MealTimeScreen(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Composable function for selecting and displaying meals for a selected date.
+ *
+ * @param selectedDate The currently selected date.
+ * @param onDateSelected Callback for when a new date is selected.
+ * @param userProducts The user's products for the selected date.
+ * @param onBreakfastClick Callback for breakfast selection.
+ * @param onLunchClick Callback for lunch selection.
+ * @param onDinnerClick Callback for dinner selection.
+ * @param onSnackClick Callback for snack selection.
+ * @param onDeleteProduct Callback for deleting a specific product from a meal.
+ * @param onDeleteAllProducts Callback for deleting all products for the selected date.
+ */
 @Composable
 fun MealTimeSelection(
     selectedDate: Long,
@@ -180,7 +199,14 @@ fun MealTimeSelection(
 
 
 
-
+/**
+ * Composable function for selecting a date and clearing all products.
+ *
+ * @param selectedDate The currently selected date in milliseconds.
+ * @param formattedDate The formatted string representation of the selected date.
+ * @param onDateSelected Callback function to handle date selection.
+ * @param onDeleteAllProducts Callback function to handle clearing all products.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateSelector(
@@ -271,6 +297,9 @@ fun DateSelector(
 
 }
 
+/**
+ * Preview function for the MealTimeScreen, displaying sample products and meals.
+ */
 @SuppressLint("SuspiciousIndentation")
 @Preview(showBackground = true)
 @Composable

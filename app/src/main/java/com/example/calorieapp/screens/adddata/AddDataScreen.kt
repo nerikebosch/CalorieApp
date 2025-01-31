@@ -1,6 +1,5 @@
 package com.example.calorieapp.screens.adddata
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,30 +8,28 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.calorieapp.CalorieAppState
 import com.example.calorieapp.model.Nutrients
 import com.example.calorieapp.model.Product
-import com.example.calorieapp.api.RetrofitClient
 import com.example.calorieapp.common.composable.TextActionToolbar
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.io.IOException
 import com.example.calorieapp.R.string as AppText
 
 
+/**
+ * Composable function for adding data to a meal entry.
+ *
+ * @param openAndPopUp Lambda function to navigate and pop up a screen.
+ * @param viewModel ViewModel instance for managing UI state.
+ * @param mealName Name of the meal to which data is added.
+ * @param date Date of the meal entry.
+ */
 @Composable
 fun AddDataScreen(
     openAndPopUp: (String, String) -> Unit,
@@ -65,6 +62,15 @@ fun AddDataScreen(
 }
 
 
+/**
+ * Composable function for displaying UI content for adding data.
+ *
+ * @param uiState UI state of the screen.
+ * @param mealName Name of the meal.
+ * @param onProductSelected Callback for product selection.
+ * @param onSaveClick Callback for saving the selected products.
+ * @param onSearchQueryChange Callback for updating search queries.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddDataContent(
@@ -96,6 +102,14 @@ private fun AddDataContent(
     }
 }
 
+
+/**
+ * Composable function for displaying a search bar and search results.
+ *
+ * @param uiState UI state containing search information.
+ * @param onProductSelected Callback for selecting products.
+ * @param onSearchQueryChange Callback for updating search queries.
+ */
 @ExperimentalMaterial3Api
 @Composable
 private fun SearchSection(
@@ -141,6 +155,13 @@ private fun SearchSection(
     }
 }
 
+
+/**
+ * Displays the search results for food products.
+ *
+ * @param uiState The UI state containing search results and status.
+ * @param onProductSelected Callback invoked when a product is selected or deselected.
+ */
 @Composable
 private fun SearchResults(
     uiState: AddDataUiState,
@@ -159,6 +180,10 @@ private fun SearchResults(
     }
 }
 
+
+/**
+ * Displays a loading indicator while search results are being fetched.
+ */
 @Composable
 private fun LoadingIndicator() {
     Box(
@@ -171,6 +196,11 @@ private fun LoadingIndicator() {
     }
 }
 
+/**
+ * Displays an error message when there is an issue fetching search results.
+ *
+ * @param message The error message to display.
+ */
 @Composable
 private fun ErrorMessage(message: String) {
     Text(
@@ -183,6 +213,13 @@ private fun ErrorMessage(message: String) {
     )
 }
 
+/**
+ * Displays a list of suggested food products based on the search query.
+ *
+ * @param suggestions List of suggested products retrieved from the search.
+ * @param selectedProducts List of products currently selected by the user.
+ * @param onProductSelected Callback invoked when a product is selected or deselected.
+ */
 @Composable
 private fun SuggestionsList(
     suggestions: List<Product>,
@@ -207,6 +244,11 @@ private fun SuggestionsList(
     }
 }
 
+/**
+ * Displays a list of selected food products.
+ *
+ * @param selectedProducts The list of products selected by the user.
+ */
 @Composable
 private fun SelectedProductsList(selectedProducts: List<Product>) {
     LazyColumn(
@@ -228,8 +270,11 @@ private fun SelectedProductsList(selectedProducts: List<Product>) {
 }
 
 
-
-
+/**
+ * Displays nutritional information for a product.
+ *
+ * @param nutrients Nutritional data for a product.
+ */
 @Composable
 fun NutritionalInfo(nutrients: Nutrients?) {
     if (nutrients != null) {
@@ -250,4 +295,3 @@ fun NutritionalInfo(nutrients: Nutrients?) {
 fun AddDataPreview() {
 
 }
-

@@ -1,6 +1,5 @@
 package com.example.calorieapp.screens.adddata
 
-import android.util.Log.e
 import androidx.lifecycle.viewModelScope
 import com.example.calorieapp.api.RetrofitClient
 import com.example.calorieapp.common.snackbar.SnackbarManager
@@ -24,6 +23,15 @@ import java.io.IOException
 import javax.inject.Inject
 import com.example.calorieapp.R.string as AppText
 
+
+/**
+ * ViewModel for managing the UI state and business logic of the Add Data screen.
+ * Handles product searches, user-selected product management, and saving meal data.
+ *
+ * @param logService The service for logging application events.
+ * @param accountService The service for handling user account data.
+ * @param storageService The service for managing stored user data.
+ */
 @HiltViewModel
 class AddDataViewModel @Inject constructor(
     logService: LogService,
@@ -36,6 +44,12 @@ class AddDataViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
+
+    /**
+     * Updates the search query state and triggers a product search after a debounce period.
+     *
+     * @param query The search query entered by the user.
+     */
     fun updateSearchQuery(query: String) {
         _uiState.value = _uiState.value.copy(searchQuery = query)
         searchJob?.cancel()
@@ -50,6 +64,9 @@ class AddDataViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Clears the search results from the UI state.
+     */
     private fun clearSearchResults() {
         _uiState.value = _uiState.value.copy(
             suggestions = emptyList(),
@@ -58,6 +75,11 @@ class AddDataViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Searches for products based on the provided query using the API.
+     *
+     * @param query The search term entered by the user.
+     */
     private suspend fun searchProducts(query: String) {
         _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
 
@@ -85,6 +107,12 @@ class AddDataViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Loads the selected products for a given meal and date from storage.
+     *
+     * @param mealName The name of the meal (e.g., breakfast, lunch).
+     * @param date The date for which the meal data is being retrieved.
+     */
     fun loadSelectedProducts(mealName: String, date: String) {
         launchCatching {
             _uiState.value = _uiState.value.copy(isLoading = true)
@@ -113,6 +141,11 @@ class AddDataViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Adds a product to the list of selected products.
+     *
+     * @param product The product to be added.
+     */
     fun addProduct(product: Product) {
         val currentProducts = _uiState.value.selectedProducts
         _uiState.value = _uiState.value.copy(
@@ -120,6 +153,11 @@ class AddDataViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Removes a product from the list of selected products.
+     *
+     * @param product The product to be removed.
+     */
     fun removeProduct(product: Product) {
         val currentProducts = _uiState.value.selectedProducts
         _uiState.value = _uiState.value.copy(
@@ -127,7 +165,13 @@ class AddDataViewModel @Inject constructor(
         )
     }
 
-    suspend fun saveProductsToMeal(mealName: String, date: String) {
+    /**
+     * Saves the selected products to the specified meal and date.
+     *
+     * @param mealName The name of the meal.
+     * @param date The date for which the meal data is being saved.
+     */
+    private suspend fun saveProductsToMeal(mealName: String, date: String) {
         _uiState.value = _uiState.value.copy(isLoading = true)
         try {
             println("AddDataVMDebug: mealType: $mealName")
@@ -167,6 +211,14 @@ class AddDataViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handles the save button click event by saving the selected products
+     * and navigating back to the meal screen.
+     *
+     * @param mealName The name of the meal.
+     * @param date The date of the meal.
+     * @param openAndPopUp A lambda function to navigate and pop up a screen.
+     */
     fun onSaveClick(mealName: String, date: String, openAndPopUp: (String, String) -> Unit) {
         launchCatching {
             saveProductsToMeal(mealName, date)

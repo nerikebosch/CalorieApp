@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -39,6 +38,15 @@ import com.example.calorieapp.common.composable.DialogCancelButton
 import com.example.calorieapp.common.composable.DialogConfirmButton
 import com.example.calorieapp.model.Product
 
+
+/**
+ * Composable function to display an elevated card with a title and an optional content area.
+ *
+ * @param title The title of the card.
+ * @param modifier Modifier for layout customization.
+ * @param content Optional composable lambda to add additional UI elements (e.g., icons, images).
+ * @param onClick Lambda function to handle click events.
+ */
 @Composable
 fun ElevatedCardAddDataScreen(
     title: String, // Title of the card
@@ -90,12 +98,19 @@ fun ElevatedCardAddDataScreen(
 }
 
 
+/**
+ * Composable function to display a filled card with a title, expandable list of user products, and delete functionality.
+ *
+ * @param title The title of the card.
+ * @param userProducts List of user-added products to be displayed.
+ * @param onDeleteProduct Callback function to handle product deletion.
+ */
 @Composable
 fun FilledCardExample(
     title : String,
+    modifier: Modifier = Modifier,
     userProducts: List<Product>,
     onDeleteProduct: (Product) -> Unit,
-    modifier: Modifier = Modifier
 ) {
 
     var expanded by rememberSaveable { mutableStateOf(false) }
