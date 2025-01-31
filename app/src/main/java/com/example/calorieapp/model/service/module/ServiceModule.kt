@@ -33,4 +33,7 @@ abstract class ServiceModule {
     @Binds
     abstract fun provideNutritionService(impl: NutritionServiceImpl): NutritionService
 
+    @Binds
+    abstract fun provideLocationService(impl: LocationServiceImpl): LocationService
+
 }

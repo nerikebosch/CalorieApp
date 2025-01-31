@@ -1,97 +1,77 @@
 package com.example.calorieapp.screens.activity_stats
 
 import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.calorieapp.model.UserActivity
-import com.example.calorieapp.model.service.ActivityStats
+import com.example.calorieapp.model.ActivityStats
 import com.example.calorieapp.model.service.LocationService
 import com.example.calorieapp.model.service.LogService
 import com.example.calorieapp.model.service.StorageService
+import com.example.calorieapp.model.service.impl.LocationServiceImpl
 import com.example.calorieapp.screens.CalorieAppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import javax.inject.Inject
 import kotlinx.coroutines.delay
-
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import com.example.calorieapp.R.string as AppText
 @HiltViewModel
 class ActivityViewModel @Inject constructor(
     private val locationService: LocationService,
-    logService: LogService,
-    private val storageService: StorageService
+    private val storageService: StorageService,
+    logService: LogService
 ) : CalorieAppViewModel(logService) {
 
-    private val _activityStats = MutableStateFlow<ActivityStats?>(null)
-    val activityStats: StateFlow<ActivityStats?> get() = _activityStats
+    // State to represent current activity
+    private val _activityState = MutableStateFlow<UserActivity>(UserActivity())
+    val activityState: StateFlow<UserActivity> = _activityState.asStateFlow()
 
-    private val _todayActivity = MutableStateFlow<UserActivity?>(null)
-    val todayActivity: StateFlow<UserActivity?> = _todayActivity.asStateFlow()
-
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> get() = _errorMessage
+    // Tracking status
+    private val _isTracking = MutableStateFlow(false)
+    val isTracking: StateFlow<Boolean> = _isTracking.asStateFlow()
 
     init {
-        initializeTracking()
+        // Load today's activity when ViewModel is initialized
+        println("ActivityDebug: ActivityViewModel init")
+        loadTodayActivity()
     }
 
-    private fun initializeTracking() {
+    private fun loadTodayActivity() {
         launchCatching {
-            locationService.loadTodayActivity()
-            locationService.startLocationUpdates()
-            startPeriodicSync()
-            observeActivityStats()
-        }
-    }
+            val today = LocalDate.now().format(LocationServiceImpl.FIREBASE_DATE_FORMATTER)
+            val activity = storageService.getUserActivityByDate(today)
+                ?: UserActivity(date = today)
+            _activityState.value = activity
 
-    private fun startPeriodicSync() {
-        launchCatching {
-            while (true) {
-                delay(1 * 1000) // Sync every 10 sec
-                locationService.syncActivityData()
+            if (activity.id.isEmpty()) {
+                storageService.saveUserActivity(activity)
+            } else {
+                storageService.updateUserActivity(activity)
             }
         }
     }
 
-    private fun observeActivityStats() {
-        launchCatching {
-            locationService.getActivityStats()
-                .catch { e ->
-                    _errorMessage.value = e.message
-                }
-                .collect { stats ->
-                    _activityStats.value = stats
-                }
-        }
-    }
 
-    private fun updateTodayActivity(stats: ActivityStats) {
-        launchCatching {
-            _todayActivity.value?.let { currentActivity ->
-                val updatedActivity = currentActivity.copy(
-                    steps = stats.totalSteps,
-                    distanceInMeters = stats.distanceInMeters,
-                    caloriesBurned = stats.caloriesBurned
-                )
-                _todayActivity.value = updatedActivity
-            }
-        }
-    }
-
-    fun refreshStats() {
-        launchCatching {
-            locationService.loadTodayActivity()
-            locationService.syncActivityData()
-        }
+    // Periodic update method
+    fun refreshActivity() {
+        loadTodayActivity()
     }
 
     override fun onCleared() {
         super.onCleared()
-        launchCatching {
-            locationService.stopLocationUpdates()
-        }
+        // Cleanup resources when ViewModel is destroyed
+        (locationService as? LocationServiceImpl)?.cleanup()
     }
-
-
 }

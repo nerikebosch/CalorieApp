@@ -11,5 +11,4 @@ data class UserActivity(
     val steps: Int = 0,
     val distanceInMeters: Double = 0.0,
     val caloriesBurned: Double = 0.0,
-    val lastSyncTimestamp: Long = System.currentTimeMillis()
 )

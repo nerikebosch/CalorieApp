@@ -39,6 +39,13 @@
     <string name="goal_error">Your goal should not be empty</string>
     <string name="your_location">Your location</string>
     <string name="your_activity">Your Activity</string>
+    <string name="activity_tracker">Activity tracker</string>
+    <string name="error_permission_request_failed">Error when requesting permissions</string>
+    <string name="error_start_tracking_failed">Error when starting tracking</string>
+    <string name="error_stop_tracking_failed">Error when stopping tracking</string>
+    <string name="error_sync_failed">Error when syncing data</string>
+    <string name="error_refresh_failed">Error when refreshing data</string>
+    <string name="error_activity_data">Error when getting activity data</string>"
 
     <!-- StatsScreen -->
     <string name="stats">Statistics</string>

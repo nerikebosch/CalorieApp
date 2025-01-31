@@ -77,7 +77,7 @@ class StorageServiceImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getWeight(weight: Double): Double? {
+    override suspend fun getWeight(weight: Double): Double {
         TODO("Not yet implemented")
     }
 

@@ -1,6 +1,5 @@
 package com.example.calorieapp.screens.statistics
 
-import androidx.lifecycle.viewModelScope
 import com.example.calorieapp.model.User
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LogService
@@ -12,7 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -41,7 +39,7 @@ class StatsScreenViewModel @Inject constructor(
      * Fetch calories for a specific week (Monday to Sunday) based on a given timestamp.
      */
     fun fetchWeeklyCaloriesForWeek(selectedDateMillis: Long) {
-        viewModelScope.launch {
+        launchCatching {
             accountService.currentUser.collect { fetchedUser ->
                 _user.value = fetchedUser
 
@@ -63,7 +61,7 @@ class StatsScreenViewModel @Inject constructor(
                     }.time
                 }
 
-                // Initialize the weekly calories list
+                // Initialize the weekly calories listx
                 val weeklyCalories = MutableList(7) { 0.0 }
 
                 val products = storageService.userProducts.first() // Fetch user's product data

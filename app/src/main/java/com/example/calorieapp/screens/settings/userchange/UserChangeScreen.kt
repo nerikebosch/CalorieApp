@@ -1,6 +1,5 @@
 package com.example.calorieapp.screens.settings.userchange
 
-import android.R.attr.label
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,35 +11,30 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.calorieapp.common.composable.LabelTextField
 import com.example.calorieapp.common.composable.TextActionToolbar
 import com.example.calorieapp.common.ext.spacer
 import com.example.calorieapp.common.ext.textCard
 import com.example.calorieapp.common.ext.toolbarActions
 import com.example.calorieapp.model.User
-import com.example.calorieapp.screens.settings.SettingsViewModel
 import com.example.calorieapp.ui.theme.CalorieAppTheme
 import com.example.calorieapp.R.string as AppText
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 
 @Composable
@@ -82,7 +76,7 @@ fun UserChangeScreenContent(
             )
         }
         Spacer(modifier = Modifier.spacer())
-        Text(text = "Your name", style = MaterialTheme.typography.labelMedium)
+        Text(text = "Your name", style = MaterialTheme.typography.labelLarge)
         LabelTextField(
             value = user.name,
             onValueChange = onNameChange ,
@@ -90,7 +84,7 @@ fun UserChangeScreenContent(
             modifier = Modifier.textCard(),
             trailing = { Icon(Icons.Filled.Person, contentDescription = "Menu") }
         )
-        Text(text = "Your surname", style = MaterialTheme.typography.labelMedium)
+        Text(text = "Your surname", style = MaterialTheme.typography.labelLarge)
         LabelTextField(
             value = user.surname,
             onValueChange = onSurnameChange,
