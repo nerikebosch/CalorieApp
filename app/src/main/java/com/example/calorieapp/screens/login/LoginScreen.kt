@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -88,17 +89,27 @@ fun LoginScreenContent(
 ) {
     val uiColor = MaterialTheme.colorScheme.primary
 
-    Surface {
-        Column(Modifier.fillMaxSize()) {
-            // Show app name and logo
-            TopSection()
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(16.dp) // Ensures spacing between items
+        ) {
+            // Ensure the top section is inside an item
+            item {
+                TopSection()
+            }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 30.dp)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     EmailField(uiState.email, onEmailChange, Modifier.fieldModifier())
 
                     Spacer(modifier = Modifier.height(14.dp))
@@ -107,32 +118,33 @@ fun LoginScreenContent(
 
                     Spacer(modifier = Modifier.height(14.dp))
 
-                    //Forgot password section
+                    // Forgot Password Section
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
                     ) {
                         Text(
-                            modifier = Modifier.clickable { onForgotPasswordClick() }, // Forgot password function
+                            modifier = Modifier.clickable { onForgotPasswordClick() },
                             text = "Forgot password?",
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.primary,
                             textDecoration = TextDecoration.Underline
                         )
                     }
+
                     Spacer(modifier = Modifier.height(20.dp))
+
                     LoginButton(
                         text = AppText.sign_in,
-                        modifier = Modifier.fillMaxSize()
-                    ) { onSignInClick() }
-
-//            BasicTextButton(AppText.forgot_password, Modifier.textButton()) {
-//                onForgotPasswordClick()
-//            }
-
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        onSignInClick()
+                    }
                 }
+            }
 
-                // SOCIAL MEDIA LOGIN SECTION
+            // SOCIAL MEDIA LOGIN SECTION
+            item {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = "Or continue with",
@@ -141,6 +153,7 @@ fun LoginScreenContent(
                         fontWeight = FontWeight.Normal
                     )
                     Spacer(modifier = Modifier.height(20.dp))
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
@@ -153,21 +166,23 @@ fun LoginScreenContent(
                         )
 
                         Spacer(modifier = Modifier.width(20.dp))
+
                         SocialMediaLogIn(
                             icon = R.drawable.facebook,
                             text = "Facebook",
                             modifier = Modifier.weight(1f),
                             onSignInClick = onFacebookSignInClick
                         )
-
                     }
-                } // END OF SOCIAL MEDIA LOGIN SECTION
+                }
+            }
 
-
-                // SIGN UP PROMPT SECTION
-                Box(modifier = Modifier
-                    .fillMaxHeight(fraction = 0.8f)
-                    .fillMaxWidth(),
+            // SIGN-UP PROMPT SECTION
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -195,7 +210,6 @@ fun LoginScreenContent(
                             }
                         },
                         modifier = Modifier.clickable {
-                            // Navigate to the SignUpScreen
                             onSignUpScreenClick()
                         }
                     )
@@ -203,8 +217,8 @@ fun LoginScreenContent(
             }
         }
     }
-
 }
+
 
 
 

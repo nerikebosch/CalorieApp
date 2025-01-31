@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -74,120 +75,128 @@ fun SignUpScreenContent(
     onSignUpClick: () -> Unit,
     onLoginScreenClick: () -> Unit,
 ) {
-
-    // Error state
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
 
     val fieldModifier = Modifier.fieldModifier()
 
-    Surface {
-        Column(
-            modifier = Modifier.fillMaxSize()
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            SignUpTopSection()
-            Spacer(modifier = Modifier.height(50.dp))
+            item {
+                SignUpTopSection()
+            }
 
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 30.dp)
-            ) {
-                LabelTextField(uiState.name,  onNameChange, fieldModifier,label = "Name")
-                Spacer(modifier = Modifier.height(15.dp))
+            item {
+                Spacer(modifier = Modifier.height(30.dp))
+            }
 
-                LabelTextField(uiState.surname,onSurnameChange, fieldModifier,label = "Surname")
-                Spacer(modifier = Modifier.height(15.dp))
-
-                EmailField(uiState.email, onEmailChange, fieldModifier)
-                Spacer(modifier = Modifier.height(15.dp))
-
-                PasswordSignUpTextField(uiState.password, onPasswordChange)
-                Spacer(modifier = Modifier.height(40.dp))
-
-                // Display error message if exists
-                errorMessage?.let { error ->
-                    Text(
-                        text = error,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    Spacer(modifier = Modifier.height(15.dp))
-                }
-
-                // Sign-up button
-                Button(
+            item {
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(40.dp),
-                    onClick = {
-                        when {
-                            uiState.email.isBlank() -> errorMessage = "Name is required"
-                            uiState.surname.isBlank() -> errorMessage = "Surname is required"
-                            uiState.email.isBlank() -> errorMessage = "Email is required"
-                            uiState.password.isBlank() -> errorMessage = "Password is required"
+                        .padding(horizontal = 30.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    LabelTextField(uiState.name, onNameChange, fieldModifier, label = "Name")
+                    Spacer(modifier = Modifier.height(15.dp))
 
-                            else -> {
-                                errorMessage = null
-                                onSignUpClick()
+                    LabelTextField(uiState.surname, onSurnameChange, fieldModifier, label = "Surname")
+                    Spacer(modifier = Modifier.height(15.dp))
 
+                    EmailField(uiState.email, onEmailChange, fieldModifier)
+                    Spacer(modifier = Modifier.height(15.dp))
+
+                    PasswordSignUpTextField(uiState.password, onPasswordChange)
+                    Spacer(modifier = Modifier.height(40.dp))
+
+                    // Display error message if exists
+                    errorMessage?.let { error ->
+                        Text(
+                            text = error,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        Spacer(modifier = Modifier.height(15.dp))
+                    }
+
+                    // Sign-up button
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(40.dp),
+                        onClick = {
+                            when {
+                                uiState.name.isBlank() -> errorMessage = "Name is required"
+                                uiState.surname.isBlank() -> errorMessage = "Surname is required"
+                                uiState.email.isBlank() -> errorMessage = "Email is required"
+                                uiState.password.isBlank() -> errorMessage = "Password is required"
+
+                                else -> {
+                                    errorMessage = null
+                                    onSignUpClick()
+                                }
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = Color.White
+                        ),
+                        enabled = !isLoading,
+                        shape = RoundedCornerShape(size = 4.dp)
+                    ) {
+                        Text(
+                            fontSize = 14.sp,
+                            text = "Sign Up",
+                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    // Navigate to login if already have an account
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .clickable {
+                                onLoginScreenClick()
+                            },
+                        text = buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Color.Gray,
+                                    fontSize = 14.sp,
+                                    fontFamily = Roboto,
+                                    fontWeight = FontWeight.Normal
+                                )
+                            ) {
+                                append("Already have an account? ")
+                            }
+                            withStyle(
+                                style = SpanStyle(
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontSize = 14.sp,
+                                    fontFamily = Roboto,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            ) {
+                                append("Login")
                             }
                         }
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = Color.White
-                    ),
-                    enabled = !isLoading,
-                    shape = RoundedCornerShape(size = 4.dp)
-                ) {
-                    Text(
-                        fontSize = 14.sp,
-                        text = "Sign Up",
-                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium)
                     )
 
+                    Spacer(modifier = Modifier.height(30.dp))
                 }
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-
-                // navigate to login if have account
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .clickable {
-                            // Navigate to the LoginScreen when the (all the line) "Login" text is clicked
-                            onLoginScreenClick()
-                        },
-                    text = buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                color = Color.Gray,
-                                fontSize = 14.sp,
-                                fontFamily = Roboto,
-                                fontWeight = FontWeight.Normal
-                            )
-                        ) {
-                            append("Already have an account? ")
-                        }
-                        withStyle(
-                            style = SpanStyle(
-                                color = MaterialTheme.colorScheme.primary,
-                                fontSize = 14.sp,
-                                fontFamily = Roboto,
-                                fontWeight = FontWeight.Medium
-                            )
-                        ) {
-                            append("Login")
-                        }
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(30.dp))
             }
         }
     }
 }
+
 
 @Composable
 fun SignUpTopSection() {
