@@ -61,7 +61,8 @@ fun UserChangeScreenContent(
     onDoneClick: () -> Unit = {},
     user: User,
     onNameChange: (String) -> Unit = {},
-    onSurnameChange: (String) -> Unit = {}
+    onSurnameChange: (String) -> Unit = {},
+
 ) {
     Column(
         modifier = Modifier.fillMaxWidth().fillMaxHeight().verticalScroll(rememberScrollState()),
@@ -93,6 +94,7 @@ fun UserChangeScreenContent(
             trailing = { Icon(Icons.Filled.Person, contentDescription = "Menu") }
         )
 
+
         Spacer(modifier = Modifier.spacer())
 
     }
@@ -117,6 +119,7 @@ fun UserChangeScreenPreview() {
             user = previewUser,
             onNameChange = { previewUser = previewUser.copy(name = it) },
             onSurnameChange = { previewUser = previewUser.copy(surname = it) }
+
         )
     }
 }

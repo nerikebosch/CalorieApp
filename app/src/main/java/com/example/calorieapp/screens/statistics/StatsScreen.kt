@@ -4,20 +4,14 @@ import android.text.TextPaint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,7 +21,6 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -39,6 +32,12 @@ import java.util.Date
 import java.util.Locale
 
 
+/**
+ * Composable function representing the statistics screen.
+ *
+ * @param openScreen A lambda function to navigate to a different screen.
+ * @param viewModel The ViewModel for managing UI state and data fetching.
+ */
 @Composable
 fun StatsScreen(
     openScreen: (String) -> Unit,
@@ -52,7 +51,13 @@ fun StatsScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+/**
+ * Displays the content of the statistics screen, including date selection and a weekly calorie chart.
+ *
+ * @param uiState The current UI state containing calorie data and goals.
+ * @param viewModel The ViewModel responsible for fetching and managing statistics data.
+ */
 @Composable
 fun StatsScreenContent(
     uiState: StatsScreenUiState,
@@ -162,7 +167,22 @@ fun StatsScreenContent(
 
 
 
-
+/**
+ * Displays a bar chart representing calorie intake for a week.
+ *
+ * @param modifier Modifier to adjust layout properties.
+ * @param data A list of calorie intake values.
+ * @param labels Labels for each day of the week.
+ * @param maxValue The maximum calorie intake used for scaling the bars.
+ * @param goalValue The goal calorie intake, indicated by a horizontal line.
+ * @param barColor Color of the bars.
+ * @param goalLineColor Color of the goal line.
+ * @param axisColor Color of the axis.
+ * @param labelTextSize Font size of labels.
+ * @param labelSpacing Space between labels and the chart.
+ * @param barSpacing Space between bars.
+ * @param chartHeight The height of the chart.
+ */
 @Composable
 fun TextWithBarChart(
     modifier: Modifier = Modifier,
@@ -260,17 +280,3 @@ fun TextWithBarChart(
         }
     }
 }
-
-
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun StatsScreenPreview() {
-//    StatsScreenContent(
-//        uiState = StatsScreenUiState(
-//            goalCalorie = 2000.0, // Add the goal calorie for preview
-//            listCalories = listOf(100.0, 0.0, 150.0, 300.0, 250.0, 180.0, 220.0),
-//        )
-//    )
-//}

@@ -15,6 +15,15 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * ViewModel for the statistics screen, responsible for managing user data
+ * and fetching weekly calorie statistics.
+ *
+ * @param logService Service for logging application events and errors.
+ * @param accountService Service for managing user accounts.
+ * @param storageService Service for accessing stored user data.
+ * @param nutritionService Service for retrieving nutritional information.
+ */
 @HiltViewModel
 class StatsScreenViewModel @Inject constructor(
     logService: LogService,
@@ -23,9 +32,11 @@ class StatsScreenViewModel @Inject constructor(
     private val nutritionService: NutritionService
 ) : CalorieAppViewModel(logService) {
 
+    /** The currently authenticated user. */
     private val _user = MutableStateFlow(User())
     val user = _user.asStateFlow()
 
+    /** UI state containing weekly calorie statistics. */
     private val _uiState = MutableStateFlow(StatsScreenUiState())
     val uiState: StateFlow<StatsScreenUiState> = _uiState.asStateFlow()
 
@@ -36,7 +47,10 @@ class StatsScreenViewModel @Inject constructor(
     }
 
     /**
-     * Fetch calories for a specific week (Monday to Sunday) based on a given timestamp.
+     * Fetches the calorie intake data for a specific week (Monday to Sunday)
+     * based on the provided timestamp.
+     *
+     * @param selectedDateMillis The timestamp representing a date within the week to fetch data for.
      */
     fun fetchWeeklyCaloriesForWeek(selectedDateMillis: Long) {
         launchCatching {
@@ -54,14 +68,14 @@ class StatsScreenViewModel @Inject constructor(
                     set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
                 }
 
-                // Prepare a list of dates for the week (Monday to Sunday)
+                // Generate a list of dates for the week (Monday to Sunday).
                 val weekDates = (0..6).map { dayOffset ->
                     (startOfWeek.clone() as Calendar).apply {
                         add(Calendar.DAY_OF_YEAR, dayOffset)
                     }.time
                 }
 
-                // Initialize the weekly calories listx
+                // Initialize the weekly calories list
                 val weeklyCalories = MutableList(7) { 0.0 }
 
                 val products = storageService.userProducts.first() // Fetch user's product data
@@ -82,4 +96,3 @@ class StatsScreenViewModel @Inject constructor(
         }
     }
 }
-

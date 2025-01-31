@@ -44,6 +44,8 @@ class UserChangeViewModel @Inject constructor(
         _user.value = _user.value.copy(surname = newValue)
     }
 
+
+
     fun onDoneClick(popUpScreen: () -> Unit) {
         if (_user.value.name.isBlank() ) {
             SnackbarManager.showMessage(AppText.empty_name_error)
