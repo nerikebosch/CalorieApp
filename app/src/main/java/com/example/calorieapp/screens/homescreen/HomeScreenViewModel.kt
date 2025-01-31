@@ -40,6 +40,16 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
+    fun updateWaterIntake(addedAmount: Double) {
+        _uiState.value = _uiState.value.copy(
+            currentWater = _uiState.value.currentWater + addedAmount
+        )
+    }
+
+    fun updateUserWeight(newWeight: Double) {
+        _user.value = _user.value.copy(weight = newWeight)
+    }
+
     init {
         launchCatching {
             accountService.currentUser.collect { fetchedUser ->

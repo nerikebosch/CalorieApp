@@ -65,8 +65,18 @@ fun StatsScreenContent(
     // Observe the week range for the selected date
     val getWeekRange: (Long) -> Pair<Date, Date> = { dateMillis ->
         val calendar = Calendar.getInstance().apply { timeInMillis = dateMillis }
-        val startOfWeek = (calendar.clone() as Calendar).apply { set(Calendar.DAY_OF_WEEK, Calendar.MONDAY) }.time
-        val endOfWeek = (calendar.clone() as Calendar).apply { set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY) }.time
+
+        // Ensure correct week selection
+        calendar.firstDayOfWeek = Calendar.MONDAY
+
+        val startOfWeek = (calendar.clone() as Calendar).apply {
+            set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+        }.time
+
+        val endOfWeek = (calendar.clone() as Calendar).apply {
+            add(Calendar.DAY_OF_YEAR, 2) // Move forward 6 days to get Sunday
+        }.time
+
         startOfWeek to endOfWeek
     }
 
@@ -202,7 +212,7 @@ fun TextWithBarChart(
                 // Draw the bar
                 drawRect(
                     color = barColor,
-                    topLeft = androidx.compose.ui.geometry.Offset(xPosition, yPosition),
+                    topLeft = androidx.compose.ui.geometry.Offset(xPosition+35, yPosition),
                     size = androidx.compose.ui.geometry.Size(barWidth, barHeight.toFloat())
                 )
             }

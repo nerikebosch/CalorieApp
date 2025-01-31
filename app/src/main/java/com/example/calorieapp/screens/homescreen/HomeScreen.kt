@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -186,21 +187,29 @@ fun HomeScreen(
 
     LaunchedEffect(true) { viewModel.onUserLoad() }
     var showDialog by remember { mutableStateOf(false) }
+    var showWeightDialog by remember { mutableStateOf(false) }
 
     Column {
         HomeScreenContent(
             user = user,
             uiState = uiState,
             onSettingsClick = { viewModel.onSettingsClick(openScreen) },
-            onOpenDialog = { showDialog = true }
+            onOpenDialog = { showDialog = true },
+            onOpenWeightDialog = { showWeightDialog = true }
         )
 
             ItemAddDialog(
                 showDialog = showDialog,
                 onDismiss = { showDialog = false },
-                onSave = {  }
+                onSave = { addedAmount ->
+                    viewModel.updateWaterIntake(addedAmount) }
             )
 
+        ItemWeightDialog(
+            showDialog = showWeightDialog,
+            onDismiss = { showWeightDialog = false },
+            onSave = { newWeight -> viewModel.updateUserWeight(newWeight) }
+        )
 
     }
 }
@@ -210,7 +219,8 @@ fun HomeScreenContent(
     user: User,
     uiState: HomeScreenUiState,
     onSettingsClick: () -> Unit,
-    onOpenDialog: () -> Unit
+    onOpenDialog: () -> Unit,
+    onOpenWeightDialog: () -> Unit
 ) {
     val date = LocalDate.now()
 
@@ -256,11 +266,11 @@ fun HomeScreenContent(
 
             ElevatedCardWaterTracker(
                 title = "Weight Balance",
-                currentIntake = uiState.currentWeight, // Replace with actual data
+                currentIntake = user.weight, // Replace with actual data
                 goalIntake = user.goalWeight,  // Replace with actual data
                 unit = "kg",
                 modifier = Modifier.size(width = 170.dp, height = 200.dp),
-                onClick = { onOpenDialog() }
+                onClick = { onOpenWeightDialog() }
             )
             //Spacer(modifier = Modifier.width(10.dp))
 
@@ -354,7 +364,7 @@ fun ItemAddDialog(
     uiState: HomeScreenUiState = HomeScreenUiState(),
     showDialog: Boolean,
     onDismiss: () -> Unit,
-    onSave: (Int) -> Unit
+    onSave: (Double) -> Unit
 ) {
     if (showDialog) {
 
@@ -385,9 +395,7 @@ fun ItemAddDialog(
             },
             confirmButton = {
                 DialogConfirmButton(R.string.confirm) {
-                    onSave(sliderPosition.toInt()
-                    )
-                    uiState.currentWater = sliderPosition.toDouble()
+                    onSave(sliderPosition.toDouble())
                     onDismiss()
                 }
             },
@@ -399,6 +407,51 @@ fun ItemAddDialog(
 
 
 }
+
+@Composable
+fun ItemWeightDialog(
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    onSave: (Double) -> Unit
+) {
+    if (showDialog) {
+        var weightInput by remember { mutableStateOf("") }
+
+        AlertDialog(
+            onDismissRequest = { onDismiss() },
+            title = { Text(stringResource(R.string.add_amount)) },
+            text = {
+                Column {
+                    Text(text = "Enter your new weight (kg):")
+
+                    TextField(
+                        value = weightInput,
+                        onValueChange = { newValue ->
+                            // Allow only numbers and a decimal point
+                            if (newValue.matches(Regex("^\\d*\\.?\\d*\$"))) {
+                                weightInput = newValue
+                            }
+                        },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                DialogConfirmButton(R.string.confirm) {
+                    weightInput.toDoubleOrNull()?.let { newWeight ->
+                        onSave(newWeight)
+                        onDismiss()
+                    }
+                }
+            },
+            dismissButton = {
+                DialogCancelButton(R.string.cancel) { onDismiss() }
+            }
+        )
+    }
+}
+
 
 
 
@@ -433,7 +486,8 @@ fun HomeScreenPreview() {
         user = user,
         uiState = uiState,
         onSettingsClick = { },
-        onOpenDialog = { }
+        onOpenDialog = { },
+        onOpenWeightDialog = { }
     )
 
 }
