@@ -1,6 +1,5 @@
 package com.example.calorieapp.screens.recipe
 
-import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +15,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,10 +24,15 @@ import com.example.calorieapp.model.RecipeDetails
 
 
 
+/**
+ * Composable function for displaying the Recipes screen.
+ *
+ * @param openAndPopUp Function to navigate to a new screen and pop up the current screen.
+ * @param viewModel ViewModel to fetch and manage recipe data.
+ */
 @Composable
 fun RecipesScreen(
     openAndPopUp: (String, String) -> Unit,
-    modifier: Modifier = Modifier,
     viewModel: RecipesViewModel = hiltViewModel()
 ){
     val recipes by viewModel.recipes.observeAsState(emptyList())
@@ -44,6 +47,12 @@ fun RecipesScreen(
 
 
 
+/**
+ * Displays a list of recipes with a category filter.
+ *
+ * @param recipes List of recipes to display.
+ * @param onRecipeClick Callback invoked when a recipe is clicked.
+ */
 @Composable
 fun RecipeSelection(
     recipes: List<RecipeDetails>,
@@ -93,6 +102,9 @@ fun RecipeSelection(
 }
 
 
+/**
+ * Preview function for displaying dummy recipe data in the UI.
+ */
 @Preview(showBackground = true)
 @Composable
 fun RecipePreview() {
@@ -100,6 +112,11 @@ fun RecipePreview() {
         onRecipeClick = {})
 }
 
+/**
+ * Generates a list of dummy recipes for preview purposes.
+ *
+ * @return List of dummy recipe details.
+ */
 fun getDummyRecipes(): List<RecipeDetails> {
     return listOf(
         RecipeDetails(

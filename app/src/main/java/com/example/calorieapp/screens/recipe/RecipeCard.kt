@@ -1,12 +1,11 @@
 package com.example.calorieapp.screens.recipe
 
-import androidx.compose.foundation.Image
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -18,25 +17,27 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.calorieapp.R
 
 
+/**
+ * Composable function to display an elevated card representing a recipe.
+ *
+ * @param title The title of the recipe.
+ * @param modifier Modifier for layout customization.
+ * @param content Optional composable content to be displayed within the card.
+ * @param onClick Callback function triggered on card click.
+ * @param img URL of the recipe image.
+ */
 @Composable
 fun ElevatedCardRecipeScreen(
     title: String, // Title of the card
@@ -83,7 +84,7 @@ fun ElevatedCardRecipeScreen(
                 verticalArrangement = Arrangement.Center, // Centers text vertically
                 horizontalAlignment = Alignment.CenterHorizontally // Centers text horizontally
             ) {
-                //Spacer(modifier = Modifier.height(8.dp))
+
                 // Title text at the top
                 Text(
                     text = title,
@@ -102,6 +103,13 @@ fun ElevatedCardRecipeScreen(
     }
 }
 
+/**
+ * Composable function to display an elevated card for recipe details.
+ *
+ * @param title Title of the details section.
+ * @param modifier Modifier for layout customization.
+ * @param content Optional composable content for the details.
+ */
 @Composable
 fun ElevatedCardRecipeDetails(
     title: String, // Title of the card
@@ -132,7 +140,6 @@ fun ElevatedCardRecipeDetails(
                 verticalArrangement = Arrangement.Center, // Centers text vertically
                 horizontalAlignment = Alignment.CenterHorizontally // Centers text horizontally
             ) {
-                //Spacer(modifier = Modifier.height(8.dp))
                 // Title text at the top
                 Text(
                     text = title,
@@ -148,6 +155,13 @@ fun ElevatedCardRecipeDetails(
     }
 }
 
+/**
+ * Composable function to display a filter chip.
+ *
+ * @param title The label of the chip.
+ * @param selectedCategory The currently selected category.
+ * @param onCategorySelected Callback function when a category is selected.
+ */
 @Composable
 fun FilterChip(
     title: String,
@@ -156,7 +170,7 @@ fun FilterChip(
 ) {
     val isSelected = title == selectedCategory
 
-    androidx.compose.material3.FilterChip(
+    FilterChip(
         onClick = {
             onCategorySelected(if (isSelected) null else title)
         },
