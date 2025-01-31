@@ -198,7 +198,7 @@ fun HomeScreen(
             ItemAddDialog(
                 showDialog = showDialog,
                 onDismiss = { showDialog = false },
-                onSave = { /*TODO*/ }
+                onSave = {  }
             )
 
 
@@ -385,7 +385,9 @@ fun ItemAddDialog(
             },
             confirmButton = {
                 DialogConfirmButton(R.string.confirm) {
-                    onSave(sliderPosition.toInt())
+                    onSave(sliderPosition.toInt()
+                    )
+                    uiState.currentWater = sliderPosition.toDouble()
                     onDismiss()
                 }
             },

@@ -8,6 +8,10 @@ data class User(
     val email: String="",
     val weight: Double = 0.0,
     val height: Double = 0.0,
+    val gender: String="",
+    val dob: String="",
+    val age: Int=0,
+
     // Goal information
     val goalWater: Double = 0.0,
     val goalCalorie: Double = 0.0,

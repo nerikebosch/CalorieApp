@@ -31,6 +31,7 @@ import com.example.calorieapp.screens.activity_stats.ActivityScreen
 import com.example.calorieapp.screens.adddata.*
 
 import com.example.calorieapp.screens.homescreen.HomeScreen
+import com.example.calorieapp.screens.information.MoreAboutYouScreen
 import com.example.calorieapp.screens.login.LoginScreen
 import com.example.calorieapp.screens.recipe.RecipeDetailsScreen
 import com.example.calorieapp.screens.settings.SettingsScreen
@@ -136,6 +137,10 @@ fun NavGraphBuilder.calorieGraph(
 
     composable(SIGN_UP_SCREEN) {
         SignUpScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
+    }
+
+    composable(MORE_ABOUT_YOU_SCREEN) {
+        MoreAboutYouScreen(openScreen = { route -> appState.navigate(route) })
     }
 
     composable(SETTINGS_SCREEN) {

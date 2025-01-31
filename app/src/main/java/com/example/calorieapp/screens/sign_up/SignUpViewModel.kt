@@ -2,6 +2,7 @@ package com.example.calorieapp.screens.sign_up
 
 import androidx.compose.runtime.mutableStateOf
 import com.example.calorieapp.LOGIN_SCREEN
+import com.example.calorieapp.MORE_ABOUT_YOU_SCREEN
 import com.example.calorieapp.SIGN_UP_SCREEN
 import com.example.calorieapp.SPLASH_SCREEN
 import com.example.calorieapp.common.ext.isValidEmail
@@ -68,6 +69,7 @@ class SignUpViewModel @Inject constructor(
         }
 
 
+
         launchCatching {
             val authResult = FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(email, password)
@@ -85,7 +87,7 @@ class SignUpViewModel @Inject constructor(
             )
 
             accountService.linkAccount(user)
-            openAndPopUp(SPLASH_SCREEN, SIGN_UP_SCREEN)
+            openAndPopUp(MORE_ABOUT_YOU_SCREEN, SIGN_UP_SCREEN)
         }
     }
 

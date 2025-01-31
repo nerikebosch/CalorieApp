@@ -1,23 +1,17 @@
 package com.example.calorieapp.screens.information
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,14 +20,11 @@ fun InformationTextField(
     onValueChange: (String) -> Unit,
     label: String,
     unit: String,
-    trailingIcon: @Composable (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     isError: Boolean = false,
     errorMessage: String? = null,
     keyboardType: KeyboardType = KeyboardType.Number
 ) {
-    val uiColor = if (isSystemInDarkTheme()) Color.White else MaterialTheme.colorScheme.primary
-
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -45,33 +36,33 @@ fun InformationTextField(
                 Text(
                     text = label,
                     style = MaterialTheme.typography.labelMedium,
-                    color = uiColor,
                     fontSize = 14.sp
-                )},
-                trailingIcon = {
-                    Text(
-                        text = unit,
-                        color = uiColor,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(end = 8.dp) // Adjust padding as needed
-                    )
+                )
+            },
+            trailingIcon = {
+                Text(
+                    text = unit,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
             },
             modifier = Modifier
                 .weight(1f)
                 .height(64.dp),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.primary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-
+                focusedContainerColor = Color.Transparent, // No fill color when focused
+                unfocusedContainerColor = Color.Transparent, // No fill color when unfocused
+                disabledContainerColor = Color.Transparent, // No fill color when disabled
                 cursorColor = MaterialTheme.colorScheme.primary,
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 focusedLabelColor = MaterialTheme.colorScheme.primary,
-                unfocusedLabelColor = uiColor.copy(alpha = 0.8f),
+                unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             ),
             isError = isError,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
             textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface)
         )
-
     }
 
     if (isError && errorMessage != null) {
@@ -90,15 +81,11 @@ fun InformationTextFieldGender(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
-    unit: String,
     trailingIcon: @Composable (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     isError: Boolean = false,
-    errorMessage: String? = null,
-    keyboardType: KeyboardType = KeyboardType.Number
+    errorMessage: String? = null
 ) {
-    val uiColor = if (isSystemInDarkTheme()) Color.White else MaterialTheme.colorScheme.primary
-
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -110,25 +97,27 @@ fun InformationTextFieldGender(
                 Text(
                     text = label,
                     style = MaterialTheme.typography.labelMedium,
-                    color = uiColor,
                     fontSize = 14.sp
-                )},
+                )
+            },
             trailingIcon = trailingIcon,
             modifier = Modifier
                 .weight(1f)
                 .height(64.dp),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.primary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                focusedContainerColor = Color.Transparent, // No fill color when focused
+                unfocusedContainerColor = Color.Transparent, // No fill color when unfocused
+                disabledContainerColor = Color.Transparent, // No fill color when disabled
                 cursorColor = MaterialTheme.colorScheme.primary,
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 focusedLabelColor = MaterialTheme.colorScheme.primary,
-                unfocusedLabelColor = uiColor.copy(alpha = 0.8f)
+                unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             ),
             isError = isError,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
             textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface)
         )
-
     }
 
     if (isError && errorMessage != null) {

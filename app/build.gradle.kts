@@ -128,7 +128,8 @@ dependencies {
 
 
     implementation("io.github.ehsannarmani:compose-charts:0.1.0")
-
+    implementation(libs.accompanist.permissions)
+    implementation("androidx.core:core-ktx:1.15.0")
 
 
     testImplementation(libs.junit)
