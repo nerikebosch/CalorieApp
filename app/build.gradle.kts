@@ -120,8 +120,10 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("com.google.android.gms:play-services-fitness:21.2.0")
     implementation("com.google.android.gms:play-services-base:18.5.0")
     implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.36.0")
 
     implementation(libs.accompanist.permissions)
 

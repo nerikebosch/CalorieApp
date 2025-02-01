@@ -8,6 +8,7 @@ import com.example.calorieapp.SPLASH_SCREEN
 import com.example.calorieapp.auth.GoogleSignInManager
 import com.example.calorieapp.common.ext.isValidEmail
 import com.example.calorieapp.common.snackbar.SnackbarManager
+import com.example.calorieapp.common.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LogService
 import com.example.calorieapp.screens.CalorieAppViewModel
@@ -83,7 +84,8 @@ class LoginViewModel @Inject constructor(
                 onError = { exception ->
                     // Handle sign-in error
                     SnackbarManager.showMessage(AppText.generic_error)
-                    //
+                    SnackbarManager.showMessage(exception.toSnackbarMessage())
+                    exception.printStackTrace()
                 }
             )
         }

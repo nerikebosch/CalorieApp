@@ -48,6 +48,9 @@ class HomeScreenViewModel @Inject constructor(
 
     fun updateUserWeight(newWeight: Double) {
         _user.value = _user.value.copy(weight = newWeight)
+        launchCatching {
+            accountService.linkAccount(_user.value)
+        }
     }
 
     init {

@@ -1,6 +1,7 @@
 package com.example.calorieapp.common.snackbar
 
 import androidx.annotation.StringRes
+import com.example.calorieapp.common.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,6 +17,10 @@ object SnackbarManager {
 
     fun showMessage(message: SnackbarMessage) {
         messages.value = message
+    }
+
+    fun showMessage(throwable: Throwable) {
+        messages.value = throwable.toSnackbarMessage()
     }
 
     fun clearSnackbarState() {

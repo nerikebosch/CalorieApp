@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 import javax.inject.Inject
 
-
 @HiltViewModel
 class ActivityViewModel @Inject constructor(
     private val locationService: LocationService,
@@ -21,32 +20,43 @@ class ActivityViewModel @Inject constructor(
     logService: LogService
 ) : CalorieAppViewModel(logService) {
 
-    // State to represent current activity
     private val _activityState = MutableStateFlow<UserActivity>(UserActivity())
     val activityState: StateFlow<UserActivity> = _activityState.asStateFlow()
 
-    // Tracking status
     private val _isTracking = MutableStateFlow(false)
     val isTracking: StateFlow<Boolean> = _isTracking.asStateFlow()
 
+    private val _permissionGranted = MutableStateFlow(false)
+    val permissionGranted: StateFlow<Boolean> = _permissionGranted.asStateFlow()
+
     init {
-        // Load today's activity when ViewModel is initialized
         println("ActivityDebug: ActivityViewModel init")
         loadTodayActivity()
+        startObservingTrackingState()
+        observeUserActivity()
+    }
+
+    private fun observeUserActivity() {
         launchCatching {
             storageService.userActivity.collect { activities ->
                 val today = LocalDate.now().format(LocationServiceImpl.FIREBASE_DATE_FORMATTER)
                 _activityState.value = activities.find { it.date == today } ?: UserActivity(date = today)
-
             }
         }
+    }
 
+    fun onPermissionGranted() {
+        _permissionGranted.value = true
+        launchCatching {
+            locationService.initializeTracking()
+        }
     }
 
     fun startObservingTrackingState() {
         launchCatching {
             locationService.trackingState.collect { isTracking ->
                 _isTracking.value = isTracking
+                println("ActivityDebug: Tracking state changed to: $isTracking")
             }
         }
     }
@@ -55,29 +65,17 @@ class ActivityViewModel @Inject constructor(
         launchCatching {
             val today = LocalDate.now().format(LocationServiceImpl.FIREBASE_DATE_FORMATTER)
             val activity = storageService.getUserActivityByDate(today) ?: UserActivity(date = today)
-            println("ActivityDebug: Loaded activity: $activity")
             _activityState.value = activity
-
-            if (activity.id.isEmpty()) {
-                println("ActivityDebug: Saving new activity: $activity")
-                val newId = storageService.saveUserActivity(activity)
-                println("ActivityDebug: new activity ID: $newId")
-            } else {
-                println("ActivityDebug: Updating EXISTS activity: $activity")
-                storageService.updateUserActivity(activity)
-            }
+            println("ActivityDebug: Loaded activity: $activity")
         }
     }
 
-
-    // Periodic update method
     fun refreshActivity() {
         loadTodayActivity()
     }
 
     override fun onCleared() {
         super.onCleared()
-        // Cleanup resources when ViewModel is destroyed
         locationService.cleanup()
     }
 }

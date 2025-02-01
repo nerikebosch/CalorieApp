@@ -145,7 +145,8 @@ fun LoginScreenContent(
 
             // SOCIAL MEDIA LOGIN SECTION
             item {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = "Or continue with",
                         style = MaterialTheme.typography.labelMedium,

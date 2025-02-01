@@ -5,104 +5,107 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.os.BatteryManager
 import android.os.Looper
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import com.example.calorieapp.model.UserActivity
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LocationService
-import com.example.calorieapp.model.service.StepDetector
 import com.example.calorieapp.model.service.StorageService
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.google.android.gms.location.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
-import androidx.compose.runtime.*
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.Priority
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-
+import kotlin.math.abs
 
 class LocationServiceImpl @Inject constructor(
     private val context: Context,
     private val storageService: StorageService,
     private val accountService: AccountService,
-) : LocationService{
+) : LocationService {
 
-    private val stepDetector: StepDetector
-    private val periodicSaveJob: Job
-    private val midnightResetJob: Job
+    // Default user metrics as constants
+    private object DefaultMetrics {
+        const val HEIGHT = 1.7f  // meters
+        const val WEIGHT = 70f   // kg
+        const val STRIDE_LENGTH = 0.7 // meters
+    }
 
-    // Location tracking improvements
-    private var fusedLocationClient: FusedLocationProviderClient? = null
-    private var locationCallback: LocationCallback? = null
-    private var previousLocation: Location? = null
-    private var totalDistanceMeters: Double = 0.0
+    data class ActivityStats(
+        val distance: Double = 0.0,
+        val steps: Int = 0,
+        val calories: Double = 0.0,
+        val speed: Double = 0.0,
+        val isMoving: Boolean = false
+    )
 
-    // Add these new properties for distance tracking
-    private var lastUpdateTime: Long = 0
-    private val MIN_UPDATE_INTERVAL = 30_000L // 30 seconds
-    private val MIN_DISTANCE_CHANGE = 10.0 // 10 meters
-
+    // State management
+    private val _activityStats = MutableStateFlow(ActivityStats())
+    val activityStats: StateFlow<ActivityStats> = _activityStats.asStateFlow()
 
     private val _trackingState = MutableStateFlow(false)
     override val trackingState: StateFlow<Boolean> = _trackingState.asStateFlow()
 
+    // Location tracking
+    private var fusedLocationClient: FusedLocationProviderClient? = null
+    private var locationCallback: LocationCallback? = null
+    private var previousLocation: Location? = null
+    private var locationUpdateJob: Job? = null
+
+    // Activity metrics
+    private var totalDistanceMeters: Double = 0.0
+    private var totalSteps: Int = 0
+    private var totalCalories: Double = 0.0
+    private var lastUpdateTime: Long = 0
+
+    // Configuration constants
     companion object {
+        private const val MIN_UPDATE_INTERVAL = 10_000L // 10 seconds
+        private const val MIN_DISTANCE_CHANGE = 5.0 // 5 meters
+        private const val MAX_ACCURACY_THRESHOLD = 20f // meters
+        private const val MAX_WALKING_SPEED = 10f // meters/second
+        private const val BATTERY_SAVER_THRESHOLD = 15
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
+
         val FIREBASE_DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        private const val PERMISSION_REQUEST_CODE = 1001
-        // Permission request constants
         private val REQUIRED_PERMISSIONS = arrayOf(
-            Manifest.permission.ACTIVITY_RECOGNITION,
-            Manifest.permission.ACCESS_FINE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
         )
     }
 
+    // Background jobs
+    private val periodicSaveJob: Job
+    private val midnightResetJob: Job
 
     init {
-        // Initialize step detector
-        stepDetector = StepDetector(context) { steps ->
-            updateActivityStats(steps)
-        }
+        // Initialize location services
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
-        // Periodic saving job
+        // Initialize periodic saving
         periodicSaveJob = CoroutineScope(Dispatchers.Default).launch {
-            while(true) {
-                delay(1 * 60 * 1000) // Save every 1 minutes
+            while (true) {
+                delay(60_000) // Save every minute
                 saveCurrentActivity()
             }
         }
 
-        // Midnight reset job
+        // Initialize midnight reset
         midnightResetJob = CoroutineScope(Dispatchers.Default).launch {
-            while(true) {
-                // Calculate time until next midnight
+            while (true) {
                 val now = LocalDateTime.now()
                 val nextMidnight = now.toLocalDate().plusDays(1).atStartOfDay()
                 val duration = Duration.between(now, nextMidnight)
-
-                // Wait until midnight
                 delay(duration.toMillis())
-
-                // Reset daily activity
                 resetDailyActivity()
             }
         }
-
-        // Initialize location client
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
     }
 
     override suspend fun initializeTracking() {
@@ -112,165 +115,213 @@ class LocationServiceImpl @Inject constructor(
     }
 
     override suspend fun checkAndRequestPermissions(): Boolean {
-        // Check if all required permissions are granted
         val permissionsNotGranted = REQUIRED_PERMISSIONS.filter { permission ->
-            ContextCompat.checkSelfPermission(
-                context,
-                permission
-            ) != PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(context, permission) !=
+                    PackageManager.PERMISSION_GRANTED
         }
 
-        // If any permissions are not granted, request them
         if (permissionsNotGranted.isNotEmpty()) {
-            // This should typically be called from an activity or fragment
-            ActivityCompat.requestPermissions(
-                context as Activity,
-                permissionsNotGranted.toTypedArray(),
-                PERMISSION_REQUEST_CODE
-            )
+            if (context is Activity) {
+                ActivityCompat.requestPermissions(
+                    context,
+                    permissionsNotGranted.toTypedArray(),
+                    LOCATION_PERMISSION_REQUEST_CODE
+                )
+            }
             return false
         }
-
         return true
     }
 
     override suspend fun startContinuousTracking() {
-        // Start step detection
-        stepDetector.start()
-
-        // Start location tracking (optional)
+        if (!checkAndRequestPermissions()) return
         startLocationTracking()
     }
 
-
-
-    private fun updateActivityStats(steps: Int) {
-        // Calculate metrics based on steps
-        val distanceInMeters = calculateDistance(steps)
-        val caloriesBurned = calculateCaloriesBurned(steps)
-
-        // Create or update today's activity
-        val currentDate = LocalDate.now().format(FIREBASE_DATE_FORMATTER)
-        val userActivity = UserActivity(
-            date = currentDate,
-            steps = steps,
-            distanceInMeters = distanceInMeters,
-            caloriesBurned = caloriesBurned
-        )
-
-        // Update in storage
-        CoroutineScope(Dispatchers.IO).launch {
-            val existingActivity = storageService.getUserActivityByDate(currentDate)
-
-            if (existingActivity != null) {
-                storageService.updateUserActivity(
-                    userActivity.copy(id = existingActivity.id)
-                )
-            } else {
-                storageService.saveUserActivity(userActivity)
-            }
-        }
-    }
-
-    private fun saveCurrentActivity() {
-
-        val currentDate = LocalDate.now().format(FIREBASE_DATE_FORMATTER)
-        val steps = stepDetector.getCurrentSteps()
-        val caloriesBurned = calculateCaloriesBurned(steps)
-
-        //val distanceInMeters = calculateDistance(steps)
-
-
-        val userActivity = UserActivity(
-            date = currentDate,
-            steps = steps,
-            //distanceInMeters = distanceInMeters,
-            distanceInMeters = totalDistanceMeters,
-            caloriesBurned = caloriesBurned
-        )
-
-        CoroutineScope(Dispatchers.IO).launch {
-            val existingActivity = storageService.getUserActivityByDate(currentDate)
-
-            if (existingActivity != null) {
-                storageService.updateUserActivity(
-                    userActivity.copy(id = existingActivity.id)
-                )
-            } else {
-                storageService.saveUserActivity(userActivity)
-            }
-        }
-    }
-
-    private fun resetDailyActivity() {
-        // Reset step detector for new day
-        stepDetector.resetSteps()
-    }
-
     private fun startLocationTracking() {
-        _trackingState.value = true
         if (ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) return
-            val locationRequest = LocationRequest.Builder(Priority.PRIORITY_BALANCED_POWER_ACCURACY, 30_000L)
-                .setWaitForAccurateLocation(true)
-                .setMinUpdateIntervalMillis(10_000L)
-                .setMinUpdateDistanceMeters(MIN_DISTANCE_CHANGE.toFloat())
-                .build()
 
-            locationCallback = object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult) {
-                    val currentTime = System.currentTimeMillis()
-                    if (currentTime - lastUpdateTime > MIN_UPDATE_INTERVAL) {
-                        locationResult.lastLocation?.let { location ->
-                            updateLocationData(location)
-                            lastUpdateTime = currentTime
-                        }
+        _trackingState.value = true
+
+        // Configure location request based on battery level
+        val batteryManager = context.getSystemService<BatteryManager>()
+        val batteryLevel = batteryManager?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) ?: 100
+
+        val updateInterval = if (batteryLevel <= BATTERY_SAVER_THRESHOLD) {
+            30_000L // 30 in battery saver
+        } else {
+            10_000L // 10 seconds normal
+        }
+
+        val locationRequest = LocationRequest.Builder(
+            Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+            updateInterval
+        )
+            .setWaitForAccurateLocation(true)
+            .setMinUpdateIntervalMillis(updateInterval / 3)
+            .setMinUpdateDistanceMeters(MIN_DISTANCE_CHANGE.toFloat())
+            .build()
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                locationResult.lastLocation?.let { location ->
+                    if (isAccurateLocation(location)) {
+                        processLocationUpdate(location)
                     }
                 }
             }
+        }
 
+        try {
             fusedLocationClient?.requestLocationUpdates(
                 locationRequest,
                 locationCallback!!,
                 Looper.getMainLooper()
             )
-
+        } catch (e: SecurityException) {
+            _trackingState.value = false
+            // Handle security exception - possibly log or notify user
+        } catch (e: Exception) {
+            _trackingState.value = false
+            // Handle other exceptions
+        }
     }
 
-    // Optimized location data update
-    private fun updateLocationData(location: Location) {
-        previousLocation?.let { prev ->
-            val distance = prev.distanceTo(location).toDouble()
-            if (distance > MIN_DISTANCE_CHANGE) {
-                totalDistanceMeters += distance
+    private fun isAccurateLocation(location: Location): Boolean {
+        return location.accuracy <= MAX_ACCURACY_THRESHOLD &&
+                location.hasSpeed() &&
+                location.speed <= MAX_WALKING_SPEED &&
+                validateLocationChange(location)
+    }
+
+    private fun validateLocationChange(newLocation: Location): Boolean {
+        previousLocation?.let { prevLocation ->
+            val timeInterval = (newLocation.time - prevLocation.time) / 1000.0
+            if (timeInterval <= 0) return false
+
+            val distance = prevLocation.distanceTo(newLocation).toDouble()
+            val speed = distance / timeInterval
+
+            // Check for unrealistic movements
+            return speed <= MAX_WALKING_SPEED &&
+                    distance >= MIN_DISTANCE_CHANGE &&
+                    distance <= (MAX_WALKING_SPEED * timeInterval)
+        }
+        return true
+    }
+
+    private fun processLocationUpdate(location: Location) {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastUpdateTime < MIN_UPDATE_INTERVAL) return
+
+        previousLocation?.let { prevLocation ->
+            val distance = prevLocation.distanceTo(location).toDouble()
+            val timeInterval = (location.time - prevLocation.time) / 1000.0
+            val speed = distance / timeInterval
+
+            if (distance >= MIN_DISTANCE_CHANGE) {
+                updateActivityMetrics(distance, speed)
+                lastUpdateTime = currentTime
             }
         }
         previousLocation = location
     }
 
-    private fun calculateDistance(steps: Int): Double = steps * 0.7
-    private fun calculateCaloriesBurned(steps: Int): Double = steps * 0.04
+    private fun updateActivityMetrics(distance: Double, speed: Double) {
+        totalDistanceMeters += distance
 
+        // Calculate calories based on speed and default weight
+        val caloriesForSegment = calculateCaloriesForSegment(
+            distance,
+            speed,
+            DefaultMetrics.WEIGHT
+        )
+        totalCalories += caloriesForSegment
 
-    // Cleanup method
-    // Modified cleanup to stop location updates
+        // Update steps based on distance and default stride length
+        val stepsForSegment = calculateSteps(distance)
+        totalSteps += stepsForSegment
+
+        // Update activity stats
+        _activityStats.value = ActivityStats(
+            distance = totalDistanceMeters,
+            steps = totalSteps,
+            calories = totalCalories,
+            speed = speed,
+            isMoving = speed > 0.5 // Consider moving if speed > 0.5 m/s
+        )
+    }
+
+    private fun calculateCaloriesForSegment(
+        distance: Double,
+        speed: Double,
+        weightKg: Float
+    ): Double {
+        val met = when {
+            speed < 1.0 -> 2.0  // slow walking
+            speed < 1.5 -> 2.8  // normal walking
+            else -> 3.5  // brisk walking
+        }
+
+        // Calories = MET * weight (kg) * time (hours)
+        // time = distance / speed
+        val hours = distance / (speed * 3600) // Convert to hours
+        return met * weightKg * hours * 1.036 // 1.036 converts to calories
+    }
+
+    private fun calculateSteps(distance: Double): Int {
+        return (distance / DefaultMetrics.STRIDE_LENGTH).toInt()
+    }
+
+    private fun saveCurrentActivity() {
+        val currentDate = LocalDate.now().format(FIREBASE_DATE_FORMATTER)
+        val userActivity = UserActivity(
+            date = currentDate,
+            steps = totalSteps,
+            distanceInMeters = totalDistanceMeters,
+            caloriesBurned = totalCalories
+        )
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                storageService.getUserActivityByDate(currentDate)?.let { existing ->
+                    storageService.updateUserActivity(userActivity.copy(id = existing.id))
+                } ?: storageService.saveUserActivity(userActivity)
+            } catch (e: Exception) {
+                // Handle storage errors
+            }
+        }
+    }
+
+    private fun resetDailyActivity() {
+        totalDistanceMeters = 0.0
+        totalSteps = 0
+        totalCalories = 0.0
+        _activityStats.value = ActivityStats()
+        saveCurrentActivity()
+    }
+
     override fun cleanup() {
         _trackingState.value = false
-        stepDetector.stop()
         periodicSaveJob.cancel()
         midnightResetJob.cancel()
+
         locationCallback?.let {
             fusedLocationClient?.removeLocationUpdates(it)
             locationCallback = null
         }
 
         fusedLocationClient = null
+        previousLocation = null
+        lastUpdateTime = 0
+
+        // Cancel any pending coroutines
+        locationUpdateJob?.cancel()
 
         System.gc()
     }
-
-
 }

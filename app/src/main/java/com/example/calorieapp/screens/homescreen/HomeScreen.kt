@@ -255,8 +255,8 @@ fun HomeScreenContent(
 
         ElevatedCardCalorieTracker(
             title = "Today's Calories",
-            currentCalories = uiState.currentCalorie, // Replace with actual data
-            goalCalories = user.goalCalorie,  // Replace with actual data
+            currentCalories = uiState.currentCalorie,
+            goalCalories = user.goalCalorie,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -266,8 +266,8 @@ fun HomeScreenContent(
 
             ElevatedCardWaterTracker(
                 title = "Weight Balance",
-                currentIntake = user.weight, // Replace with actual data
-                goalIntake = user.goalWeight,  // Replace with actual data
+                currentIntake = user.weight,
+                goalIntake = user.goalWeight,
                 unit = "kg",
                 modifier = Modifier.size(width = 170.dp, height = 200.dp),
                 onClick = { onOpenWeightDialog() }
