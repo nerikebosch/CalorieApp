@@ -1,8 +1,5 @@
 package com.example.calorieapp.common.composable
 
-import android.R.attr.label
-import android.R.attr.text
-import android.R.attr.textStyle
 import androidx.annotation.StringRes
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
@@ -83,7 +80,7 @@ fun EmailField(
             Text(
                 text = stringResource(AppText.email),
                 style = MaterialTheme.typography.labelMedium,
-                color = uiColor,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 14.sp
             )
         },
@@ -145,7 +142,7 @@ fun PasswordTextField(
         label = {
             Text(text = textFieldLabel,
                 style = MaterialTheme.typography.labelMedium,
-                color = uiColor,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 14.sp
             )
         },
@@ -232,7 +229,7 @@ fun PasswordSignUpTextField(
                 Text(
                     text = textFieldLabel,
                     style = MaterialTheme.typography.labelMedium,
-                    color = uiColor,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 14.sp
                 )
             },
@@ -256,7 +253,7 @@ fun PasswordSignUpTextField(
         Text(
             text = stringResource(id = AppText.password_requirement),
             style = MaterialTheme.typography.bodySmall,
-            color = uiColor,
+            color = MaterialTheme.colorScheme.primary,
             fontSize = 12.sp)
         // check for strong password
         if (value.isNotEmpty()) {
@@ -268,7 +265,7 @@ fun PasswordSignUpTextField(
                 text = buildAnnotatedString {
                     withStyle(
                         style = SpanStyle(
-                            color = uiColor,
+                            color = MaterialTheme.colorScheme.primary,
                             fontSize = 12.sp,
                         )
                     ) {
@@ -347,7 +344,7 @@ fun LabelTextField(
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelMedium,
-                color = uiColor,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 14.sp
             )
         },
@@ -412,7 +409,7 @@ fun LabelNumberTextField(
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelMedium,
-                color = uiColor,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 14.sp
             )
         },
@@ -469,7 +466,7 @@ fun PasswordVisibilityToggleIcon(
     IconButton(onClick = onTogglePasswordVisibility) {
         Icon(imageVector = image,
             contentDescription = contentDescription,
-            tint = uiColor
+            tint = MaterialTheme.colorScheme.primary
         )
     }
 }

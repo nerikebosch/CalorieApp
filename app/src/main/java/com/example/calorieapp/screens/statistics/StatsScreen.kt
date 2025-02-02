@@ -79,7 +79,7 @@ fun StatsScreenContent(
         }.time
 
         val endOfWeek = (calendar.clone() as Calendar).apply {
-            add(Calendar.DAY_OF_YEAR, 2) // Move forward 6 days to get Sunday
+            add(Calendar.DAY_OF_YEAR,0) // Move forward 6 days to get Sunday
         }.time
 
         startOfWeek to endOfWeek
