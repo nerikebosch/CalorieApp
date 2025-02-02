@@ -321,6 +321,7 @@ fun SocialMediaLogIn(
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(4.dp))
+            .background(MaterialTheme.colorScheme.primary)
             .socialMedia()
             .clickable { onSignInClick() }
             .height(40.dp),
