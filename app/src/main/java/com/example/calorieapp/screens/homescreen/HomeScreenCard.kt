@@ -21,11 +21,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+
+/**
+ * A customizable elevated card component for the home screen.
+ *
+ * @param title The title displayed on the card.
+ * @param modifier The modifier for styling and layout customization.
+ * @param content A composable lambda that allows inserting additional UI elements (optional).
+ */
 @Composable
 fun ElevatedCardHomeScreen(
     title: String, // Title of the card
     modifier: Modifier = Modifier, // Custom modifier for layout
-    content: @Composable (() -> Unit)? = null // Lambda that can accept other composables (like icons, images)
+    content: @Composable (() -> Unit)? = null // Lambda that can accept other composable (like icons, images)
 ) {
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
@@ -57,7 +65,18 @@ fun ElevatedCardHomeScreen(
     }
 }
 
-
+/**
+ * A specialized elevated card for tracking calorie intake.
+ *
+ * @param title The title displayed on the card.
+ * @param currentCalories The current number of calories consumed.
+ * @param goalCalories The user's target calorie intake.
+ * @param modifier The modifier for layout customization.
+ * @param gradientStart The starting color for the progress gradient.
+ * @param gradientEnd The ending color for the progress gradient.
+ * @param trackColor The background track color of the progress indicator.
+ * @param strokeWidth The thickness of the progress indicator stroke.
+ */
 @Composable
 fun ElevatedCardCalorieTracker(
     title: String,
@@ -113,6 +132,21 @@ fun ElevatedCardCalorieTracker(
 }
 
 
+
+/**
+ * A specialized elevated card for tracking water intake.
+ *
+ * @param title The title displayed on the card.
+ * @param currentIntake The current amount of water consumed.
+ * @param goalIntake The user's target water intake.
+ * @param unit The measurement unit for water intake (e.g., ml, oz).
+ * @param modifier The modifier for layout customization.
+ * @param gradientStart The starting color for the progress gradient.
+ * @param gradientEnd The ending color for the progress gradient.
+ * @param trackColor The background track color of the progress indicator.
+ * @param strokeWidth The thickness of the progress indicator stroke.
+ * @param onClick The action to be performed when the card is clicked (optional).
+ */
     @Composable
     fun ElevatedCardWaterTracker(
         title: String,

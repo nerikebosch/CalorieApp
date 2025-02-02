@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -44,16 +42,22 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.calorieapp.R
 import com.example.calorieapp.common.composable.DialogCancelButton
 import com.example.calorieapp.common.composable.DialogConfirmButton
-import com.example.calorieapp.model.MealName
 import com.example.calorieapp.model.User
-import com.example.calorieapp.screens.recipe.MealSelectionDialog
 import java.time.LocalDate
 import kotlin.math.roundToInt
 
+/**
+ * A composable function that displays a gradient circular progress indicator.
+ * @param progress The progress percentage (0.0 to 1.0).
+ * @param modifier Modifier to be applied to the Canvas.
+ * @param gradientStart Start color of the gradient.
+ * @param gradientEnd End color of the gradient.
+ * @param trackColor Background track color.
+ * @param strokeWidth Width of the stroke.
+ */
 @Composable
 fun GradientProgressIndicator(
     progress: Double,
@@ -176,7 +180,13 @@ fun WaterProgressIndicator(
         strokeWidth = strokeWidth
     )
 }
-/* ***************************************** */
+
+
+/**
+ * A composable function that displays the home screen of the app.
+ * @param openScreen Function to navigate to different screens.
+ * @param viewModel ViewModel for managing UI state.
+ */
 @Composable
 fun HomeScreen(
     openScreen: (String) -> Unit,
@@ -214,6 +224,14 @@ fun HomeScreen(
     }
 }
 
+/**
+ * A composable function that displays the home screen content.
+ * @param user The user data.
+ * @param uiState The UI state of the home screen.
+ * @param onSettingsClick Callback for when the settings button is clicked.
+ * @param onOpenDialog Callback for opening the water intake dialog.
+ * @param onOpenWeightDialog Callback for opening the weight input dialog.
+ */
 @Composable
 fun HomeScreenContent(
     user: User,
@@ -358,6 +376,12 @@ fun HomeScreenContent(
     }
 }
 
+/**
+ * A composable function that displays a dialog for adding water intake.
+ * @param showDialog Whether the dialog should be displayed.
+ * @param onDismiss Callback for dismissing the dialog.
+ * @param onSave Callback for saving the entered water intake amount.
+ */
 @Composable
 fun ItemAddDialog(
     dialogData: String = "",

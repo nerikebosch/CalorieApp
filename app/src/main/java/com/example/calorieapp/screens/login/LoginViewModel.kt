@@ -1,7 +1,6 @@
 package com.example.calorieapp.screens.login
 
 import androidx.compose.runtime.mutableStateOf
-import com.example.calorieapp.HOME_SCREEN
 import com.example.calorieapp.LOGIN_SCREEN
 import com.example.calorieapp.SIGN_UP_SCREEN
 import com.example.calorieapp.SPLASH_SCREEN
@@ -17,6 +16,14 @@ import javax.inject.Inject
 import com.example.calorieapp.R.string as AppText
 
 
+/**
+ * ViewModel responsible for handling user authentication logic for the login screen.
+ * Manages email/password sign-in, Google sign-in, password recovery, and navigation.
+ *
+ * @property accountService Service handling user authentication.
+ * @property googleSignInManager Manager for handling Google Sign-In.
+ * @property logService Service for logging errors.
+ */
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val accountService: AccountService,
@@ -32,14 +39,30 @@ class LoginViewModel @Inject constructor(
     private val password
         get() = uiState.value.password
 
+    /**
+     * Updates the email field in the UI state.
+     *
+     * @param newValue The new email entered by the user.
+     */
     fun onEmailChange(newValue: String) {
         uiState.value = uiState.value.copy(email = newValue)
     }
 
+    /**
+     * Updates the password field in the UI state.
+     *
+     * @param newValue The new password entered by the user.
+     */
     fun onPasswordChange(newValue: String) {
         uiState.value = uiState.value.copy(password = newValue)
     }
 
+    /**
+     * Attempts to sign in the user with the provided email and password.
+     * Displays appropriate error messages if validation fails.
+     *
+     * @param openAndPopUp Function to navigate to another screen upon successful sign-in.
+     */
     fun onSignInClick(openAndPopUp: (String, String) -> Unit) {
         if (!email.isValidEmail()) {
             SnackbarManager.showMessage(AppText.email_error)
@@ -58,6 +81,10 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Sends a password recovery email if the email is valid.
+     * Displays an error message if the email is invalid.
+     */
     fun onForgotPasswordClick() {
         if (!email.isValidEmail()) {
             SnackbarManager.showMessage(AppText.email_error)
@@ -70,6 +97,12 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Initiates the Google Sign-In process.
+     * On success, navigates the user to the next screen.
+     *
+     * @param openAndPopUp Function to handle navigation after successful authentication.
+     */
     fun onGoogleSignInClick(
         openAndPopUp: (String, String) -> Unit
     ) {
@@ -91,12 +124,21 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Placeholder function for Facebook Sign-In functionality.
+     * Currently shows an error message as Facebook sign-in is not implemented.
+     */
     fun onFacebookSignInClick() {
         // Placeholder for Facebook sign-in implementation
         // You'll need to implement this method similarly to Google Sign-In
         SnackbarManager.showMessage(AppText.generic_error)
     }
 
+    /**
+     * Navigates the user to the sign-up screen.
+     *
+     * @param openAndPopUp Function to handle navigation.
+     */
     fun onSignUpScreenClick(openAndPopUp: (String, String) -> Unit) {
         launchCatching {
             openAndPopUp(SIGN_UP_SCREEN, LOGIN_SCREEN)

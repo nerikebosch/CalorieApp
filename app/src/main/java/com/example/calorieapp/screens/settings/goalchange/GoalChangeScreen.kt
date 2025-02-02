@@ -10,7 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +30,13 @@ import java.text.DecimalFormat
 import com.example.calorieapp.R.string as AppText
 
 
+/**
+ * Composable function that displays the Goal Change screen, allowing users to update their
+ * personal goals for weight, water intake, and calorie consumption.
+ *
+ * @param popUpScreen Callback function to navigate back after saving goals.
+ * @param viewModel ViewModel for handling user data and goal updates.
+ */
 @Composable
 fun GoalChangeScreen(
     popUpScreen: () -> Unit,
@@ -51,6 +57,16 @@ fun GoalChangeScreen(
 
 }
 
+
+/**
+ * Composable function that defines the UI layout for changing user goals.
+ *
+ * @param onGoalWaterChange Callback function for updating water intake goal.
+ * @param onGoalWeightChange Callback function for updating weight goal.
+ * @param onGoalCalorieChange Callback function for updating calorie goal.
+ * @param onDoneClick Callback function triggered when the user saves changes.
+ * @param user The current user object containing goal data.
+ */
 @Composable
 fun GoalChangeScreenContent(
     onGoalWaterChange: (Double) -> Unit = {},

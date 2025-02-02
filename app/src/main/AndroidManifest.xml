@@ -23,6 +23,8 @@
         android:theme="@style/Theme.CalorieApp"
         android:name=".CalorieHiltApp">
 
+        <receiver android:name=".notifications.MealReminderReceiver" />
+
         <activity
             android:name=".CalorieActivity"
             android:exported="true"

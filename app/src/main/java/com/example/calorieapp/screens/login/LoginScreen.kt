@@ -56,6 +56,12 @@ import com.example.calorieapp.ui.theme.primaryLight
 import com.example.calorieapp.R.string as AppText
 
 
+/**
+ * Composable function representing the login screen.
+ *
+ * @param openAndPopUp Function to navigate and remove the current screen from the back stack.
+ * @param viewModel ViewModel handling login-related logic.
+ */
 @Composable
 fun LoginScreen(
     openAndPopUp: (String, String) -> Unit,
@@ -76,6 +82,18 @@ fun LoginScreen(
 
 }
 
+/**
+ * Composable function displaying the login screen UI.
+ *
+ * @param uiState The current state of the login UI.
+ * @param onEmailChange Callback for email input changes.
+ * @param onPasswordChange Callback for password input changes.
+ * @param onSignInClick Callback for sign-in button click.
+ * @param onForgotPasswordClick Callback for forgot password link click.
+ * @param onGoogleSignInClick Callback for Google sign-in button click.
+ * @param onFacebookSignInClick Callback for Facebook sign-in button click.
+ * @param onSignUpScreenClick Callback for sign-up link click.
+ */
 @Composable
 fun LoginScreenContent(
     uiState: LoginUiState,
@@ -222,8 +240,10 @@ fun LoginScreenContent(
 
 
 
-
-
+/**
+ * Composable function that represents the top section of the login screen.
+ * It includes the app logo, name, catchphrase, and a background image.
+ */
 @Composable
 private fun TopSection() {
     val uiColor = MaterialTheme.colorScheme.primary
@@ -280,6 +300,14 @@ private fun TopSection() {
 }
 
 
+/**
+ * Composable function for a social media login button.
+ *
+ * @param modifier The modifier to be applied to the component.
+ * @param icon The resource ID of the social media icon.
+ * @param text The label for the login button.
+ * @param onSignInClick The callback function when the button is clicked.
+ */
 @Composable
 fun SocialMediaLogIn(
     modifier: Modifier = Modifier,
@@ -315,7 +343,12 @@ fun SocialMediaLogIn(
 
 }
 
-
+/**
+ * Extension function that applies styling to social media login buttons.
+ * Changes the background and border depending on the system theme.
+ *
+ * @return A modified [Modifier] instance with applied styling.
+ */
 @SuppressLint("ModifierFactoryUnreferencedReceiver")
 fun Modifier.socialMedia(): Modifier = composed {
     if (isSystemInDarkTheme()) {
@@ -329,7 +362,10 @@ fun Modifier.socialMedia(): Modifier = composed {
     }
 }
 
-
+/**
+ * Preview function for the login screen.
+ * It provides a sample UI state and renders the login screen content.
+ */
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {

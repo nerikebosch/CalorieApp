@@ -3,12 +3,14 @@ package com.example.calorieapp.model
 import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
-import com.google.gson.reflect.TypeToken
-import java.io.BufferedReader
-import java.io.FileNotFoundException
-import java.io.IOException
 
+
+/**
+ * Reads and parses a JSON file containing recipe details from the app's assets folder.
+ *
+ * @param context The application context used to access assets.
+ * @return A list of [RecipeDetails] objects parsed from the JSON file, or an empty list if an error occurs.
+ */
 fun getRecipesFromJson(context: Context): List<RecipeDetails> {
     return try {
         val inputStream = context.assets.open("Recipes.json")

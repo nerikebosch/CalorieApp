@@ -2,7 +2,6 @@ package com.example.calorieapp.screens.information
 
 import android.app.DatePickerDialog
 import android.widget.DatePicker
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -23,6 +22,14 @@ import kotlinx.coroutines.flow.map
 import java.util.Calendar
 import java.util.Locale
 
+
+/**
+ * Composable function representing the "More About You" screen.
+ * This screen allows users to input additional personal information such as weight, height, gender, date of birth, and water intake goal.
+ *
+ * @param openScreen Function to handle navigation.
+ * @param viewModel ViewModel handling user input and data persistence.
+ */
 @Composable
 fun MoreAboutYouScreen(
     openScreen: (String) -> Unit,
@@ -55,6 +62,27 @@ fun MoreAboutYouScreen(
     )
 }
 
+
+/**
+ * Composable function that renders the UI content for the "More About You" screen.
+ * Includes input fields for user details such as weight, height, gender, and date of birth.
+ *
+ * @param goalWeight The user's goal weight as a string.
+ * @param weight The user's current weight as a string.
+ * @param height The user's height as a string.
+ * @param gender The user's selected gender.
+ * @param dob The user's date of birth.
+ * @param age The calculated age of the user.
+ * @param goalWater The user's daily water intake goal.
+ * @param onContinueClick Callback triggered when the continue button is clicked.
+ * @param onGoalWeightChange Callback for updating goal weight.
+ * @param onWeightChange Callback for updating weight.
+ * @param onHeightChange Callback for updating height.
+ * @param onGenderChange Callback for updating gender selection.
+ * @param onDobChange Callback for updating date of birth.
+ * @param onAgeChange Callback for updating age.
+ * @param onGoalWaterChange Callback for updating water intake goal.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreAboutYouContent(
@@ -268,6 +296,12 @@ fun MoreAboutYouContent(
     }
 }
 
+/**
+ * Converts a given timestamp (milliseconds) to a formatted date string (DD/MM/YYYY).
+ *
+ * @param millis The timestamp in milliseconds.
+ * @return The formatted date as a string.
+ */
 fun convertMillisToDate(millis: Long): String {
     val calendar = Calendar.getInstance().apply { timeInMillis = millis }
     return String.format(
@@ -278,6 +312,12 @@ fun convertMillisToDate(millis: Long): String {
     )
 }
 
+/**
+ * Calculates the age based on the given timestamp (milliseconds).
+ *
+ * @param millis The timestamp representing the date of birth.
+ * @return The calculated age as an integer.
+ */
 fun calculateAge(millis: Long): Int {
     val dobCalendar = Calendar.getInstance().apply { timeInMillis = millis }
     val today = Calendar.getInstance()
@@ -289,7 +329,14 @@ fun calculateAge(millis: Long): Int {
     return age
 }
 
-// Function to show Date Picker Dialog and calculate Age
+
+/**
+ * Displays a date picker dialog, allowing users to select their date of birth.
+ * Once a date is selected, the age is calculated and passed to the provided callback.
+ *
+ * @param context The application context for displaying the dialog.
+ * @param onDateSelected Callback function that receives the selected date and calculated age.
+ */
 fun showDatePicker(context: android.content.Context, onDateSelected: (String, Int) -> Unit) {
     val calendar = Calendar.getInstance()
     val year = calendar.get(Calendar.YEAR)
@@ -313,6 +360,10 @@ fun showDatePicker(context: android.content.Context, onDateSelected: (String, In
     }, year, month, day).show()
 }
 
+/**
+ * Preview function for the "More About You" screen.
+ * Displays a sample UI for testing and design purposes.
+ */
 @Preview(showBackground = true)
 @Composable
 fun MoreAboutYouPreview() {

@@ -1,33 +1,30 @@
 package com.example.calorieapp
 
-import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.core.app.ActivityCompat
 import com.example.calorieapp.notifications.createNotificationChannel
 import com.example.calorieapp.notifications.handleNotificationPermission
 import com.example.calorieapp.ui.theme.CalorieAppTheme
 
 import dagger.hilt.android.AndroidEntryPoint
 
-
-//private const val POST_NOTIFICATIONS_PERMISSION = "android.permission.POST_NOTIFICATIONS"
-
+/**
+ * Main activity for the Calorie App, responsible for initializing notifications and setting up the UI theme.
+ */
 @AndroidEntryPoint
-@ExperimentalMaterial3Api()
+@ExperimentalMaterial3Api
 class CalorieActivity: AppCompatActivity() {
+
+    /**
+     * Called when the activity is starting. This is where most initialization should occur.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in [onSaveInstanceState].
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //createNotificationChannel(this)
-
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-//            // Request POST_NOTIFICATIONS permission
-//        } else {
-//            // No need to request permission, just show the notification
-//            showNotification(this)
-//        }
 
         // Create notification channel
         createNotificationChannel(this)

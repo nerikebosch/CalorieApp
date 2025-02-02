@@ -25,6 +25,15 @@ import com.example.calorieapp.ui.theme.Roboto
 import com.google.android.play.integrity.internal.f
 import com.example.calorieapp.R.string as AppText
 
+
+/**
+ * Composable function for displaying the Settings screen.
+ *
+ * @param restartApp Function to restart the app with a specific screen.
+ * @param openScreen Function to navigate to a specified screen.
+ * @param modifier Modifier for layout adjustments.
+ * @param viewModel ViewModel for handling settings-related operations.
+ */
 @ExperimentalMaterial3Api
 @Composable 
 fun SettingsScreen(
@@ -72,6 +81,12 @@ fun SettingsScreen(
     }
 }
 
+
+/**
+ * Composable function for displaying a sign-out card with a confirmation dialog.
+ *
+ * @param signOut Function triggered when the user confirms sign-out.
+ */
 @ExperimentalMaterial3Api
 @Composable
 private fun SignOutCard(signOut: () -> Unit) {
@@ -102,6 +117,13 @@ private fun SignOutCard(signOut: () -> Unit) {
 }
 
 
+/**
+ * Composable function for displaying a card with user data that can be changed.
+ *
+ * @param label The label describing the data.
+ * @param detail The current value of the data.
+ * @param onClick Callback function when the card is clicked.
+ */
 @ExperimentalMaterial3Api
 @Composable
 fun ChangeDataCard(
@@ -117,6 +139,9 @@ fun ChangeDataCard(
     )
 }
 
+/**
+ * Preview function for the Settings screen.
+ */
 @ExperimentalMaterial3Api
 @Composable
 @Preview(showBackground = true, showSystemUi = true)

@@ -13,6 +13,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
+/**
+ * A customizable text field used for numerical input (e.g., weight, height).
+ *
+ * @param value The current text input value.
+ * @param onValueChange A callback function triggered when the input value changes.
+ * @param label The label displayed inside the text field.
+ * @param unit A string representing the measurement unit (e.g., "kg", "cm").
+ * @param modifier Modifier for styling and layout customization.
+ * @param isError Boolean indicating whether the field contains an error.
+ * @param errorMessage The error message displayed below the text field if `isError` is true.
+ * @param keyboardType The type of keyboard to display (default is `KeyboardType.Number`).
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InformationTextField(
@@ -75,6 +88,18 @@ fun InformationTextField(
     }
 }
 
+
+/**
+ * A customizable text field used for gender input, allowing for an optional trailing icon.
+ *
+ * @param value The current text input value.
+ * @param onValueChange A callback function triggered when the input value changes.
+ * @param label The label displayed inside the text field.
+ * @param trailingIcon An optional composable displayed as an icon on the right side.
+ * @param modifier Modifier for styling and layout customization.
+ * @param isError Boolean indicating whether the field contains an error.
+ * @param errorMessage The error message displayed below the text field if `isError` is true.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InformationTextFieldGender(

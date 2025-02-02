@@ -44,6 +44,10 @@ import com.example.calorieapp.screens.settings.goalchange.GoalChangeScreen
 import com.example.calorieapp.screens.statistics.StatsScreen
 import kotlinx.coroutines.CoroutineScope
 
+
+/**
+ * The main composable function that sets up the CalorieApp UI with navigation and theming.
+ */
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun CalorieApp() {
@@ -52,7 +56,7 @@ fun CalorieApp() {
             val appState = rememberAppState()
             val snackbarHostState = appState.snackbarHostState
 
-            // Get current route to determine if we should show TabRow
+            // Determine if the TabRow should be displayed based on the current route
             val currentRoute = appState.navController.currentBackStackEntryAsState().value?.destination?.route
             val showTabRow = !(currentRoute == SPLASH_SCREEN ||
                     currentRoute == LOGIN_SCREEN ||
@@ -77,10 +81,17 @@ fun CalorieApp() {
                                 .navigationBarsPadding()
 
                         ) {
-                            CalorieAppTabRow(
-                                currentRoute = currentRoute ?: HOME_SCREEN,
-                                openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) }
-                            )
+                            if (currentRoute != MORE_ABOUT_YOU_SCREEN) {
+                                CalorieAppTabRow(
+                                    currentRoute = currentRoute ?: HOME_SCREEN,
+                                    openAndPopUp = { route, popUp ->
+                                        appState.navigateAndPopUp(
+                                            route,
+                                            popUp
+                                        )
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -97,6 +108,9 @@ fun CalorieApp() {
     }
 }
 
+/**
+ * Creates and remembers the application state, including navigation and snackbar handling.
+ */
 @Composable
 fun rememberAppState(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
@@ -110,6 +124,9 @@ fun rememberAppState(
     }
 
 
+/**
+ * Provides access to the application's resources.
+ */
 @Composable
 @ReadOnlyComposable
 fun resources(): Resources {
@@ -117,6 +134,11 @@ fun resources(): Resources {
     return LocalContext.current.resources
 }
 
+/**
+ * Defines the navigation graph for the application.
+ *
+ * @param appState The application state that manages navigation.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.calorieGraph(
     appState: CalorieAppState,

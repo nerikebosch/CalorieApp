@@ -15,11 +15,20 @@ import androidx.core.app.NotificationManagerCompat
 import com.example.calorieapp.CalorieActivity
 import com.example.calorieapp.R
 
-// Constants
+
+/**
+ * Constants for notification handling.
+ */
 private const val CHANNEL_ID = "meal_reminder_channel"
 private const val MEAL_NOTIFICATION_ID = 1001
 private const val POST_NOTIFICATIONS_PERMISSION = "android.permission.POST_NOTIFICATIONS"
 
+/**
+ * Creates a notification channel for meal reminders.
+ * This function should be called once during the app lifecycle.
+ *
+ * @param context The application context used to access system services.
+ */
 // Function to create the notification channel (called once during app lifecycle)
 fun createNotificationChannel(context: Context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -36,7 +45,12 @@ fun createNotificationChannel(context: Context) {
     }
 }
 
-// Function to show the notification
+
+/**
+ * Displays a meal reminder notification to the user.
+ *
+ * @param context The application context used to build and show the notification.
+ */
 @SuppressLint("MissingPermission")
 @OptIn(ExperimentalMaterial3Api::class)
 fun showNotification(context: Context) {
@@ -64,22 +78,25 @@ fun showNotification(context: Context) {
     }
 }
 
+/**
+ * Checks and requests the necessary permission to show notifications on Android 13+.
+ * If permission is already granted, it schedules meal reminders.
+ *
+ * @param context The application context used for permission checking and scheduling.
+ */
 // Function to check and request POST_NOTIFICATIONS permission (Android 13+)
 fun handleNotificationPermission(context: Context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         if (ActivityCompat.checkSelfPermission(context, POST_NOTIFICATIONS_PERMISSION) != PackageManager.PERMISSION_GRANTED) {
-            // Request the permission
             ActivityCompat.requestPermissions(
                 (context as? androidx.appcompat.app.AppCompatActivity) ?: return,
                 arrayOf(POST_NOTIFICATIONS_PERMISSION),
                 1
             )
         } else {
-            // Permission already granted, show the notification
-            showNotification(context)
+            scheduleMealReminders(context) // Schedule notifications after permission is granted
         }
     } else {
-        // For Android 12 and below, directly show the notification
-        showNotification(context)
+        scheduleMealReminders(context) // Directly schedule notifications for Android 12 and below
     }
 }
