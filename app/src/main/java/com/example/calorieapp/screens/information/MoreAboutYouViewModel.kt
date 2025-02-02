@@ -24,8 +24,8 @@ class MoreAboutYouViewModel @Inject constructor(
     init {
         // Collect user data when ViewModel is initialized
         launchCatching {
-            println("GoalChangeVMDebug: Is user authenticated? ${accountService.hasUser}")
-            println("GoalChangeVMDebug: Current user ID: ${accountService.currentUserId}")
+            println("MoreAboutYouVMDebug: Is user authenticated? ${accountService.hasUser}")
+            println("MoreAboutYouVMDebug: Current user ID: ${accountService.currentUserId}")
 
             accountService.currentUser.collect { fetchedUser ->
                 _user.value = fetchedUser

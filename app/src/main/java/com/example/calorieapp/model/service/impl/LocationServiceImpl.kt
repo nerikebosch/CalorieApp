@@ -3,13 +3,18 @@ package com.example.calorieapp.model.service.impl
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.BatteryManager
+import android.os.Build
 import android.os.Looper
+import androidx.compose.ui.text.font.FontVariation.weight
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
+import com.example.calorieapp.model.User
 import com.example.calorieapp.model.UserActivity
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LocationService
@@ -23,6 +28,10 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlin.math.abs
+import android.content.SharedPreferences.*
+import android.app.Service
+import android.content.SharedPreferences
+
 
 class LocationServiceImpl @Inject constructor(
     private val context: Context,
@@ -44,8 +53,26 @@ class LocationServiceImpl @Inject constructor(
         val speed: Double = 0.0,
         val isMoving: Boolean = false
     )
+    // User state
+    private val serviceScope = CoroutineScope(Dispatchers.Default)
+    private val user = accountService.currentUser
+        .stateIn(
+            scope = serviceScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = User()
+        )
 
-    // State management
+    private fun getWeight(): Double {
+        return (user.value.weight.takeIf { it > 0 } ?: DefaultMetrics.WEIGHT) as Double
+    }
+
+    private fun getHeight(): Double {
+        return (user.value.height.takeIf { it > 0 } ?: DefaultMetrics.HEIGHT) as Double
+    }
+
+    private fun getStrideLength(): Double {
+        return getHeight() * 0.413
+    }
     private val _activityStats = MutableStateFlow(ActivityStats())
     val activityStats: StateFlow<ActivityStats> = _activityStats.asStateFlow()
 
@@ -58,6 +85,29 @@ class LocationServiceImpl @Inject constructor(
     private var previousLocation: Location? = null
     private var locationUpdateJob: Job? = null
 
+    // Add persistent storage
+    private val prefs: SharedPreferences by lazy {
+        context.getSharedPreferences("activity_tracker", Context.MODE_PRIVATE)
+    }
+
+    private fun saveState() {
+        with(prefs.edit()) {
+            putLong("distance", totalDistanceMeters.toBits())
+            putInt("steps", totalSteps)
+            putLong("calories", totalCalories.toBits())
+            putLong("last_update", lastUpdateTime)
+            apply()
+        }
+
+    }
+
+    private fun loadState() {
+        totalDistanceMeters = prefs.getLong("distance", 0.0.toBits()).let { Double.fromBits(it) }
+        totalSteps = prefs.getInt("steps", 0)
+        totalCalories = prefs.getLong("calories", 0.0.toBits()).let { Double.fromBits(it) }
+        lastUpdateTime = prefs.getLong("last_update", 0)
+    }
+
     // Activity metrics
     private var totalDistanceMeters: Double = 0.0
     private var totalSteps: Int = 0
@@ -68,7 +118,7 @@ class LocationServiceImpl @Inject constructor(
     companion object {
         private const val MIN_UPDATE_INTERVAL = 10_000L // 10 seconds
         private const val MIN_DISTANCE_CHANGE = 5.0 // 5 meters
-        private const val MAX_ACCURACY_THRESHOLD = 20f // meters
+        private const val MAX_ACCURACY_THRESHOLD = 10f // meters
         private const val MAX_WALKING_SPEED = 10f // meters/second
         private const val BATTERY_SAVER_THRESHOLD = 15
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
@@ -91,7 +141,7 @@ class LocationServiceImpl @Inject constructor(
         // Initialize periodic saving
         periodicSaveJob = CoroutineScope(Dispatchers.Default).launch {
             while (true) {
-                delay(60_000) // Save every minute
+                delay(10_000) // Save every 10 sec
                 saveCurrentActivity()
             }
         }
@@ -138,7 +188,9 @@ class LocationServiceImpl @Inject constructor(
         startLocationTracking()
     }
 
+
     private fun startLocationTracking() {
+        loadState() // Restore previous state
         if (ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -152,18 +204,17 @@ class LocationServiceImpl @Inject constructor(
         val batteryLevel = batteryManager?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) ?: 100
 
         val updateInterval = if (batteryLevel <= BATTERY_SAVER_THRESHOLD) {
-            30_000L // 30 in battery saver
+            15_000L // 15 in battery saver
         } else {
-            10_000L // 10 seconds normal
+            5_000L // 5 seconds normal
         }
 
         val locationRequest = LocationRequest.Builder(
-            Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+            Priority.PRIORITY_HIGH_ACCURACY,
             updateInterval
         )
-            .setWaitForAccurateLocation(true)
+            .setWaitForAccurateLocation(false)
             .setMinUpdateIntervalMillis(updateInterval / 3)
-            .setMinUpdateDistanceMeters(MIN_DISTANCE_CHANGE.toFloat())
             .build()
 
         locationCallback = object : LocationCallback() {
@@ -235,11 +286,7 @@ class LocationServiceImpl @Inject constructor(
         totalDistanceMeters += distance
 
         // Calculate calories based on speed and default weight
-        val caloriesForSegment = calculateCaloriesForSegment(
-            distance,
-            speed,
-            DefaultMetrics.WEIGHT
-        )
+        val caloriesForSegment = calculateCaloriesForSegment(distance, speed)
         totalCalories += caloriesForSegment
 
         // Update steps based on distance and default stride length
@@ -252,14 +299,15 @@ class LocationServiceImpl @Inject constructor(
             steps = totalSteps,
             calories = totalCalories,
             speed = speed,
-            isMoving = speed > 0.5 // Consider moving if speed > 0.5 m/s
+            isMoving = speed > 0.3 // Consider moving if speed > 0.5 m/s
         )
+
+        saveState()
     }
 
     private fun calculateCaloriesForSegment(
         distance: Double,
         speed: Double,
-        weightKg: Float
     ): Double {
         val met = when {
             speed < 1.0 -> 2.0  // slow walking
@@ -270,11 +318,11 @@ class LocationServiceImpl @Inject constructor(
         // Calories = MET * weight (kg) * time (hours)
         // time = distance / speed
         val hours = distance / (speed * 3600) // Convert to hours
-        return met * weightKg * hours * 1.036 // 1.036 converts to calories
+        return met * getWeight() * hours * 1.036 // 1.036 converts to calories
     }
 
     private fun calculateSteps(distance: Double): Int {
-        return (distance / DefaultMetrics.STRIDE_LENGTH).toInt()
+        return (distance / getStrideLength()).toInt()
     }
 
     private fun saveCurrentActivity() {
@@ -306,9 +354,17 @@ class LocationServiceImpl @Inject constructor(
     }
 
     override fun cleanup() {
+        saveState()
+        serviceScope.cancel()
         _trackingState.value = false
+
+        runBlocking{
+            saveCurrentActivity()
+        }
+
         periodicSaveJob.cancel()
         midnightResetJob.cancel()
+
 
         locationCallback?.let {
             fusedLocationClient?.removeLocationUpdates(it)
@@ -323,5 +379,22 @@ class LocationServiceImpl @Inject constructor(
         locationUpdateJob?.cancel()
 
         System.gc()
+    }
+
+
+    //Background Tracking
+    private val notificationId = 1337
+    private fun startForegroundService() {
+        val notification = NotificationCompat.Builder(context, "location_channel")
+            .setContentTitle("Activity Tracking Active")
+            .build()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(Intent(context, LocationService::class.java))
+        } else {
+            context.startService(Intent(context, LocationService::class.java))
+        }
+
+        (context as? Service)?.startForeground(notificationId, notification)
     }
 }

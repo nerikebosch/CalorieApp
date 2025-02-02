@@ -1,5 +1,6 @@
 package com.example.calorieapp.screens.activity_stats
 
+import androidx.lifecycle.viewModelScope
 import com.example.calorieapp.model.UserActivity
 import com.example.calorieapp.model.service.LocationService
 import com.example.calorieapp.model.service.LogService
@@ -7,9 +8,13 @@ import com.example.calorieapp.model.service.StorageService
 import com.example.calorieapp.model.service.impl.LocationServiceImpl
 import com.example.calorieapp.screens.CalorieAppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
+import okhttp3.Dispatcher
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -31,19 +36,22 @@ class ActivityViewModel @Inject constructor(
 
     init {
         println("ActivityDebug: ActivityViewModel init")
-        loadTodayActivity()
         startObservingTrackingState()
         observeUserActivity()
     }
 
     private fun observeUserActivity() {
         launchCatching {
-            storageService.userActivity.collect { activities ->
-                val today = LocalDate.now().format(LocationServiceImpl.FIREBASE_DATE_FORMATTER)
-                _activityState.value = activities.find { it.date == today } ?: UserActivity(date = today)
+            storageService.userActivity.distinctUntilChanged()
+                .collect { activities ->
+                    val today = LocalDate.now().format(LocationServiceImpl.FIREBASE_DATE_FORMATTER)
+                    val currentActivity = activities.find { it.date == today } ?: UserActivity(date = today).also {storageService.saveUserActivity(it)}
+                   _activityState.value = currentActivity
+
             }
         }
     }
+
 
     fun onPermissionGranted() {
         _permissionGranted.value = true
@@ -62,7 +70,7 @@ class ActivityViewModel @Inject constructor(
     }
 
     private fun loadTodayActivity() {
-        launchCatching {
+        viewModelScope.launch(Dispatchers.IO) {
             val today = LocalDate.now().format(LocationServiceImpl.FIREBASE_DATE_FORMATTER)
             val activity = storageService.getUserActivityByDate(today) ?: UserActivity(date = today)
             _activityState.value = activity
@@ -71,7 +79,7 @@ class ActivityViewModel @Inject constructor(
     }
 
     fun refreshActivity() {
-        loadTodayActivity()
+        observeUserActivity()
     }
 
     override fun onCleared() {
