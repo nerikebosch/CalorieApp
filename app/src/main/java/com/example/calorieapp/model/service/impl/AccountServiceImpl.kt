@@ -1,6 +1,5 @@
 package com.example.calorieapp.model.service.impl
 
-import android.R.attr.name
 import com.example.calorieapp.model.User
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.trace
@@ -8,12 +7,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.snapshots
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -82,21 +79,6 @@ class AccountServiceImpl @Inject constructor(
         val authResult = auth.signInWithCredential(credential).await()
 
         authResult.user?.let { firebaseUser ->
-            val fullName = firebaseUser.displayName?.trim()?.split("\\s+".toRegex(), limit = 2) ?: listOf()
-//            val userFromGoogle = User(
-//                name = fullName.getOrNull(0) ?: "",
-//                surname = fullName.getOrNull(1) ?: "",
-//                email = firebaseUser.email ?: "",
-//                registeredUser = true
-//            )
-//            val userData = hashMapOf(
-//                "id" to firebaseUser.uid,
-//                "name" to (fullName.getOrNull(0) ?: ""),
-//                "surname" to (fullName.getOrNull(1) ?: ""),
-//                "email" to (firebaseUser.email ?: ""),
-//                "registeredUser" to true
-//            )
-            // Merge with existing Firestore data (if any)
             firestore.collection("users")
                 .document(firebaseUser.uid)
                 .get()

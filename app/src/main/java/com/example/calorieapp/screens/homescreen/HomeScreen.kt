@@ -194,6 +194,7 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val user by viewModel.user.collectAsStateWithLifecycle()
+    val userData by viewModel.userData.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) { viewModel.onUserLoad() }
     var showDialog by remember { mutableStateOf(false) }

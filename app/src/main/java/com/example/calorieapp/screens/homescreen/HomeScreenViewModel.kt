@@ -3,6 +3,7 @@ package com.example.calorieapp.screens.homescreen
 import com.example.calorieapp.SETTINGS_SCREEN
 import com.example.calorieapp.model.MealName
 import com.example.calorieapp.model.User
+import com.example.calorieapp.model.UserData
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LogService
 import com.example.calorieapp.model.service.NutritionService
@@ -36,23 +37,46 @@ class HomeScreenViewModel @Inject constructor(
     private val nutritionService: NutritionService
 ) : CalorieAppViewModel(logService) {
 
-    /** Holds the current user data. */
+    /** Holds the current user and userdata. */
     private val _user = MutableStateFlow(User())
     val user = _user.asStateFlow()
+
+    private val _userData = MutableStateFlow(UserData())
+    val userData = _userData.asStateFlow()
 
     /** Holds the UI state data for the home screen. */
     private val _uiState = MutableStateFlow(HomeScreenUiState())
     val uiState: StateFlow<HomeScreenUiState> = _uiState.asStateFlow()
 
+    val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
     /**
      * Loads the current user's data from the [AccountService].
-     * Updates the [_user] state flow when data is retrieved.
+     * Updates the [_user] & [_userData] state flow when data is retrieved.
      */
     fun onUserLoad() {
         launchCatching {
             accountService.currentUser.collect { fetchedUser ->
                 _user.value = fetchedUser
             }
+        }
+    }
+    /*
+     * Loads today's user data from the [StorageService].
+     */
+    private suspend fun loadTodayUserData() {
+        val todayData = storageService.getUserDataByDate(today)
+
+        if (todayData != null) {
+            _userData.value = todayData
+            _uiState.value = _uiState.value.copy(currentWater = todayData.water)
+            println("Debug: Loaded existing userData: $todayData")
+        } else {
+            // Create new UserData for today if it doesn't exist
+            val newUserData = UserData(date = today)
+            val newId = storageService.saveUserData(newUserData)
+            _userData.value = newUserData.copy(id = newId)
+            println("Debug: Created new userData with id: $newId")
         }
     }
 
@@ -62,9 +86,19 @@ class HomeScreenViewModel @Inject constructor(
      * @param addedAmount The amount of water to add to the current intake.
      */
     fun updateWaterIntake(addedAmount: Double) {
-        _uiState.value = _uiState.value.copy(
-            currentWater = _uiState.value.currentWater + addedAmount
-        )
+        val newWaterAmount = _uiState.value.currentWater + addedAmount
+        _uiState.value = _uiState.value.copy(currentWater = newWaterAmount)
+
+        launchCatching {
+            println("Debug: Updating water intake to $newWaterAmount")
+            println("Debug: Current userData id: ${_userData.value.id}")
+            println("HomeVMDebug: Updating water intake to ${_uiState.value.currentWater}")
+
+            val updatedUserData = _userData.value.copy(water = newWaterAmount)
+            _userData.value = updatedUserData
+
+            storageService.updateUserData(updatedUserData)
+        }
     }
 
     /**
@@ -85,22 +119,26 @@ class HomeScreenViewModel @Inject constructor(
      */
     init {
         launchCatching {
+            loadTodayUserData()
+
             accountService.currentUser.collect { fetchedUser ->
                 _user.value = fetchedUser
 
                 println("HomeVMDebug: User fetched: ${_user.value}")
-                val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
                 val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
                 val currentMealName = getCurrentMealName(currentHour)
 
                 storageService.userProducts.collect { products ->
+
                     val currentCalorie = nutritionService.getTotalCaloriesForDate(products, today)
                     val todayProducts = products.find { it.date == today }
                     println("HomeVMDebug: Today's products: $todayProducts")
+
                     todayProducts?.let { userProducts ->
-                        val mealNutrients =
-                            nutritionService.getMealDataByType(userProducts, currentMealName)
-                        _uiState.value = HomeScreenUiState(
+                        val mealNutrients = nutritionService.getMealDataByType(userProducts, currentMealName)
+
+                        _uiState.value = _uiState.value.copy(
                             currentCalorie = currentCalorie,
                             mealTitle = currentMealName.name,
                             mealCalories = mealNutrients.totalCalories,
@@ -108,6 +146,7 @@ class HomeScreenViewModel @Inject constructor(
                             mealCarbs = mealNutrients.totalCarbohydrates,
                             mealFats = mealNutrients.totalFat
                         )
+
                     }
                 }
             }

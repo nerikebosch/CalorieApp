@@ -7,6 +7,7 @@ import com.example.calorieapp.model.UserData
 import com.example.calorieapp.model.UserProducts
 import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.StorageService
+import com.example.calorieapp.model.service.impl.StorageServiceImpl.Companion.USER_ACTIVITY_COLLECTION
 import com.example.calorieapp.model.service.trace
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,13 +29,17 @@ class StorageServiceImpl @Inject constructor(
 ) : StorageService {
 
 
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    override val userData: Flow<List<UserData>>
-//        get() = auth.currentUser.flatMapLatest { user ->
-//            currentCollection(user.id, USER_DATA_COLLECTION).snapshots().map { snapshot ->
-//                snapshot.toObjects<UserData>() // Use KTX toObjects()
-//            }
-//        }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val userData: Flow<List<UserData>>
+        get() = auth.currentUser.flatMapLatest { user ->
+            if (user.id.isBlank()) {
+                flowOf(emptyList())
+            } else {
+                currentCollection(user.id, USER_DATA_COLLECTION).snapshots().map { snapshot ->
+                    snapshot.toObjects<UserData>() // Use KTX toObjects()
+                }
+            }
+        }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val userProducts: Flow<List<UserProducts>>
@@ -60,39 +65,29 @@ class StorageServiceImpl @Inject constructor(
             }
         }
 
+    override suspend fun getUserDataByDate(date: String): UserData? =
+        currentCollection(auth.currentUserId, USER_DATA_COLLECTION)
+            .whereEqualTo("date", date)
+            .get()
+            .await()
+            .toObjects<UserData>()
+            .firstOrNull()
 
-    override suspend fun updateUser(user: User) {
-        TODO("Not yet implemented")
+
+
+    override suspend fun updateUserData(userData: UserData) {
+        trace(UPDATE_USER_DATA) {
+            println("Debug: Updating for userData: $userData")
+            currentCollection(auth.currentUserId, USER_DATA_COLLECTION).document(userData.id).set(userData).await()
+        }
     }
 
+    override suspend fun saveUserData(userData: UserData): String =
+        trace(SAVE_USER_DATA) {
+            println("Debug: Saving new userData: $userData")
+            currentCollection(auth.currentUserId, USER_DATA_COLLECTION).add(userData).await().id
+        }
 
-    override suspend fun save(userData: UserData) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getHeight(height: Double): Double? {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun saveHeight(height: Double) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getWeight(weight: Double): Double {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun saveWeight(weight: Double) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getCalories(calories: Double): Double? {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun saveCalories(calories: Double) {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun getUserProduct(userProductId: String): UserProducts? =
         currentCollection(auth.currentUserId, USER_PRODUCT_COLLECTION).document(userProductId).get().await().toObject()
@@ -153,6 +148,9 @@ class StorageServiceImpl @Inject constructor(
         private const val USER_COLLECTION = "users"
         private const val USER_DATA_COLLECTION = "userData"
         private const val USER_PRODUCT_COLLECTION = "userProducts"
+        private const val UPDATE_USER_DATA = "updateUserData"
+        private const val SAVE_USER_DATA = "saveUserData"
+
         private const val SAVE_USER_PRODUCT = "saveUserProducts"
         private const val UPDATE_USER_PRODUCT = "updateUserProducts"
 

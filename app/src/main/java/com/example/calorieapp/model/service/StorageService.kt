@@ -14,19 +14,13 @@ import com.example.calorieapp.model.UserProducts
 */
 interface StorageService {
 
-    //val userData: Flow<List<UserData>>
+    val userData: Flow<List<UserData>>
     val userProducts: Flow<List<UserProducts>>
     val userActivity: Flow<List<UserActivity>>
 
-    suspend fun updateUser(user: User)
-    suspend fun save(userData: UserData)
-    suspend fun getHeight(height: Double): Double?
-    suspend fun saveHeight(height: Double)
-    suspend fun getWeight(weight: Double): Double?
-    suspend fun saveWeight(weight: Double)
-    suspend fun getCalories(calories: Double): Double?
-    suspend fun saveCalories(calories: Double)
-
+    suspend fun getUserDataByDate(date: String): UserData?
+    suspend fun updateUserData(userData: UserData)
+    suspend fun saveUserData(userData: UserData): String
 
     suspend fun getUserProduct(userProductId: String): UserProducts?
     suspend fun saveUserProduct(userProduct: UserProducts): String
@@ -36,7 +30,6 @@ interface StorageService {
 
     suspend fun getUserActivity(userActivityId: String): UserActivity?
     suspend fun getUserActivityByDate(date: String): UserActivity?
-
     suspend fun updateUserActivity(userActivity: UserActivity)
     suspend fun saveUserActivity(userActivity: UserActivity): String
 }
