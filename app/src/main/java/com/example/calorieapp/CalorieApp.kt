@@ -60,7 +60,7 @@ fun CalorieApp() {
             val currentRoute = appState.navController.currentBackStackEntryAsState().value?.destination?.route
             val showTabRow = !(currentRoute == SPLASH_SCREEN ||
                     currentRoute == LOGIN_SCREEN ||
-                    currentRoute == SIGN_UP_SCREEN)
+                    currentRoute == SIGN_UP_SCREEN || currentRoute == MORE_ABOUT_YOU_SCREEN)
 
             Scaffold(
                 snackbarHost = {

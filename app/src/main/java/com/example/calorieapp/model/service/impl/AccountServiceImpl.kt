@@ -83,14 +83,24 @@ class AccountServiceImpl @Inject constructor(
 
         authResult.user?.let { firebaseUser ->
             val fullName = firebaseUser.displayName?.trim()?.split("\\s+".toRegex(), limit = 2) ?: listOf()
-            val user = User(
-                id = firebaseUser.uid,
-                name = fullName.getOrNull(0) ?: "",
-                surname = fullName.getOrNull(1) ?: "",
-                email = firebaseUser.email ?: "",
-                registeredUser = true
-            )
-            linkAccount(user)
+//            val userFromGoogle = User(
+//                name = fullName.getOrNull(0) ?: "",
+//                surname = fullName.getOrNull(1) ?: "",
+//                email = firebaseUser.email ?: "",
+//                registeredUser = true
+//            )
+//            val userData = hashMapOf(
+//                "id" to firebaseUser.uid,
+//                "name" to (fullName.getOrNull(0) ?: ""),
+//                "surname" to (fullName.getOrNull(1) ?: ""),
+//                "email" to (firebaseUser.email ?: ""),
+//                "registeredUser" to true
+//            )
+            // Merge with existing Firestore data (if any)
+            firestore.collection("users")
+                .document(firebaseUser.uid)
+                .get()
+                .await()
         }
     }
 

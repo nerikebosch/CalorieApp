@@ -1,6 +1,9 @@
 package com.example.calorieapp.screens.activity_stats
 
 import androidx.lifecycle.viewModelScope
+import com.example.calorieapp.common.snackbar.SnackbarManager
+import com.example.calorieapp.common.snackbar.SnackbarMessage
+import com.example.calorieapp.common.snackbar.SnackbarMessage.Companion.toSnackbarMessage
 import com.example.calorieapp.model.UserActivity
 import com.example.calorieapp.model.service.LocationService
 import com.example.calorieapp.model.service.LogService
@@ -35,41 +38,72 @@ class ActivityViewModel @Inject constructor(
     val permissionGranted: StateFlow<Boolean> = _permissionGranted.asStateFlow()
 
     init {
-        startObservingTrackingState()
-        loadTodayActivity()
+        launchCatching {
+            startObservingTrackingState()
+            observeUserActivity()
+        }
     }
 
     fun onPermissionGranted() {
         if (!_permissionGranted.value) {
             _permissionGranted.value = true
-            viewModelScope.launch {
+            launchCatching {
                 locationService.initializeTracking()
             }
         }
     }
 
     private fun startObservingTrackingState() {
-        viewModelScope.launch {
+        launchCatching {
             locationService.trackingState.collect { isTracking ->
                 _isTracking.value = isTracking
             }
         }
     }
 
-    private fun loadTodayActivity() {
+    private fun observeUserActivity() {
         viewModelScope.launch(Dispatchers.IO) {
-            val today = LocalDate.now().format(LocationServiceImpl.FIREBASE_DATE_FORMATTER)
-            val activity = storageService.getUserActivityByDate(today) ?: UserActivity(date = today)
-            _activityState.value = activity
+            try {
+                storageService.userActivity
+                    .distinctUntilChanged()
+                    .collect { activities ->
+                        val today = LocalDate.now().format(LocationServiceImpl.FIREBASE_DATE_FORMATTER)
+                        val currentActivity = activities.find { it.date == today }
+                            ?: UserActivity(date = today).also {
+                                // Save new activity if it doesn't exist
+                                storageService.saveUserActivity(it)
+                            }
+                        _activityState.value = currentActivity
+                        println("Debug: Activity updated - Steps: ${currentActivity.steps}, Distance: ${currentActivity.distanceInMeters}")
+                    }
+            } catch (e: Exception) {
+                println("Error observing activity: ${e.message}")
+                _activityState.value = UserActivity(date = LocalDate.now().format(LocationServiceImpl.FIREBASE_DATE_FORMATTER))
+            }
         }
     }
 
     fun refreshActivity() {
-        loadTodayActivity()
+        launchCatching() {
+            val today = LocalDate.now().format(LocationServiceImpl.FIREBASE_DATE_FORMATTER)
+            try {
+                val currentActivity = storageService.getUserActivityByDate(today)
+                    ?: UserActivity(date = today).also {
+                        storageService.saveUserActivity(it)
+                    }
+                _activityState.value = currentActivity
+                println("Debug: Activity refreshed - Steps: ${currentActivity.steps}, Distance: ${currentActivity.distanceInMeters}")
+            } catch (e: Exception) {
+                println("Error refreshing activity: ${e.message}")
+                SnackbarManager.showMessage(e.toSnackbarMessage())
+            }
+        }
     }
 
     override fun onCleared() {
         super.onCleared()
-        locationService.cleanup()
+        launchCatching {
+            locationService.cleanup()
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.calorieapp.screens.login
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,6 +34,7 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -68,14 +70,14 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState
-
+    val activity = LocalContext.current as Activity
     LoginScreenContent(
         uiState = uiState,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
         onSignInClick = { viewModel.onSignInClick(openAndPopUp) },
         onForgotPasswordClick = viewModel::onForgotPasswordClick,
-        onGoogleSignInClick = { viewModel.onGoogleSignInClick(openAndPopUp) },
+        onGoogleSignInClick = { viewModel.onGoogleSignInClick(activity, openAndPopUp) },
         onFacebookSignInClick = { viewModel::onFacebookSignInClick },
         onSignUpScreenClick = { viewModel.onSignUpScreenClick(openAndPopUp) }
     )

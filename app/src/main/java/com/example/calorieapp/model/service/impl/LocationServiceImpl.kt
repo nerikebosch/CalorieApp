@@ -2,14 +2,15 @@ package com.example.calorieapp.model.service.impl
 
 import android.Manifest
 import android.app.Activity
+import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Looper
-import androidx.compose.ui.text.font.FontVariation.weight
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -27,10 +28,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
-import kotlin.math.abs
-import android.content.SharedPreferences.*
-import android.app.Service
-import android.content.SharedPreferences
 
 
 class LocationServiceImpl @Inject constructor(
@@ -159,8 +156,9 @@ class LocationServiceImpl @Inject constructor(
     }
 
     override suspend fun initializeTracking() {
+        loadState()
         if (checkAndRequestPermissions()) {
-            startContinuousTracking()
+            startLocationTracking()
         }
     }
 
@@ -190,7 +188,6 @@ class LocationServiceImpl @Inject constructor(
 
 
     private fun startLocationTracking() {
-        loadState() // Restore previous state
         if (ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -203,18 +200,13 @@ class LocationServiceImpl @Inject constructor(
         val batteryManager = context.getSystemService<BatteryManager>()
         val batteryLevel = batteryManager?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) ?: 100
 
-        val updateInterval = if (batteryLevel <= BATTERY_SAVER_THRESHOLD) {
-            15_000L // 15 in battery saver
-        } else {
-            5_000L // 5 seconds normal
-        }
 
         val locationRequest = LocationRequest.Builder(
             Priority.PRIORITY_HIGH_ACCURACY,
-            updateInterval
+            5_000L
         )
             .setWaitForAccurateLocation(false)
-            .setMinUpdateIntervalMillis(updateInterval / 3)
+            .setMinUpdateIntervalMillis(3_000L)
             .build()
 
         locationCallback = object : LocationCallback() {
@@ -277,6 +269,7 @@ class LocationServiceImpl @Inject constructor(
             if (distance >= MIN_DISTANCE_CHANGE) {
                 updateActivityMetrics(distance, speed)
                 lastUpdateTime = currentTime
+                saveState()
             }
         }
         previousLocation = location

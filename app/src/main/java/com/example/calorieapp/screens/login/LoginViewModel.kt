@@ -1,7 +1,9 @@
 package com.example.calorieapp.screens.login
 
+import android.app.Activity
 import androidx.compose.runtime.mutableStateOf
 import com.example.calorieapp.LOGIN_SCREEN
+import com.example.calorieapp.MORE_ABOUT_YOU_SCREEN
 import com.example.calorieapp.SIGN_UP_SCREEN
 import com.example.calorieapp.SPLASH_SCREEN
 import com.example.calorieapp.auth.GoogleSignInManager
@@ -12,6 +14,8 @@ import com.example.calorieapp.model.service.AccountService
 import com.example.calorieapp.model.service.LogService
 import com.example.calorieapp.screens.CalorieAppViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import com.example.calorieapp.R.string as AppText
 
@@ -104,15 +108,22 @@ class LoginViewModel @Inject constructor(
      * @param openAndPopUp Function to handle navigation after successful authentication.
      */
     fun onGoogleSignInClick(
+        activity: Activity,
         openAndPopUp: (String, String) -> Unit
     ) {
         launchCatching {
             googleSignInManager.initiateGoogleSignIn(
-                //scope = viewModelScope,
+                activity = activity,
                 onSuccess = {
-                    // Navigate to screen after successful Google Sign-In
-
-                    openAndPopUp(SPLASH_SCREEN, LOGIN_SCREEN)
+                    launchCatching {
+                        val user = accountService.currentUser.filter { it.id.isNotEmpty() }.first()
+                        // Navigate to screen after successful Google Sign-In
+                        if (user.weight == 0.0 && user.dob == "" && user.height == 0.0) {
+                            openAndPopUp(MORE_ABOUT_YOU_SCREEN, LOGIN_SCREEN)
+                        } else {
+                            openAndPopUp(SPLASH_SCREEN, LOGIN_SCREEN)
+                        }
+                    }
                 },
                 onError = { exception ->
                     // Handle sign-in error

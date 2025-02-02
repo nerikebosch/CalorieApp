@@ -135,7 +135,6 @@ class StorageServiceImpl @Inject constructor(
 
     override suspend fun updateUserActivity(userActivity: UserActivity): Unit =
         trace(UPDATE_USER_ACTIVITY) {
-
             currentCollection(auth.currentUserId, USER_ACTIVITY_COLLECTION).document(userActivity.id).set(userActivity).await()
         }
 

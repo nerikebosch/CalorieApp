@@ -1,6 +1,7 @@
 package com.example.calorieapp.auth
 
 import android.R.attr.data
+import android.app.Activity
 import android.content.Context
 import android.util.Log
 import androidx.credentials.CredentialManager
@@ -16,7 +17,6 @@ import kotlinx.coroutines.tasks.await
 class GoogleSignInManager(
     private val context: Context,
     private val accountService: AccountService,
-    //private val auth: FirebaseAuth,
     private val credentialManager: CredentialManager,
     private val webClientId: String
 ) {
@@ -29,7 +29,7 @@ class GoogleSignInManager(
      * @param onError Callback for sign-in errors
      */
     suspend fun initiateGoogleSignIn(
-        //scope: CoroutineScope,
+        activity: Activity,
         onSuccess: () -> Unit,
         onError: (Exception) -> Unit
     ) {
@@ -49,7 +49,7 @@ class GoogleSignInManager(
             // Get credentials
             val result = credentialManager.getCredential(
                 request = request,
-                context = context
+                context = activity
             )
 
             val credential = result.credential
