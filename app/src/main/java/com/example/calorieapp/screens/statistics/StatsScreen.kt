@@ -69,18 +69,17 @@ fun StatsScreenContent(
 
     // Observe the week range for the selected date
     val getWeekRange: (Long) -> Pair<Date, Date> = { dateMillis ->
-        val calendar = Calendar.getInstance().apply { timeInMillis = dateMillis }
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = dateMillis
+            firstDayOfWeek = Calendar.MONDAY
+            set(Calendar.DAY_OF_WEEK, Calendar.MONDAY) // Move to Monday
+        }
 
-        // Ensure correct week selection
-        calendar.firstDayOfWeek = Calendar.MONDAY
+        val startOfWeek = calendar.time
 
-        val startOfWeek = (calendar.clone() as Calendar).apply {
-            set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-        }.time
-
-        val endOfWeek = (calendar.clone() as Calendar).apply {
-            add(Calendar.DAY_OF_YEAR,0) // Move forward 6 days to get Sunday
-        }.time
+        // Now add 6 days to get to Sunday
+        calendar.add(Calendar.DAY_OF_YEAR, 6)
+        val endOfWeek = calendar.time
 
         startOfWeek to endOfWeek
     }

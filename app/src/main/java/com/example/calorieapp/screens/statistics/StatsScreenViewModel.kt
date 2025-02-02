@@ -60,17 +60,13 @@ class StatsScreenViewModel @Inject constructor(
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                 val calendar = Calendar.getInstance().apply { timeInMillis = selectedDateMillis }
 
-                // Determine the start (Monday) and end (Sunday) of the week
-                val startOfWeek = (calendar.clone() as Calendar).apply {
-                    set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-                }
-                val endOfWeek = (calendar.clone() as Calendar).apply {
-                    set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
-                }
+                // Set the calendar to Monday of the selected week
+                calendar.firstDayOfWeek = Calendar.MONDAY
+                calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
 
-                // Generate a list of dates for the week (Monday to Sunday).
+                // Generate the dates for the full week (Monday to Sunday)
                 val weekDates = (0..6).map { dayOffset ->
-                    (startOfWeek.clone() as Calendar).apply {
+                    (calendar.clone() as Calendar).apply {
                         add(Calendar.DAY_OF_YEAR, dayOffset)
                     }.time
                 }
