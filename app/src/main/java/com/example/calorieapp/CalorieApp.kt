@@ -33,6 +33,7 @@ import com.example.calorieapp.screens.adddata.*
 import com.example.calorieapp.screens.homescreen.HomeScreen
 import com.example.calorieapp.screens.information.MoreAboutYouScreen
 import com.example.calorieapp.screens.login.LoginScreen
+import com.example.calorieapp.screens.maps.MapScreen
 import com.example.calorieapp.screens.recipe.RecipeDetailsScreen
 import com.example.calorieapp.screens.settings.SettingsScreen
 import com.example.calorieapp.screens.settings.userchange.UserChangeScreen
@@ -225,6 +226,12 @@ fun NavGraphBuilder.calorieGraph(
 
     composable(STATS_SCREEN) {
         StatsScreen(
+            openScreen = { route -> appState.navigate(route) }
+        )
+    }
+
+    composable(MAP_SCREEN) {
+        MapScreen(
             openScreen = { route -> appState.navigate(route) }
         )
     }

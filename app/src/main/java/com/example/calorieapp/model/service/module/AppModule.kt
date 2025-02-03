@@ -2,6 +2,8 @@ package com.example.calorieapp.model.service.module
 
 import android.content.Context
 import android.hardware.SensorManager
+import com.example.calorieapp.model.service.LocationService
+import com.example.calorieapp.model.service.impl.MapServiceImpl
 import com.example.calorieapp.screens.recipe.RecipeRepository
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -28,6 +30,7 @@ object AppModule {
     fun provideRecipeRepository(@ApplicationContext context: Context): RecipeRepository {
         return RecipeRepository(context)
     }
+
 
     @Provides
     @Singleton

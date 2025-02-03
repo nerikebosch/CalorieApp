@@ -3,6 +3,7 @@ package com.example.calorieapp.screens.settings
 
 import com.example.calorieapp.ACTIVITY_SCREEN
 import com.example.calorieapp.GOAL_CHANGE_SCREEN
+import com.example.calorieapp.MAP_SCREEN
 import com.example.calorieapp.SPLASH_SCREEN
 import com.example.calorieapp.USER_CHANGE_SCREEN
 import com.example.calorieapp.model.User
@@ -93,4 +94,6 @@ class SettingsViewModel @Inject constructor(
      * @param openScreen Function to navigate to a specified screen.
      */
     fun onOpenActivityClick(openScreen: (String) -> Unit) = openScreen(ACTIVITY_SCREEN)
+
+    fun onMapsClick(openScreen: (String) -> Unit) = openScreen(MAP_SCREEN)
 }

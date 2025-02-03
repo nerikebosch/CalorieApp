@@ -74,6 +74,11 @@ fun SettingsScreen(
             label = stringResource(AppText.your_activity),
             detail = "See how many steps you walked today",
         ) { viewModel.onOpenActivityClick(openScreen)}
+
+        ChangeDataCard(
+            label = "Maps",
+            detail = "See your location",
+        ) { viewModel.onMapsClick(openScreen)}
         Spacer(modifier = Modifier.spacer())
         SignOutCard { viewModel.onSignOutClick(restartApp) }
 
@@ -168,6 +173,16 @@ fun SettingsScreenPreview() {
             ChangeDataCard(
                 label = stringResource(AppText.goal_change),
                 detail = "",
+                onClick = {}
+            )
+            ChangeDataCard(
+                label = stringResource(AppText.your_activity),
+                detail = "See how many steps you walked today",
+                onClick = {}
+            )
+            ChangeDataCard(
+                label = "Maps",
+                detail = "See your location",
                 onClick = {}
             )
             Spacer(modifier = Modifier.spacer())
