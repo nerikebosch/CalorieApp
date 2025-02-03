@@ -36,6 +36,14 @@ import com.example.calorieapp.R.string as AppText
 
 private const val SPLASH_TIMEOUT = 1000L
 
+/**
+ * Composable function representing the Splash screen. Displays the app's logo,
+ * name, and catchphrase while performing a startup delay and checking the user's authentication state.
+ *
+ * @param openAndPopUp A lambda function to navigate to a new screen and remove the previous screen from the back stack.
+ * @param modifier Modifier for styling and layout.
+ * @param viewModel The ViewModel for the Splash screen, provided via Hilt dependency injection.
+ */
 @Composable
 fun SplashScreen(
     openAndPopUp: (String, String) -> Unit,
@@ -93,6 +101,14 @@ fun SplashScreen(
     }
 }
 
+/**
+ * Content for the Splash screen, displaying either an error message with a retry button
+ * or the app's logo, name, and a loading indicator.
+ *
+ * @param showError A flag indicating whether an error message should be displayed.
+ * @param onTryAgainClick A callback function invoked when the "Try Again" button is clicked.
+ * @param modifier Modifier for styling and layout.
+ */
 @Composable
 private fun SplashScreenContent(
     showError: Boolean,

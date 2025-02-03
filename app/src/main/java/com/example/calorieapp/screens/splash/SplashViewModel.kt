@@ -13,6 +13,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Splash screen. Responsible for managing the app's navigation
+ * from the Splash screen to either the Home or Login screen based on the user's authentication state.
+ *
+ * @property configurationService The service used to fetch app configurations.
+ * @property accountService The service used to handle user account information and authentication.
+ * @property logService The service used for logging errors and events.
+ */
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     configurationService: ConfigurationService,
@@ -30,6 +38,11 @@ class SplashViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handles the app's startup logic and navigates the user to the appropriate screen.
+     *
+     * @param openAndPopUp A lambda function to navigate to a new screen and add the previous screen from the back stack.
+     */
     fun onAppStart(openAndPopUp: (String, String) -> Unit) {
 
         launchCatching {
