@@ -94,7 +94,7 @@ class ActivityViewModel @Inject constructor(
                                 storageService.saveUserActivity(it)
                             }
                         _activityState.value = currentActivity
-                        println("Debug: Activity updated - Steps: ${currentActivity.steps}, Distance: ${currentActivity.distanceInMeters}")
+                        println("ObserverActDebug: Activity updated - Steps: ${currentActivity.steps}, Distance: ${currentActivity.distanceInMeters}")
                     }
             } catch (e: Exception) {
                 println("Error observing activity: ${e.message}")
@@ -108,7 +108,7 @@ class ActivityViewModel @Inject constructor(
      * If no activity data exists, it creates and saves a new entry.
      */
     fun refreshActivity() {
-        launchCatching() {
+        launchCatching {
             val today = LocalDate.now().format(LocationServiceImpl.FIREBASE_DATE_FORMATTER)
             try {
                 val currentActivity = storageService.getUserActivityByDate(today)
@@ -116,7 +116,7 @@ class ActivityViewModel @Inject constructor(
                         storageService.saveUserActivity(it)
                     }
                 _activityState.value = currentActivity
-                println("Debug: Activity refreshed - Steps: ${currentActivity.steps}, Distance: ${currentActivity.distanceInMeters}")
+                println("RefreshDebug: Activity refreshed - Steps: ${currentActivity.steps}, Distance: ${currentActivity.distanceInMeters}")
             } catch (e: Exception) {
                 println("Error refreshing activity: ${e.message}")
                 SnackbarManager.showMessage(e.toSnackbarMessage())
