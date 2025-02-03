@@ -1,5 +1,6 @@
 package com.example.calorieapp.screens.settings.userchange
 
+import android.R.attr.text
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,7 +37,13 @@ import com.example.calorieapp.model.User
 import com.example.calorieapp.ui.theme.CalorieAppTheme
 import com.example.calorieapp.R.string as AppText
 
-
+/**
+ * Composable function for the User Change screen. Allows the user to edit their profile information
+ * such as name and surname.
+ *
+ * @param popUpScreen A lambda function to handle the back navigation or screen closure.
+ * @param viewModel The ViewModel for managing the state and business logic of the User Change screen.
+ */
 @Composable
 fun UserChangeScreen(
     popUpScreen: () -> Unit,
@@ -56,6 +63,15 @@ fun UserChangeScreen(
 
 }
 
+/**
+ * Composable function for displaying the content of the User Change screen.
+ * Provides fields for editing user details and a save action.
+ *
+ * @param onDoneClick A callback function invoked when the save button is clicked.
+ * @param user The current user object containing name and surname.
+ * @param onNameChange A lambda function to handle name changes.
+ * @param onSurnameChange A lambda function to handle surname changes.
+ */
 @Composable
 fun UserChangeScreenContent(
     onDoneClick: () -> Unit = {},
@@ -100,6 +116,10 @@ fun UserChangeScreenContent(
     }
 }
 
+/**
+ * Composable function for displaying a loading state during user data update or retrieval.
+ * Shows a circular progress indicator centered in the screen.
+ */
 @Composable
 fun LoadingChangeScreen() {
     Box(modifier = Modifier.fillMaxSize(),
@@ -108,6 +128,10 @@ fun LoadingChangeScreen() {
     }
 }
 
+/**
+ * Preview for the User Change screen with mocked user data.
+ * Demonstrates how the screen appears with sample inputs.
+ */
 @Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
 fun UserChangeScreenPreview() {
