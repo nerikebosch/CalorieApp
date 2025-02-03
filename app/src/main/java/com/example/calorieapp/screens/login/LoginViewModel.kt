@@ -104,7 +104,7 @@ class LoginViewModel @Inject constructor(
     /**
      * Initiates the Google Sign-In process.
      * On success, navigates the user to the next screen.
-     *
+     * @param activity The activity used by local context/ application activity
      * @param openAndPopUp Function to handle navigation after successful authentication.
      */
     fun onGoogleSignInClick(

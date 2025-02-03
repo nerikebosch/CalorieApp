@@ -65,7 +65,7 @@ android {
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.runtime.livedata)
-    implementation(libs.play.services.fitness)
+
     androidTestImplementation(platform(libs.androidx.compose.bom))
 
     implementation(libs.androidx.core.ktx)
@@ -120,14 +120,12 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     implementation("com.google.android.gms:play-services-location:21.3.0")
-    implementation("com.google.android.gms:play-services-fitness:21.2.0")
+    implementation(libs.play.services.fitness)
     implementation("com.google.android.gms:play-services-base:18.5.0")
     implementation("com.google.android.gms:play-services-maps:19.0.0")
-    implementation(libs.accompanist.permissions.v0360)
+    implementation("com.google.accompanist:accompanist-permissions:0.37.0")
 
     implementation("com.google.maps.android:maps-compose:6.4.1")
-
-    implementation(libs.accompanist.permissions)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "501150034108-3akj29ed8pjr5vfcv5rd3sjbu289ebof.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.calorieapp",
+            "certificate_hash": "b98cee6cd2db4a6378584044f766e4f84592b67d"
+          }
+        },
+        {
           "client_id": "501150034108-j6kdjdtugifcksdfuja4o191p4agkot3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

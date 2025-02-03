@@ -61,7 +61,7 @@ import com.example.calorieapp.R.string as AppText
 /**
  * Composable function representing the login screen.
  *
- * @param openAndPopUp Function to navigate and remove the current screen from the back stack.
+ * @param openAndPopUp Function to navigate and add the current screen from the back stack.
  * @param viewModel ViewModel handling login-related logic.
  */
 @Composable
