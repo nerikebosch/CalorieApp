@@ -41,6 +41,14 @@ import androidx.compose.ui.unit.sp
 import com.example.calorieapp.common.ext.*
 import com.example.calorieapp.R.string as AppText
 
+
+/**
+ * A basic outlined text field.
+ * @param text The string resource ID for the placeholder text.
+ * @param value The current text value.
+ * @param onNewValue Callback when the text value changes.
+ * @param modifier Modifier for styling.
+ */
 @Composable
 fun BasicField(
     @StringRes text: Int,
@@ -57,6 +65,13 @@ fun BasicField(
     )
 }
 
+
+/**
+ * A text field for email input.
+ * @param value The current text value.
+ * @param onNewValue Callback when the text value changes.
+ * @param modifier Modifier for styling.
+ */
 @Composable
 fun EmailField(
     value: String,
@@ -113,7 +128,12 @@ fun EmailField(
     )
 }
 
-
+/**
+ * A text field for password input with visibility toggle.
+ * @param value The current password value.
+ * @param onNewValue Callback when the password value changes.
+ * @param modifier Modifier for styling.
+ */
 @Composable
 fun PasswordField(
     value: String,
@@ -123,6 +143,16 @@ fun PasswordField(
     PasswordField(value, AppText.password, onNewValue, modifier)
 }
 
+
+
+/**
+ * A composable function that creates a password input field with a label and a visibility toggle button.
+ *
+ * @param value The current password value of the text field.
+ * @param onValueChange Callback invoked when the password value changes.
+ * @param modifier Modifier to be applied to the password text field.
+ * @param textFieldLabel The label text displayed inside the text field.
+ */
 @Composable
 fun PasswordTextField(
     value: String,
@@ -181,7 +211,14 @@ fun PasswordTextField(
     )
 }
 
-
+/**
+ * A password field with visibility toggle and strength validation.
+ * @param value The current password value.
+ * @param onValueChange Callback when the password value changes.
+ * @param modifier Modifier for styling.
+ * @param textFieldLabel The label text for the field.
+ * @param onHasStrongPassword Callback to indicate if the password is strong.
+ */
 @Composable
 fun PasswordSignUpTextField(
     value: String,
@@ -293,6 +330,14 @@ fun PasswordSignUpTextField(
     }
 }
 
+/**
+ * A private composable function that creates a password input field with an optional visibility toggle.
+ *
+ * @param value The current text value of the password field.
+ * @param placeholder The string resource ID for the placeholder text.
+ * @param onNewValue Callback invoked when the password value changes.
+ * @param modifier Modifier to be applied to the password field.
+ */
 @Composable
 private fun PasswordField(
     value: String,
@@ -326,6 +371,15 @@ private fun PasswordField(
     )
 }
 
+/**
+ * A composable function that creates an outlined text field with a label and an optional trailing icon.
+ *
+ * @param value The current text value of the text field.
+ * @param onValueChange Callback invoked when the text value changes.
+ * @param modifier Modifier to be applied to the text field.
+ * @param label The label text displayed inside the text field.
+ * @param trailing An optional composable function for the trailing icon.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LabelTextField(
@@ -452,6 +506,11 @@ fun LabelNumberTextField(
 
 }
 
+/**
+ * A button to toggle password visibility.
+ * @param showPassword Whether the password is currently visible.
+ * @param onTogglePasswordVisibility Callback to toggle visibility.
+ */
 @Composable
 fun PasswordVisibilityToggleIcon(
     showPassword: Boolean,

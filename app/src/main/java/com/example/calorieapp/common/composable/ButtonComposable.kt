@@ -16,11 +16,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
+/**
+ * A basic text button composable that displays text and triggers an action when clicked.
+ *
+ * @param text The string resource ID for the button text.
+ * @param modifier The modifier to be applied to the button.
+ * @param action The action to be triggered when the button is clicked.
+ */
 @Composable
 fun BasicTextButton(@StringRes text: Int, modifier: Modifier, action: () -> Unit) {
     TextButton(onClick = action, modifier = modifier) { Text(text = stringResource(text)) }
 }
 
+
+/**
+ * A basic button composable that displays text and triggers an action when clicked.
+ * The button uses the primary container color from the Material theme.
+ *
+ * @param text The string resource ID for the button text.
+ * @param modifier The modifier to be applied to the button.
+ * @param action The action to be triggered when the button is clicked.
+ */
 @Composable
 fun BasicButton(@StringRes text: Int, modifier: Modifier, action: () -> Unit) {
     Button(
@@ -36,6 +53,15 @@ fun BasicButton(@StringRes text: Int, modifier: Modifier, action: () -> Unit) {
     }
 }
 
+
+/**
+ * A login button composable that is typically used in login screens.
+ * The button has a fixed height, rounded corners, and uses the primary color from the Material theme.
+ *
+ * @param text The string resource ID for the button text.
+ * @param modifier The modifier to be applied to the button.
+ * @param action The action to be triggered when the button is clicked.
+ */
 @Composable
 fun LoginButton(@StringRes text: Int, modifier: Modifier, action: () -> Unit) {
     Button(
@@ -57,6 +83,14 @@ fun LoginButton(@StringRes text: Int, modifier: Modifier, action: () -> Unit) {
     }
 }
 
+
+/**
+ * A confirmation button composable typically used in dialogs.
+ * The button uses the primary color from the Material theme.
+ *
+ * @param text The string resource ID for the button text.
+ * @param action The action to be triggered when the button is clicked.
+ */
 @Composable
 fun DialogConfirmButton(@StringRes text: Int, action: () -> Unit) {
     Button(
@@ -71,6 +105,14 @@ fun DialogConfirmButton(@StringRes text: Int, action: () -> Unit) {
     }
 }
 
+
+/**
+ * A cancellation button composable typically used in dialogs.
+ * The button uses the primary color from the Material theme.
+ *
+ * @param text The string resource ID for the button text.
+ * @param action The action to be triggered when the button is clicked.
+ */
 @Composable
 fun DialogCancelButton(@StringRes text: Int, action: () -> Unit) {
     Button(

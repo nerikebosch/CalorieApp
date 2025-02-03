@@ -13,6 +13,13 @@ import com.example.calorieapp.common.composable.BasicToolbar
 import com.example.calorieapp.model.UserActivity
 import com.example.calorieapp.R.string as AppText
 
+/**
+ * Composable function that displays the Activity Screen, which includes activity tracking status,
+ * location permission status, and activity statistics.
+ *
+ * @param popUpScreen Callback function to handle screen navigation.
+ * @param viewModel ViewModel that provides activity tracking data and state management.
+ */
 @Composable
 fun ActivityScreen(
     popUpScreen: () -> Unit,
@@ -48,6 +55,11 @@ fun ActivityScreen(
     }
 }
 
+/**
+ * Composable function that displays the current status of location permission.
+ *
+ * @param isGranted Boolean indicating whether location permission is granted.
+ */
 @Composable
 fun PermissionStatusCard(isGranted: Boolean) {
     Card(
@@ -68,6 +80,11 @@ fun PermissionStatusCard(isGranted: Boolean) {
     }
 }
 
+/**
+ * Composable function that displays the tracking status of the activity.
+ *
+ * @param isTracking Boolean indicating whether activity tracking is currently active.
+ */
 @Composable
 fun TrackingStatusCard(isTracking: Boolean) {
     Card(
@@ -88,6 +105,14 @@ fun TrackingStatusCard(isTracking: Boolean) {
     }
 }
 
+/**
+ * Composable function that displays user activity statistics such as steps taken, distance covered,
+ * and calories burned.
+ *
+ * @param activityState Current state of the user's activity data.
+ * @param viewModel ViewModel responsible for managing activity data.
+ * @param isPermissionGranted Boolean indicating whether location permission is granted.
+ */
 @Composable
 fun ActivityStats(activityState: UserActivity, viewModel: ActivityViewModel, isPermissionGranted: Boolean) {
     Box(

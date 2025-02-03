@@ -1,6 +1,5 @@
 package com.example.calorieapp.common.composable
 
-import android.R.attr.label
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -14,6 +13,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 
+/**
+ * A composable function for displaying a card editor with a dangerous (primary) highlight color.
+ * This is typically used for actions that require attention, such as editing critical information.
+ *
+ * @param title The string resource ID for the title of the card.
+ * @param icon The icon to display on the card, represented as an [ImageVector].
+ * @param content The text content to display on the card.
+ * @param modifier The modifier to be applied to the card.
+ * @param onEditClick The action to be triggered when the card is clicked.
+ */
 @ExperimentalMaterial3Api
 @Composable
 fun DangerousCardEditor(
@@ -27,6 +36,17 @@ fun DangerousCardEditor(
     CardEditor(title, icon, content, onEditClick, MaterialTheme.colorScheme.primary, modifier)
 }
 
+
+/**
+ * A composable function for displaying a card editor with a regular (onSurface) highlight color.
+ * This is typically used for less critical editing actions.
+ *
+ * @param title The string resource ID for the title of the card.
+ * @param icon The icon to display on the card, represented as an [ImageVector].
+ * @param content The text content to display on the card.
+ * @param modifier The modifier to be applied to the card.
+ * @param onEditClick The action to be triggered when the card is clicked.
+ */
 @ExperimentalMaterial3Api
 @Composable
 fun RegularCardEditor(
@@ -40,6 +60,18 @@ fun RegularCardEditor(
     CardEditor(title, icon, content, onEditClick, MaterialTheme.colorScheme.onSurface, modifier)
 }
 
+
+/**
+ * A private composable function that serves as the base implementation for card editors.
+ * It displays a title, content, and an icon, and applies a highlight color to the title and icon.
+ *
+ * @param title The string resource ID for the title of the card.
+ * @param icon The icon to display on the card, represented as an [ImageVector].
+ * @param content The text content to display on the card.
+ * @param onEditClick The action to be triggered when the card is clicked.
+ * @param highlightColor The color to use for highlighting the title and icon.
+ * @param modifier The modifier to be applied to the card.
+ */
 @ExperimentalMaterial3Api
 @Composable
 private fun CardEditor(
@@ -80,6 +112,17 @@ private fun CardEditor(
     }
 }
 
+
+/**
+ * A composable function for displaying a card with a dropdown selector.
+ * This is typically used for selecting options from a list.
+ *
+ * @param label The string resource ID for the label of the dropdown.
+ * @param options The list of options to display in the dropdown.
+ * @param selection The currently selected option.
+ * @param modifier The modifier to be applied to the card.
+ * @param onNewValue The action to be triggered when a new value is selected.
+ */
 @Composable
 @ExperimentalMaterial3Api
 fun CardSelector(
@@ -106,6 +149,16 @@ fun CardSelector(
     }
 }
 
+/**
+ * A composable function for displaying a card editor with text content and an icon.
+ * This is typically used for displaying and editing text-based information.
+ *
+ * @param label The label text to display on the card.
+ * @param detail The detail text to display on the card.
+ * @param icon The icon to display on the card, represented as an [ImageVector].
+ * @param onEditClick The action to be triggered when the card is clicked.
+ * @param modifier The modifier to be applied to the card.
+ */
 @ExperimentalMaterial3Api
 @Composable
 fun TextCardEditor(
